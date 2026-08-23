@@ -1,0 +1,322 @@
+/*
+ * Red Stamp physical motion sidecar.
+ *
+ * Load after styles.css. The parent can use the existing .stamp-hit hook or
+ * call RedStampStampMotion.trigger(".security-desk"). No markup is required;
+ * the companion script creates the temporary ink impression.
+ */
+
+:root {
+  --stamp-motion-red: #c9362c;
+  --stamp-motion-red-ink: rgba(187, 39, 34, 0.78);
+}
+
+/* One short recoil for the desk, synchronized with the stamp's contact. */
+.security-desk.stamp-hit,
+.security-desk.stamp-motion-active {
+  isolation: isolate;
+  transform-origin: 50% 100%;
+  animation: stamp-motion-desk-jolt 780ms cubic-bezier(0.22, 0.75, 0.28, 1) both;
+  will-change: transform;
+}
+
+/* The existing red-stamp artwork supplies the physical object. */
+.security-desk.stamp-hit .desk-stamp-art,
+.security-desk.stamp-motion-active .desk-stamp-art {
+  transform-origin: 50% 92%;
+  animation: stamp-motion-wind-up-impact 760ms cubic-bezier(0.2, 0.82, 0.28, 1) both;
+  will-change: transform, filter;
+}
+
+/* The script appends this to .desk-panel so the impression lands under the art. */
+.security-desk .stamp-motion-ink {
+  position: absolute;
+  right: 9%;
+  bottom: 11%;
+  z-index: 2;
+  display: block;
+  width: clamp(34px, 4.6vw, 52px);
+  height: clamp(18px, 2.7vw, 30px);
+  border: 2px solid #7e211e;
+  border-radius: 47% 53% 42% 58%;
+  background:
+    radial-gradient(ellipse at 48% 47%, var(--stamp-motion-red-ink) 0 42%, rgba(160, 30, 29, 0.48) 67%, transparent 79%),
+    repeating-linear-gradient(103deg, rgba(218, 62, 49, 0.32) 0 2px, rgba(122, 28, 27, 0.2) 2px 4px);
+  box-shadow: inset 0 0 0 1px rgba(235, 102, 78, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 4px, 0) rotate(-5deg) scale(0.18, 0.28);
+  transform-origin: 50% 50%;
+}
+
+.security-desk .desk-panel {
+  position: relative;
+}
+
+.security-desk .stamp-motion-ink::before,
+.security-desk .stamp-motion-ink::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.security-desk .stamp-motion-ink::before {
+  inset: 3px 5px;
+  border: 1px solid rgba(241, 104, 78, 0.45);
+  border-radius: 51% 49% 55% 45%;
+}
+
+.security-desk .stamp-motion-ink::after {
+  inset: 7px 10px;
+  border-top: 1px solid rgba(111, 22, 23, 0.52);
+  border-bottom: 1px solid rgba(235, 86, 65, 0.31);
+  transform: rotate(-2deg);
+}
+
+.security-desk.stamp-hit .stamp-motion-ink,
+.security-desk.stamp-motion-active .stamp-motion-ink {
+  animation: stamp-motion-ink-bloom 780ms cubic-bezier(0.19, 0.8, 0.28, 1) both;
+}
+
+/* The red desk edge carries a small, hard-edged authority response. */
+.security-desk.stamp-hit .desk-edge,
+.security-desk.stamp-motion-active .desk-edge {
+  animation: stamp-motion-authority-edge 780ms ease-out both;
+}
+
+/* Existing decision controls receive a restrained authorization rule. */
+.scene-decision.admit.stamp-motion-authority,
+.decision-button.admit.stamp-motion-authority {
+  position: relative;
+  animation: stamp-motion-authority 780ms ease-out both;
+}
+
+.scene-decision.admit.stamp-motion-authority::after,
+.decision-button.admit.stamp-motion-authority::after {
+  position: absolute;
+  bottom: 3px;
+  left: 8px;
+  width: 0;
+  height: 1px;
+  background: var(--stamp-motion-red);
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: left center;
+  animation: stamp-motion-authority-rule 720ms ease-out both;
+}
+
+/* Useful when the host keeps the original, non-full-screen gate visible. */
+.entry-frame.stamp-motion-gate::before,
+.entry-frame.stamp-motion-gate::after {
+  animation: stamp-motion-gate-response 780ms ease-out both;
+}
+
+@keyframes stamp-motion-wind-up-impact {
+  0% {
+    filter: drop-shadow(0 7px 6px rgba(0, 0, 0, 0.62));
+    transform: translate3d(0, 0, 0) rotate(7deg) scale(1);
+  }
+
+  8% {
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.7));
+    transform: translate3d(0, 2px, 0) rotate(7.5deg) scale(0.985, 0.98);
+  }
+
+  20% {
+    filter: drop-shadow(0 13px 8px rgba(0, 0, 0, 0.5));
+    transform: translate3d(-1px, -11px, 0) rotate(2deg) scale(1.03);
+  }
+
+  29% {
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.76));
+    transform: translate3d(1px, 17px, 0) rotate(10deg) scale(0.96, 0.98);
+  }
+
+  37% {
+    filter: drop-shadow(0 6px 5px rgba(0, 0, 0, 0.66));
+    transform: translate3d(0, -3px, 0) rotate(6deg) scale(1.01);
+  }
+
+  52% {
+    transform: translate3d(0, 2px, 0) rotate(7.5deg) scale(0.99, 1);
+  }
+
+  70%,
+  100% {
+    filter: drop-shadow(0 7px 6px rgba(0, 0, 0, 0.62));
+    transform: translate3d(0, 0, 0) rotate(7deg) scale(1);
+  }
+}
+
+@keyframes stamp-motion-desk-jolt {
+  0%,
+  22% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  28% {
+    transform: translate3d(-2px, 1px, 0) rotate(-0.18deg);
+  }
+
+  33% {
+    transform: translate3d(2px, -1px, 0) rotate(0.15deg);
+  }
+
+  39% {
+    transform: translate3d(-1px, 0, 0) rotate(-0.06deg);
+  }
+
+  48%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+}
+
+@keyframes stamp-motion-ink-bloom {
+  0%,
+  17% {
+    opacity: 0;
+    transform: translate3d(0, 4px, 0) rotate(-5deg) scale(0.18, 0.28);
+  }
+
+  29% {
+    opacity: 0.9;
+    transform: translate3d(0, 0, 0) rotate(-3deg) scale(1.12, 0.72);
+  }
+
+  39% {
+    opacity: 0.84;
+    transform: translate3d(0, 0, 0) rotate(-4deg) scale(0.98, 0.84);
+  }
+
+  58% {
+    opacity: 0.68;
+    transform: translate3d(0, 1px, 0) rotate(-4deg) scale(1.04, 0.72);
+  }
+
+  100% {
+    opacity: 0.62;
+    transform: translate3d(0, 1px, 0) rotate(-4deg) scale(1, 0.7);
+  }
+}
+
+@keyframes stamp-motion-authority-edge {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  34% {
+    opacity: 0.78;
+    transform: scaleX(0.985);
+  }
+
+  47% {
+    opacity: 1;
+    transform: scaleX(1.018);
+  }
+}
+
+@keyframes stamp-motion-authority {
+  0%,
+  100% {
+    border-color: rgba(126, 164, 135, 0.55);
+    box-shadow: none;
+  }
+
+  38% {
+    border-color: rgba(205, 58, 44, 0.84);
+    box-shadow: inset 0 0 0 1px rgba(205, 58, 44, 0.32);
+  }
+
+  60% {
+    border-color: rgba(150, 174, 133, 0.68);
+    box-shadow: inset 0 0 0 1px rgba(150, 174, 133, 0.16);
+  }
+}
+
+@keyframes stamp-motion-authority-rule {
+  0%,
+  18% {
+    width: 0;
+    opacity: 0;
+  }
+
+  42%,
+  70% {
+    width: calc(100% - 16px);
+    opacity: 0.72;
+  }
+
+  100% {
+    width: calc(100% - 16px);
+    opacity: 0;
+  }
+}
+
+@keyframes stamp-motion-gate-response {
+  0%,
+  100% {
+    filter: brightness(1);
+    opacity: 0.85;
+  }
+
+  42% {
+    filter: brightness(1.28);
+    opacity: 1;
+  }
+
+  62% {
+    filter: brightness(1.06);
+    opacity: 0.9;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .security-desk.stamp-hit,
+  .security-desk.stamp-motion-active {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .security-desk.stamp-hit .desk-stamp-art,
+  .security-desk.stamp-motion-active .desk-stamp-art {
+    animation: none !important;
+    filter: drop-shadow(0 7px 6px rgba(0, 0, 0, 0.62)) !important;
+    transform: rotate(7deg) !important;
+    will-change: auto;
+  }
+
+  .security-desk.stamp-hit .stamp-motion-ink,
+  .security-desk.stamp-motion-active .stamp-motion-ink {
+    animation: none !important;
+    opacity: 0.62;
+    transform: translate3d(0, 1px, 0) rotate(-4deg) scale(1, 0.7);
+  }
+
+  .security-desk.stamp-hit .desk-edge,
+  .security-desk.stamp-motion-active .desk-edge,
+  .scene-decision.admit.stamp-motion-authority,
+  .decision-button.admit.stamp-motion-authority,
+  .entry-frame.stamp-motion-gate::before,
+  .entry-frame.stamp-motion-gate::after {
+    animation: none !important;
+  }
+
+  .scene-decision.admit.stamp-motion-authority,
+  .decision-button.admit.stamp-motion-authority {
+    border-color: rgba(150, 174, 133, 0.68);
+    box-shadow: inset 0 0 0 1px rgba(150, 174, 133, 0.16);
+  }
+
+  .scene-decision.admit.stamp-motion-authority::after,
+  .decision-button.admit.stamp-motion-authority::after {
+    width: calc(100% - 16px);
+    background: var(--stamp-motion-red);
+    opacity: 0.62;
+    animation: none !important;
+  }
+}

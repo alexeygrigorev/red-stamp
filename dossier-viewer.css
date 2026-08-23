@@ -1,0 +1,674 @@
+/*
+ * Red Stamp dossier sidecar.
+ * All selectors are prefixed so the parent game can load this file without
+ * changing its existing visual system.
+ */
+:root {
+  --rs-dossier-ink: #3c211c;
+  --rs-dossier-muted: #76584b;
+  --rs-dossier-red: #7d2025;
+  --rs-dossier-red-dark: #45151a;
+  --rs-dossier-brass: #9c7142;
+  --rs-dossier-paper: #efe1c7;
+  --rs-dossier-paper-deep: #d6c19d;
+  --rs-dossier-shadow: rgba(14, 9, 8, 0.62);
+}
+
+.rs-dossier-view {
+  container-type: inline-size;
+  width: min(100%, 760px);
+  margin: 0 auto;
+  color: var(--rs-dossier-ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  text-rendering: optimizeLegibility;
+}
+
+.rs-dossier-page {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--rs-dossier-page-ratio, 972 / 1619);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--rs-dossier-paper);
+  box-shadow:
+    0 2px 0 rgba(255, 244, 215, 0.28),
+    0 18px 38px var(--rs-dossier-shadow),
+    0 2px 4px rgba(15, 8, 6, 0.7);
+  border-radius: 1.1% 1.1% 1.6% 1.6%;
+}
+
+.rs-dossier-page--appointment {
+  aspect-ratio: 1054 / 1492;
+}
+
+.rs-dossier-base-image,
+.rs-dossier-ink {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.rs-dossier-base-image {
+  display: block;
+  object-fit: fill;
+  user-select: none;
+  pointer-events: none;
+}
+
+.rs-dossier-ink {
+  overflow: hidden;
+  font-size: clamp(8px, 1.55cqw, 14px);
+  line-height: 1.2;
+}
+
+.rs-dossier-header {
+  position: absolute;
+  top: 6.4%;
+  right: 11%;
+  left: 11%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1em;
+  min-height: 8.5%;
+  padding: 0.55em 0.8em 0.4em;
+  border-top: 1px solid rgba(125, 32, 37, 0.5);
+  border-bottom: 1px solid rgba(125, 32, 37, 0.36);
+  background: rgba(241, 229, 205, 0.52);
+}
+
+.rs-dossier-kicker,
+.rs-dossier-subtitle,
+.rs-dossier-section-label,
+.rs-dossier-footer,
+.rs-dossier-page-mark,
+.rs-dossier-nav-caption,
+.rs-dossier-seal-copy b,
+.rs-dossier-seal-copy small,
+.rs-dossier-portrait figcaption,
+.rs-dossier-note h4,
+.rs-dossier-field dt {
+  font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.rs-dossier-kicker,
+.rs-dossier-subtitle,
+.rs-dossier-section-label,
+.rs-dossier-footer,
+.rs-dossier-page-mark,
+.rs-dossier-nav-caption,
+.rs-dossier-portrait figcaption,
+.rs-dossier-note h4,
+.rs-dossier-field dt {
+  letter-spacing: 0.12em;
+}
+
+.rs-dossier-kicker,
+.rs-dossier-subtitle,
+.rs-dossier-section-label,
+.rs-dossier-page-mark {
+  margin: 0;
+  color: var(--rs-dossier-red);
+  font-size: 0.64em;
+  font-weight: 700;
+}
+
+.rs-dossier-header h2 {
+  max-width: 28em;
+  margin: 0.18em 0 0.12em;
+  color: var(--rs-dossier-red-dark);
+  font-size: 1.23em;
+  font-weight: 700;
+  letter-spacing: 0.045em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.rs-dossier-subtitle {
+  color: var(--rs-dossier-muted);
+  font-size: 0.55em;
+  letter-spacing: 0.14em;
+}
+
+.rs-dossier-page-mark {
+  flex: 0 0 auto;
+  padding-top: 0.18em;
+  color: var(--rs-dossier-muted);
+  white-space: nowrap;
+}
+
+.rs-dossier-section-label {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 0.28em;
+  color: var(--rs-dossier-red);
+  font-size: 0.61em;
+}
+
+.rs-dossier-fields-panel {
+  position: absolute;
+  top: 22%;
+  left: 10.6%;
+  width: 43%;
+  height: 25%;
+  padding: 0.4em 0.5em;
+  background: rgba(244, 232, 208, 0.46);
+}
+
+.rs-dossier-page--appointment .rs-dossier-fields-panel {
+  top: 19.2%;
+  left: 9.4%;
+  width: 43.3%;
+  height: 14.6%;
+}
+
+.rs-dossier-page--verification .rs-dossier-fields-panel,
+.rs-dossier-page--annex .rs-dossier-fields-panel {
+  top: 20%;
+  left: 10%;
+  width: 80%;
+  height: 25%;
+}
+
+.rs-dossier-page--appointment.rs-dossier-page--verification .rs-dossier-fields-panel,
+.rs-dossier-page--appointment.rs-dossier-page--annex .rs-dossier-fields-panel {
+  top: 19%;
+  left: 9%;
+  width: 82%;
+  height: 28%;
+}
+
+.rs-dossier-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.14em 0.55em;
+  margin: 0;
+}
+
+.rs-dossier-page--verification .rs-dossier-fields,
+.rs-dossier-page--annex .rs-dossier-fields,
+.rs-dossier-page--appointment.rs-dossier-page--verification .rs-dossier-fields,
+.rs-dossier-page--appointment.rs-dossier-page--annex .rs-dossier-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.rs-dossier-field {
+  min-width: 0;
+  padding: 0.21em 0.32em 0.19em;
+  border-bottom: 1px solid rgba(111, 58, 42, 0.45);
+  background: rgba(247, 236, 215, 0.36);
+}
+
+.rs-dossier-field dt {
+  overflow: hidden;
+  color: var(--rs-dossier-muted);
+  font-size: 0.53em;
+  font-weight: 700;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rs-dossier-field dd {
+  max-height: 2.42em;
+  margin: 0.14em 0 0;
+  overflow: hidden;
+  color: var(--rs-dossier-ink);
+  font-size: 0.75em;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.rs-dossier-portrait {
+  position: absolute;
+  top: 21.3%;
+  right: 12.8%;
+  width: 31.4%;
+  height: 24.9%;
+  margin: 0;
+  padding: 0.35em;
+  background: rgba(83, 61, 51, 0.2);
+}
+
+.rs-dossier-page--appointment .rs-dossier-portrait {
+  top: 34.2%;
+  right: auto;
+  left: 9.2%;
+  width: 41.5%;
+  height: 13.1%;
+}
+
+.rs-dossier-portrait-frame {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: calc(100% - 1.15em);
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(87, 38, 31, 0.76);
+  background:
+    linear-gradient(135deg, rgba(73, 48, 39, 0.34), transparent 48%),
+    #b5a995;
+  box-shadow: inset 0 0 0 0.22em rgba(239, 224, 198, 0.35);
+}
+
+.rs-dossier-portrait-frame::before,
+.rs-dossier-portrait-frame::after {
+  position: absolute;
+  z-index: 2;
+  width: 0.9em;
+  height: 0.9em;
+  border-color: rgba(125, 32, 37, 0.7);
+  content: "";
+  pointer-events: none;
+}
+
+.rs-dossier-portrait-frame::before {
+  top: 0.3em;
+  left: 0.3em;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+
+.rs-dossier-portrait-frame::after {
+  right: 0.3em;
+  bottom: 0.3em;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+}
+
+.rs-dossier-portrait-frame img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  mix-blend-mode: multiply;
+}
+
+.rs-dossier-portrait--image .rs-dossier-portrait-monogram {
+  display: none;
+}
+
+.rs-dossier-portrait-monogram {
+  color: rgba(69, 27, 26, 0.72);
+  font-size: 2.1em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rs-dossier-portrait-crosshair {
+  position: absolute;
+  z-index: 3;
+  width: 1.2em;
+  height: 1.2em;
+  border: 1px solid rgba(125, 32, 37, 0.45);
+  border-radius: 50%;
+  opacity: 0.75;
+}
+
+.rs-dossier-portrait-crosshair::before,
+.rs-dossier-portrait-crosshair::after {
+  position: absolute;
+  background: rgba(125, 32, 37, 0.45);
+  content: "";
+}
+
+.rs-dossier-portrait-crosshair::before {
+  top: 50%;
+  right: -0.4em;
+  left: -0.4em;
+  height: 1px;
+}
+
+.rs-dossier-portrait-crosshair::after {
+  top: -0.4em;
+  bottom: -0.4em;
+  left: 50%;
+  width: 1px;
+}
+
+.rs-dossier-portrait figcaption {
+  display: block;
+  margin-top: 0.22em;
+  color: var(--rs-dossier-muted);
+  font-size: 0.46em;
+  line-height: 1;
+  text-align: center;
+}
+
+.rs-dossier-notes {
+  position: absolute;
+  top: 50.2%;
+  right: 10%;
+  left: 10%;
+  height: 17%;
+  padding: 0.46em 0.62em;
+  background: rgba(244, 232, 208, 0.62);
+}
+
+.rs-dossier-page--identity .rs-dossier-notes {
+  top: 51.2%;
+  height: 17.4%;
+}
+
+.rs-dossier-page--appointment .rs-dossier-notes {
+  top: 49.6%;
+  height: 17.4%;
+}
+
+.rs-dossier-page--verification .rs-dossier-notes,
+.rs-dossier-page--annex .rs-dossier-notes {
+  top: 50%;
+  height: 27%;
+}
+
+.rs-dossier-page--appointment.rs-dossier-page--verification .rs-dossier-notes,
+.rs-dossier-page--appointment.rs-dossier-page--annex .rs-dossier-notes {
+  top: 50%;
+  height: 25%;
+}
+
+.rs-dossier-note-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45em;
+  height: calc(100% - 1.05em);
+}
+
+.rs-dossier-note {
+  min-width: 0;
+  padding: 0.3em 0.42em;
+  border: 1px solid rgba(111, 58, 42, 0.34);
+  background: rgba(247, 236, 215, 0.4);
+}
+
+.rs-dossier-note:first-child:last-child {
+  grid-column: 1 / -1;
+}
+
+.rs-dossier-note h4 {
+  margin: 0 0 0.22em;
+  color: var(--rs-dossier-red);
+  font-size: 0.53em;
+  line-height: 1.1;
+}
+
+.rs-dossier-note p {
+  max-height: 6.1em;
+  margin: 0;
+  overflow: hidden;
+  color: var(--rs-dossier-ink);
+  font-size: 0.7em;
+  line-height: 1.28;
+  overflow-wrap: anywhere;
+}
+
+.rs-dossier-note--review,
+.rs-dossier-note--mismatch,
+.rs-dossier-note--hold,
+.rs-dossier-note--unresolved {
+  border-color: rgba(125, 32, 37, 0.7);
+  background: rgba(125, 32, 37, 0.1);
+}
+
+.rs-dossier-seals {
+  position: absolute;
+  right: 10%;
+  bottom: 8.1%;
+  left: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.8em;
+}
+
+.rs-dossier-page--appointment .rs-dossier-seals {
+  right: 9%;
+  bottom: 6.1%;
+  left: 9%;
+  justify-content: flex-start;
+}
+
+.rs-dossier-seal {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.38em;
+  color: var(--rs-dossier-red-dark);
+}
+
+.rs-dossier-seal-mark {
+  display: grid;
+  width: 2.5em;
+  height: 2.5em;
+  flex: 0 0 2.5em;
+  place-items: center;
+  border: 2px solid var(--rs-dossier-brass);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 27%, rgba(246, 204, 129, 0.46), transparent 26%),
+    var(--rs-dossier-red);
+  color: #e7c88f;
+  box-shadow: inset 0 0 0 0.18em rgba(43, 15, 16, 0.28), 0 1px 2px rgba(45, 18, 14, 0.4);
+  font-family: Georgia, serif;
+  font-size: 0.68em;
+  font-weight: 700;
+}
+
+.rs-dossier-seal-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.08em;
+}
+
+.rs-dossier-seal-copy b,
+.rs-dossier-seal-copy small {
+  max-width: 14em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rs-dossier-seal-copy b {
+  color: var(--rs-dossier-muted);
+  font-size: 0.49em;
+}
+
+.rs-dossier-seal-copy small {
+  color: var(--rs-dossier-ink);
+  font-size: 0.57em;
+  font-weight: 700;
+}
+
+.rs-dossier-seal--pending .rs-dossier-seal-mark,
+.rs-dossier-seal--review .rs-dossier-seal-mark {
+  background:
+    radial-gradient(circle at 34% 27%, rgba(246, 204, 129, 0.34), transparent 26%),
+    var(--rs-dossier-red-dark);
+}
+
+.rs-dossier-footer {
+  position: absolute;
+  right: 10%;
+  bottom: 2.9%;
+  left: 10%;
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  color: rgba(118, 88, 75, 0.86);
+  font-size: 0.46em;
+  line-height: 1;
+}
+
+.rs-dossier-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0.1rem 0;
+  color: var(--rs-dossier-paper);
+  font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+}
+
+.rs-dossier-button {
+  min-width: 8.8rem;
+  min-height: 44px;
+  padding: 0.62rem 0.8rem;
+  border: 1px solid rgba(194, 151, 101, 0.64);
+  border-radius: 2px;
+  background:
+    linear-gradient(rgba(125, 32, 37, 0.87), rgba(69, 21, 26, 0.94)),
+    var(--rs-dossier-red-dark);
+  color: #f1dcb8;
+  box-shadow: inset 0 0 0 2px rgba(33, 13, 14, 0.25), 0 4px 10px rgba(12, 7, 6, 0.26);
+  cursor: pointer;
+  font: 700 0.68rem/1 "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  transition: transform 140ms ease, filter 140ms ease, opacity 140ms ease;
+}
+
+.rs-dossier-button:hover:not(:disabled) {
+  filter: brightness(1.13);
+  transform: translateY(-1px);
+}
+
+.rs-dossier-button:focus-visible {
+  outline: 2px solid #d6b26c;
+  outline-offset: 3px;
+}
+
+.rs-dossier-button:disabled {
+  cursor: default;
+  opacity: 0.42;
+}
+
+.rs-dossier-prev::before,
+.rs-dossier-next::after {
+  color: #d6b26c;
+  font-size: 1.2em;
+  vertical-align: -0.05em;
+}
+
+.rs-dossier-prev::before {
+  margin-right: 0.5em;
+  content: "←";
+}
+
+.rs-dossier-next::after {
+  margin-left: 0.5em;
+  content: "→";
+}
+
+.rs-dossier-nav-caption {
+  min-width: 11em;
+  color: var(--rs-dossier-muted);
+  font-size: 0.62rem;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .rs-dossier-view {
+    width: 100%;
+  }
+
+  .rs-dossier-page {
+    box-shadow: 0 10px 24px var(--rs-dossier-shadow);
+  }
+
+  .rs-dossier-header {
+    top: 6%;
+    right: 9.5%;
+    left: 9.5%;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+  }
+
+  .rs-dossier-fields-panel {
+    left: 9.4%;
+    width: 45%;
+  }
+
+  .rs-dossier-page--appointment .rs-dossier-fields-panel {
+    left: 8.4%;
+    width: 45%;
+  }
+
+  .rs-dossier-notes,
+  .rs-dossier-page--identity .rs-dossier-notes,
+  .rs-dossier-page--appointment .rs-dossier-notes {
+    right: 8.4%;
+    left: 8.4%;
+  }
+
+  .rs-dossier-seals,
+  .rs-dossier-page--appointment .rs-dossier-seals {
+    right: 8.4%;
+    left: 8.4%;
+  }
+
+  .rs-dossier-footer {
+    right: 8.4%;
+    left: 8.4%;
+  }
+}
+
+@media (max-width: 480px) {
+  .rs-dossier-nav {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .rs-dossier-nav-caption {
+    order: -1;
+    flex: 0 0 100%;
+  }
+
+  .rs-dossier-button {
+    min-width: 0;
+    flex: 1 1 0;
+  }
+
+  .rs-dossier-field {
+    padding-right: 0.22em;
+    padding-left: 0.22em;
+  }
+
+  .rs-dossier-note-list {
+    gap: 0.28em;
+  }
+
+  .rs-dossier-seals {
+    gap: 0.35em;
+  }
+
+  .rs-dossier-seal-copy {
+    display: none;
+  }
+
+  .rs-dossier-seal-mark {
+    width: 2.15em;
+    height: 2.15em;
+    flex-basis: 2.15em;
+  }
+}
+
+@media (max-width: 360px) {
+  .rs-dossier-header h2 {
+    font-size: 1.05em;
+  }
+
+  .rs-dossier-subtitle {
+    display: none;
+  }
+
+  .rs-dossier-note p {
+    font-size: 0.64em;
+  }
+}

@@ -2265,6 +2265,21 @@ main {
   background: radial-gradient(circle at 50% 30%, rgba(116, 52, 40, 0.18), transparent 60%), #090b0b;
 }
 
+.inspection-visual.dossier-visual {
+  display: block;
+  min-height: 0;
+  max-height: min(68svh, 720px);
+  padding: 18px;
+  overflow: auto;
+  background:
+    linear-gradient(135deg, rgba(176, 113, 69, 0.08), transparent 35%),
+    #15100f;
+}
+
+.inspection-visual.dossier-visual .rs-dossier-view {
+  width: min(100%, 620px);
+}
+
 .inspection-art {
   display: block;
   width: 100%;
@@ -3004,6 +3019,11 @@ main {
   .inspection-visual {
     min-height: 142px;
     margin: 10px 12px 0;
+  }
+
+  .inspection-visual.dossier-visual {
+    max-height: 62svh;
+    padding: 10px;
   }
 
   .inspection-art {

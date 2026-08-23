@@ -10,6 +10,8 @@
     <title>Red Stamp — Veskarian Embassy</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="mara-motion.css" />
+    <link rel="stylesheet" href="dossier-viewer.css" />
+    <link rel="stylesheet" href="stamp-motion.css" />
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
@@ -226,7 +228,7 @@
                 <span>APPOINTMENT<br /><small>SYSTEM RECORD</small></span>
               </button>
               <button class="tool-button" data-action="inspect" data-tool="id" disabled>
-                <img class="tool-icon tool-sprite" src="assets/generated/civilian-visitor.png" alt="" aria-hidden="true" />
+                <img id="toolIdSprite" class="tool-icon tool-sprite" src="assets/generated/inspector-cutout.png" alt="" aria-hidden="true" />
                 <span>ID / PASSPORT<br /><small>BIOMETRIC MATCH</small></span>
               </button>
               <button class="tool-button" data-action="inspect" data-tool="documents" disabled>
@@ -242,7 +244,7 @@
                 <span>BAG X-RAY<br /><small>DUAL ENERGY</small></span>
               </button>
               <button class="tool-button" data-action="inspect" data-tool="question" disabled>
-                <img class="tool-icon tool-sprite" src="assets/generated/anomaly-visitor.png" alt="" aria-hidden="true" />
+                <img id="toolQuestionSprite" class="tool-icon tool-sprite" src="assets/generated/inspector-cutout.png" alt="" aria-hidden="true" />
                 <span>ASK QUESTION<br /><small>COMPARE STATEMENT</small></span>
               </button>
             </div>
@@ -316,11 +318,11 @@
       <div class="inspection-modal-footer">
         <div class="inspection-shortcuts" aria-label="Inspection shortcuts">
           <button data-action="inspect" data-tool="appointment"><img class="shortcut-sprite" src="assets/generated/passport-documents.png" alt="" aria-hidden="true" />RECORD</button>
-          <button data-action="inspect" data-tool="id"><img class="shortcut-sprite" src="assets/generated/civilian-visitor.png" alt="" aria-hidden="true" />ID</button>
+          <button data-action="inspect" data-tool="id"><img id="idShortcutSprite" class="shortcut-sprite" src="assets/generated/inspector-cutout.png" alt="" aria-hidden="true" />ID</button>
           <button data-action="inspect" data-tool="documents"><img class="shortcut-sprite" src="assets/generated/passport-documents.png" alt="" aria-hidden="true" />PAPERS</button>
           <button data-action="inspect" data-tool="detector"><img class="shortcut-sprite" src="assets/generated/detector-clear.png" alt="" aria-hidden="true" />DETECTOR</button>
           <button data-action="inspect" data-tool="xray"><img class="shortcut-sprite" src="assets/generated/xray-clear.png" alt="" aria-hidden="true" />X-RAY</button>
-          <button data-action="inspect" data-tool="question"><img class="shortcut-sprite" src="assets/generated/anomaly-visitor.png" alt="" aria-hidden="true" />ASK</button>
+          <button data-action="inspect" data-tool="question"><img id="questionShortcutSprite" class="shortcut-sprite" src="assets/generated/inspector-cutout.png" alt="" aria-hidden="true" />ASK</button>
         </div>
         <button class="modal-return" data-action="close-inspection">RETURN TO CHECKPOINT</button>
       </div>
@@ -347,6 +349,8 @@
     </div>
 
     <div id="toast" class="toast" aria-live="polite"></div>
+    <script src="dossier-viewer.js"></script>
+    <script src="stamp-motion.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

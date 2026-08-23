@@ -735,6 +735,9 @@ function initialState() {
     securityBreaches: 0,
     revealed: {},
     selectedTool: null,
+    dossierPage: 0,
+    dossierType: null,
+    dossierTool: null,
     secondaryUsed: false,
     liaisonCalled: false,
     resolved: false,
@@ -754,6 +757,8 @@ function initialState() {
 
 const state = initialState();
 let toastTimer = null;
+let visitorBlinkTimer = null;
+let visitorBlinkResetTimer = null;
 
 function currentShift() {
   return shifts[state.day - 1];
@@ -783,6 +788,42 @@ const CHARACTER_ART = {
     scene: "assets/generated/irena-visitor-scene.png",
     portrait: "assets/generated/irena-visitor.png",
   },
+  "viktor-dalen": {
+    scene: "assets/generated/viktor-visitor-scene.png",
+    portrait: "assets/generated/viktor-visitor.png",
+  },
+  "radan-kest": {
+    scene: "assets/generated/radan-visitor-scene.png",
+    portrait: "assets/generated/radan-visitor.png",
+  },
+  "olya-merin": {
+    scene: "assets/generated/olya-visitor-scene.png",
+    portrait: "assets/generated/olya-visitor.png",
+  },
+  "anton-ryl": {
+    scene: "assets/generated/anton-visitor-scene.png",
+    portrait: "assets/generated/anton-visitor.png",
+  },
+  "sorin-dask": {
+    scene: "assets/generated/sorin-dask-visitor-scene.png",
+    portrait: "assets/generated/sorin-dask-visitor.png",
+  },
+  "director-vel": {
+    scene: "assets/generated/director-vel-ordan-visitor-scene.png",
+    portrait: "assets/generated/director-vel-ordan-visitor.png",
+  },
+  "nadiya-ost": {
+    scene: "assets/generated/nadiya-ost-visitor-scene.png",
+    portrait: "assets/generated/nadiya-ost-visitor.png",
+  },
+  "milan-vek": {
+    scene: "assets/generated/milan-vek-visitor-scene.png",
+    portrait: "assets/generated/milan-vek-visitor.png",
+  },
+  "elias-rhy": {
+    scene: "assets/generated/elias-rhy-visitor-scene.png",
+    portrait: "assets/generated/elias-rhy-visitor.png",
+  },
 };
 
 const TOOL_ART = {
@@ -807,6 +848,41 @@ function visitorAsset(c) {
 function visitorSceneAsset(c) {
   if (CHARACTER_ART[c?.id]?.scene) return CHARACTER_ART[c.id].scene;
   return visitorAsset(c);
+}
+
+function clearVisitorBlink() {
+  if (visitorBlinkTimer) window.clearTimeout(visitorBlinkTimer);
+  if (visitorBlinkResetTimer) window.clearTimeout(visitorBlinkResetTimer);
+  visitorBlinkTimer = null;
+  visitorBlinkResetTimer = null;
+  const image = $("#visitorImage");
+  if (image) {
+    image.dataset.blinking = "false";
+    image.classList.remove("visitor-blink");
+  }
+}
+
+function triggerMaraBlink() {
+  const c = currentCase();
+  const image = $("#visitorImage");
+  if (!state.started || c?.id !== "mara-velen" || !image || image.dataset.blinking === "true") return;
+  image.dataset.blinking = "true";
+  image.classList.add("visitor-blink");
+  image.src = "assets/generated/mara-visitor-blink.png";
+  visitorBlinkResetTimer = window.setTimeout(() => {
+    if (currentCase()?.id === "mara-velen") image.src = visitorSceneAsset(currentCase());
+    image.dataset.blinking = "false";
+    image.classList.remove("visitor-blink");
+    scheduleVisitorBlink();
+  }, 150);
+}
+
+function scheduleVisitorBlink() {
+  if (visitorBlinkTimer) window.clearTimeout(visitorBlinkTimer);
+  if (!state.started || currentCase()?.id !== "mara-velen") return;
+  visitorBlinkTimer = window.setTimeout(() => {
+    triggerMaraBlink();
+  }, 3600 + Math.round(Math.random() * 3200));
 }
 
 function escapeHtml(value) {
@@ -873,6 +949,7 @@ function renderEvidenceRows(c) {
 function renderCase() {
   const c = currentCase();
   if (!state.started || !c) {
+    clearVisitorBlink();
     document.body.removeAttribute("data-case-id");
     $("#caseTitle").textContent = "No active visitor";
     $("#caseMeta").textContent = "Start the shift to receive the first visitor.";
@@ -884,6 +961,10 @@ function renderCase() {
     $("#visitorPortrait").dataset.look = "civilian";
     $("#visitorImage").src = "assets/generated/inspector-cutout.png";
     $("#visitorImage").alt = "Veskarian security inspector at the checkpoint";
+    $("#toolIdSprite").src = "assets/generated/inspector-cutout.png";
+    $("#toolQuestionSprite").src = "assets/generated/inspector-cutout.png";
+    $("#idShortcutSprite").src = "assets/generated/inspector-cutout.png";
+    $("#questionShortcutSprite").src = "assets/generated/inspector-cutout.png";
     $("#arrivalBadge").textContent = "STANDBY";
     $("#arrivalBadge").className = "arrival-badge";
     $("#caseProgress").textContent = "0 / 0";
@@ -923,7 +1004,13 @@ function renderCase() {
   $("#visitorNamePlate").textContent = c.name.toUpperCase();
   $("#visitorRolePlate").textContent = c.role.toUpperCase();
   $("#visitorPortrait").dataset.look = c.look;
-  $("#visitorImage").src = visitorSceneAsset(c);
+  if ($("#visitorImage").dataset.blinking !== "true") {
+    $("#visitorImage").src = visitorSceneAsset(c);
+  }
+  $("#toolIdSprite").src = visitorAsset(c);
+  $("#toolQuestionSprite").src = visitorSceneAsset(c);
+  $("#idShortcutSprite").src = visitorAsset(c);
+  $("#questionShortcutSprite").src = visitorSceneAsset(c);
   $("#visitorImage").alt = `${c.name}, ${c.role}`;
   $("#arrivalBadge").textContent = c.modeLabel;
   $("#arrivalBadge").className = `arrival-badge ${modeClass(c.mode)} ${c.kind === "spy" || c.kind === "anomaly" ? "alert" : ""}`;
@@ -943,6 +1030,7 @@ function renderCase() {
   $("#sceneCasePortrait").alt = `${c.name}, ${c.role}`;
   $("#sceneVisitorSprite").src = visitorSceneAsset(c);
   $("#sceneQuestionSprite").src = visitorSceneAsset(c);
+  scheduleVisitorBlink();
 }
 
 function renderMetrics() {
@@ -1039,6 +1127,30 @@ function inspectionVisualAlt(c, tool) {
   }[tool] || "Veskarian security inspection";
 }
 
+function dossierTypeFor(c, tool) {
+  return window.RedStampDossier?.documentTypeForCase(c, tool) || "identity";
+}
+
+function renderDossierPage(c, type) {
+  const mount = $("#inspectionOverlayVisual");
+  if (!mount || !window.RedStampDossier) return;
+  const dossierCase = {
+    ...c,
+    portraitAsset: visitorAsset(c),
+    portraitAlt: `${c.name} / ${c.role}`,
+  };
+  mount.classList.add("dossier-visual");
+  mount.innerHTML = window.RedStampDossier.renderPage(dossierCase, type, state.dossierPage);
+}
+
+function changeDossierPage(delta) {
+  const c = currentCase();
+  if (!c || !window.RedStampDossier || !state.dossierType) return;
+  const pages = window.RedStampDossier.getPages(c, state.dossierType);
+  state.dossierPage = clamp(state.dossierPage + delta, 0, pages.length - 1);
+  renderDossierPage(c, state.dossierType);
+}
+
 function renderInspectionOverlay(tool) {
   const c = currentCase();
   const result = c && inspectionResult(c, tool);
@@ -1057,8 +1169,21 @@ function renderInspectionOverlay(tool) {
   $("#inspectionOverlayTitle").textContent = title;
   $("#inspectionOverlayStatus").textContent = status;
   $("#inspectionOverlayStatus").className = `inspection-status ${tone}`;
-  const imageClass = tool === "xray" ? "xray-art" : ["id", "question"].includes(tool) ? "portrait-art" : "";
-  $("#inspectionOverlayVisual").innerHTML = `<img class="inspection-art ${imageClass}" src="${image}" alt="${inspectionVisualAlt(c, tool)}" />`;
+  const dossierTool = ["appointment", "documents", "id"].includes(tool);
+  const visual = $("#inspectionOverlayVisual");
+  visual.classList.toggle("dossier-visual", dossierTool);
+  if (dossierTool) {
+    const type = dossierTypeFor(c, tool);
+    if (state.dossierType !== type || state.dossierTool !== tool) {
+      state.dossierType = type;
+      state.dossierTool = tool;
+      state.dossierPage = 0;
+    }
+    renderDossierPage(c, type);
+  } else {
+    const imageClass = tool === "xray" ? "xray-art" : ["id", "question"].includes(tool) ? "portrait-art" : "";
+    visual.innerHTML = '<img class="inspection-art ' + imageClass + '" src="' + escapeHtml(image) + '" alt="' + escapeHtml(inspectionVisualAlt(c, tool)) + '" />';
+  }
 
   let metadata = "";
   if (tool === "appointment") {
@@ -1169,11 +1294,12 @@ function startGame() {
 
 function inspectTool(tool) {
   if (!state.started || state.resolved) return;
+  const c = currentCase();
   state.revealed[tool] = true;
   state.selectedTool = tool;
   render();
   renderInspectionOverlay(tool);
-  const c = currentCase();
+  if (c?.id === "mara-velen") triggerMaraBlink();
   if (tool === "xray" && c.xray.status !== "CLEAR" && c.xray.status !== "ORDINARY CONTENTS" && c.xray.status !== "PERSONAL ITEMS ONLY" && c.xray.status !== "MEDICAL CONTENTS" && c.xray.status !== "MILITARY KIT") {
     showToast("X-ray review flagged an item. Decide whether to hold the visitor.", "bad");
   } else {
@@ -1323,6 +1449,9 @@ function nextCase() {
   state.caseIndex += 1;
   state.revealed = {};
   state.selectedTool = null;
+  state.dossierPage = 0;
+  state.dossierType = null;
+  state.dossierTool = null;
   state.secondaryUsed = false;
   state.liaisonCalled = false;
   state.resolved = false;
@@ -1441,6 +1570,10 @@ function handleAction(element) {
 }
 
 document.addEventListener("click", (event) => {
+  const dossierElement = event.target.closest("[data-dossier-action]");
+  if (dossierElement) {
+    return changeDossierPage(dossierElement.dataset.dossierAction === "next" ? 1 : -1);
+  }
   const actionElement = event.target.closest("[data-action]");
   if (!actionElement) return;
   handleAction(actionElement);
