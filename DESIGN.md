@@ -563,3 +563,61 @@ Define the first playable shift:
 - One harmless anomaly
 - One genuine security threat
 - One decision where every available choice has a cost
+
+## Character image generation pipeline
+
+Character art is generated as a controlled asset pipeline rather than as
+one-off prompts. The goal is to keep the cast visually coherent while giving
+every named visitor a distinct face, silhouette, wardrobe, and reason for
+being at the checkpoint.
+
+### Shared style reference
+
+Use \`assets/generated/mara-visitor.png\` as the common style anchor for new
+visitor generations. It establishes the current target for painterly detail,
+edge quality, Veskarian lighting, and scene-compatible contrast. Include the
+same reference in every character-generation request. Add the embassy
+background when the character needs to be judged against the room, and add a
+previous character only when a specific prop, pose, or material needs to be
+understood.
+
+The reference is a style guide, not a character template. Prompts must
+explicitly forbid copying Mara's face, coat, scarf, folder, pose, or color
+palette when creating another visitor.
+
+### Generation steps
+
+1. Define the visitor's narrative job, age impression, body shape, silhouette,
+   wardrobe, carried object, and emotional posture in the case data.
+2. Send the shared Mara style reference, the embassy background, and the
+   current scene screenshot as visual references. State that the output is a
+   fictional Veskarian game character and must be distinct from all named
+   references.
+3. Request a single full-body character on a perfectly flat \`#00ff00\`
+   chroma-key background. Do not ask the model to draw UI, labels, readable
+   text, or a background scene.
+4. Remove the chroma key locally with
+   \`skills/.system/imagegen/scripts/remove_chroma_key.py\`, using a soft matte,
+   one-pixel edge contract, slight feathering, and despill cleanup. Validate
+   transparent corners and inspect the silhouette on the dark embassy wall.
+5. Keep the original full-body PNG for inspection views. Create a trimmed
+   scene PNG with a small transparent margin so \`object-fit: contain\` does not
+   make the visitor too small.
+6. Register both paths in \`CHARACTER_ART\` in \`app.js\`. A named case must
+   never silently fall back to the generic \`civilian\`, \`soldier\`,
+   \`official\`, \`worker\`, or \`anomaly\` asset once its own art exists.
+7. Check the image at phone size and desktop size. If the face becomes too
+   small, create a separate portrait crop rather than enlarging the full-body
+   scene asset.
+
+### Style and quality checks
+
+- No pale light-background halo or green chroma fringe on dark walls.
+- No shared face between named visitors.
+- No identical silhouette for two characters in the same shift.
+- No blue rim light unless the room provides a visible blue source.
+- Warm red/amber edge light, muted saturation, and shared grain treatment.
+- Different props and posture must communicate the visitor's case before the
+  player opens a document.
+- Use references on every new generation and record the reference assets in
+  the commit message or asset note.

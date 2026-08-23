@@ -771,6 +771,20 @@ const VISITOR_ART = {
   anomaly: "assets/generated/anomaly-visitor.png",
 };
 
+// Every named visitor gets an explicit art entry. New character renders use
+// Mara's corrected cutout as the shared style anchor, while each character
+// keeps a separate scene and inspection asset.
+const CHARACTER_ART = {
+  "mara-velen": {
+    scene: "assets/generated/mara-visitor-scene.png",
+    portrait: "assets/generated/mara-visitor.png",
+  },
+  "irena-sava": {
+    scene: "assets/generated/irena-visitor-scene.png",
+    portrait: "assets/generated/irena-visitor.png",
+  },
+};
+
 const TOOL_ART = {
   appointment: "assets/generated/passport-documents.png",
   documents: "assets/generated/passport-documents.png",
@@ -786,7 +800,13 @@ function xrayAsset(c) {
 }
 
 function visitorAsset(c) {
+  if (CHARACTER_ART[c?.id]?.portrait) return CHARACTER_ART[c.id].portrait;
   return VISITOR_ART[c.look] || VISITOR_ART.civilian;
+}
+
+function visitorSceneAsset(c) {
+  if (CHARACTER_ART[c?.id]?.scene) return CHARACTER_ART[c.id].scene;
+  return visitorAsset(c);
 }
 
 function escapeHtml(value) {
@@ -853,6 +873,7 @@ function renderEvidenceRows(c) {
 function renderCase() {
   const c = currentCase();
   if (!state.started || !c) {
+    document.body.removeAttribute("data-case-id");
     $("#caseTitle").textContent = "No active visitor";
     $("#caseMeta").textContent = "Start the shift to receive the first visitor.";
     $("#casePurpose").textContent = "";
@@ -883,6 +904,8 @@ function renderCase() {
     return;
   }
 
+  document.body.dataset.caseId = c.id;
+
   const recordMeta = [
     ["Arrival", c.modeLabel],
     ["Service", c.service],
@@ -900,7 +923,7 @@ function renderCase() {
   $("#visitorNamePlate").textContent = c.name.toUpperCase();
   $("#visitorRolePlate").textContent = c.role.toUpperCase();
   $("#visitorPortrait").dataset.look = c.look;
-  $("#visitorImage").src = visitorAsset(c);
+  $("#visitorImage").src = visitorSceneAsset(c);
   $("#visitorImage").alt = `${c.name}, ${c.role}`;
   $("#arrivalBadge").textContent = c.modeLabel;
   $("#arrivalBadge").className = `arrival-badge ${modeClass(c.mode)} ${c.kind === "spy" || c.kind === "anomaly" ? "alert" : ""}`;
@@ -916,10 +939,10 @@ function renderCase() {
   $("#sceneArrivalBadge").textContent = c.modeLabel;
   $("#sceneCaseNumber").textContent = `CASE ${c.caseNumber}`;
   $("#scenePurpose").textContent = c.purpose;
-  $("#sceneCasePortrait").src = visitorAsset(c);
+  $("#sceneCasePortrait").src = visitorSceneAsset(c);
   $("#sceneCasePortrait").alt = `${c.name}, ${c.role}`;
-  $("#sceneVisitorSprite").src = visitorAsset(c);
-  $("#sceneQuestionSprite").src = visitorAsset(c);
+  $("#sceneVisitorSprite").src = visitorSceneAsset(c);
+  $("#sceneQuestionSprite").src = visitorSceneAsset(c);
 }
 
 function renderMetrics() {
