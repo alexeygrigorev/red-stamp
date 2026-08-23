@@ -118,6 +118,11 @@ buttons carry the stamp, threat scan, official, and anomaly art. This keeps
 the player reading the room and its objects instead of navigating a text-only
 control panel.
 
+On phones, the room remains the primary visual, while the six inspection
+sprites move into a thumb-friendly dock and the four authority actions become a
+separate two-by-two tray. Inspection overlays are sized to the viewport and
+remain scroll-safe at narrow widths down to 320px.
+
 ## Embassy arrival and service flow
 
 The public entrance is a security checkpoint before a group of service windows.
