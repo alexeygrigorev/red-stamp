@@ -431,6 +431,51 @@ distinctive uniforms or clothing, exaggerated expressions, and memorable
 dialogue. The presentation can be theatrical and pulpy, like an alternate-
 history strategy game, while the decisions remain personal and consequential.
 
+### Visual north star
+
+The current visual reference is a dark, monumental Veskarian embassy service
+hall: brutalist concrete, deep red banners, black metal counters, warm bronze
+lettering, red accent lights, ticket queues, service windows, framed officials,
+and uniformed security staff. It should feel like a modern public institution
+that has inherited the visual language of a much older authoritarian state.
+
+Important elements to preserve:
+
+- A strong central security desk where the player works
+- Several clearly labeled service windows behind the queue
+- A ticket or appointment board showing the flow of visitors
+- Red fabric, signage, and light against gray concrete and dark metal
+- A mixture of ordinary civilians, officials, and uniformed personnel
+- A large Veskarian emblem and slogans that make the state feel present
+- Human-scale details: waiting chairs, folders, bags, counters, glass, and
+  small signs explaining procedures
+
+For the browser game, this should become a readable 2D or 2.5D composition
+rather than a photorealistic room. The background can be richly textured, but
+the interactive documents, X-ray panel, appointment record, and decision
+buttons must remain visually clear at a glance.
+
+The attached reference is a mood and composition guide, not a source to copy
+literally. Veskar’s emblem, glyphs, slogans, uniforms, portraits, and signage
+will be designed as original assets.
+
+### Simple animation language
+
+Animation should be restrained and functional:
+
+- A queue number advances or flickers on the appointment board
+- Visitors shift weight, approach the desk, and hand over documents
+- The metal detector light blinks during a scan
+- The X-ray beam sweeps across a bag
+- A suspicious object pulses subtly in the X-ray panel
+- The red stamp lands with a strong physical motion and spreads ink
+- A service window light changes when the visitor is cleared
+- Warning lights pulse during a security alert
+- The gate or interior door opens only after authorization
+
+The red stamp should be the strongest animated action in the interface. It is
+the moment when the player’s decision becomes official.
+
 Visual language:
 
 - Red, black, cream, faded green, and warning yellow
