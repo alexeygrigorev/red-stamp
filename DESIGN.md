@@ -111,6 +111,13 @@ detector panel, three X-ray states, and the physical red stamp. The art is
 original to Red Stamp and uses the supplied embassy reference only for broad
 atmosphere: monumental architecture, red fabric, dark stone, and brass.
 
+The sprites are not limited to the large scene. The active visitor portrait is
+reused in the case card and identity/question hotspots; document, detector, and
+X-ray sprites appear on their matching controls; and the final authority
+buttons carry the stamp, threat scan, official, and anomaly art. This keeps
+the player reading the room and its objects instead of navigating a text-only
+control panel.
+
 ## Embassy arrival and service flow
 
 The public entrance is a security checkpoint before a group of service windows.

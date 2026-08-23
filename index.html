@@ -74,6 +74,7 @@
           </div>
 
           <div class="scene-case-card" aria-live="polite">
+            <img id="sceneCasePortrait" class="scene-case-portrait" src="assets/generated/inspector-cutout.png" alt="" />
             <span class="panel-kicker">ACTIVE THRESHOLD</span>
             <strong id="sceneCaseTitle">AWAITING VISITOR</strong>
             <small id="sceneCaseRole">BEGIN THE SHIFT TO OPEN THE GATE</small>
@@ -86,26 +87,32 @@
 
           <div class="scene-hotspots" aria-label="Checkpoint controls">
             <button class="scene-hotspot hotspot-record" data-action="inspect" data-tool="appointment" aria-label="Open the appointment record">
+              <img class="hotspot-sprite" src="assets/generated/passport-documents.png" alt="" aria-hidden="true" />
               <span class="hotspot-pulse"></span>
               <span class="hotspot-label">RECORD</span>
             </button>
             <button class="scene-hotspot hotspot-visitor" data-action="inspect" data-tool="id" aria-label="Inspect the visitor's identity">
+              <img id="sceneVisitorSprite" class="hotspot-sprite hotspot-sprite-portrait" src="assets/generated/inspector-cutout.png" alt="" aria-hidden="true" />
               <span class="hotspot-pulse"></span>
               <span class="hotspot-label">VISITOR / ID</span>
             </button>
             <button class="scene-hotspot hotspot-documents" data-action="inspect" data-tool="documents" aria-label="Open the visitor's documents">
+              <img class="hotspot-sprite" src="assets/generated/passport-documents.png" alt="" aria-hidden="true" />
               <span class="hotspot-pulse"></span>
               <span class="hotspot-label">PAPERS</span>
             </button>
             <button class="scene-hotspot hotspot-detector" data-action="inspect" data-tool="detector" aria-label="Inspect the metal detector result">
+              <img class="hotspot-sprite" src="assets/generated/detector-clear.png" alt="" aria-hidden="true" />
               <span class="hotspot-pulse"></span>
               <span class="hotspot-label">DETECTOR</span>
             </button>
             <button class="scene-hotspot hotspot-xray" data-action="inspect" data-tool="xray" aria-label="Open the bag X-ray">
+              <img class="hotspot-sprite" src="assets/generated/xray-clear.png" alt="" aria-hidden="true" />
               <span class="hotspot-pulse"></span>
               <span class="hotspot-label">BAG X-RAY</span>
             </button>
             <button class="scene-hotspot hotspot-question" data-action="inspect" data-tool="question" aria-label="Ask the visitor a question">
+              <img id="sceneQuestionSprite" class="hotspot-sprite hotspot-sprite-portrait" src="assets/generated/inspector-cutout.png" alt="" aria-hidden="true" />
               <span class="hotspot-pulse"></span>
               <span class="hotspot-label">ASK</span>
             </button>
@@ -114,15 +121,19 @@
           <div class="scene-actions" id="sceneActions" aria-label="Authorization decisions">
             <span class="scene-actions-label">FINAL AUTHORITY</span>
             <button class="scene-decision admit" data-action="resolve" data-decision="admit" disabled>
+              <img class="decision-sprite" src="assets/generated/red-stamp.png" alt="" aria-hidden="true" />
               <span>RED STAMP / ADMIT</span>
             </button>
             <button class="scene-decision hold" data-action="secondary" disabled>
+              <img class="decision-sprite" src="assets/generated/xray-threat.png" alt="" aria-hidden="true" />
               <span>HOLD / SEARCH</span>
             </button>
             <button class="scene-decision call" data-action="liaison" disabled>
+              <img class="decision-sprite" src="assets/generated/official-visitor.png" alt="" aria-hidden="true" />
               <span>CALL LIAISON</span>
             </button>
             <button class="scene-decision deny" data-action="resolve" data-decision="deny" disabled>
+              <img class="decision-sprite" src="assets/generated/anomaly-visitor.png" alt="" aria-hidden="true" />
               <span>DENY ENTRY</span>
             </button>
           </div>
@@ -210,27 +221,27 @@
             </div>
             <div class="tool-grid" id="toolGrid">
               <button class="tool-button" data-action="inspect" data-tool="appointment" disabled>
-                <span class="tool-icon">▤</span>
+                <img class="tool-icon tool-sprite" src="assets/generated/passport-documents.png" alt="" aria-hidden="true" />
                 <span>APPOINTMENT<br /><small>SYSTEM RECORD</small></span>
               </button>
               <button class="tool-button" data-action="inspect" data-tool="id" disabled>
-                <span class="tool-icon">▣</span>
+                <img class="tool-icon tool-sprite" src="assets/generated/civilian-visitor.png" alt="" aria-hidden="true" />
                 <span>ID / PASSPORT<br /><small>BIOMETRIC MATCH</small></span>
               </button>
               <button class="tool-button" data-action="inspect" data-tool="documents" disabled>
-                <span class="tool-icon">▧</span>
+                <img class="tool-icon tool-sprite" src="assets/generated/passport-documents.png" alt="" aria-hidden="true" />
                 <span>DOCUMENTS<br /><small>PHYSICAL PAPERS</small></span>
               </button>
               <button class="tool-button" data-action="inspect" data-tool="detector" disabled>
-                <span class="tool-icon">⌁</span>
+                <img class="tool-icon tool-sprite" src="assets/generated/detector-clear.png" alt="" aria-hidden="true" />
                 <span>METAL DETECTOR<br /><small>WALK-THROUGH</small></span>
               </button>
               <button class="tool-button" data-action="inspect" data-tool="xray" disabled>
-                <span class="tool-icon">◈</span>
+                <img class="tool-icon tool-sprite" src="assets/generated/xray-clear.png" alt="" aria-hidden="true" />
                 <span>BAG X-RAY<br /><small>DUAL ENERGY</small></span>
               </button>
               <button class="tool-button" data-action="inspect" data-tool="question" disabled>
-                <span class="tool-icon">?</span>
+                <img class="tool-icon tool-sprite" src="assets/generated/anomaly-visitor.png" alt="" aria-hidden="true" />
                 <span>ASK QUESTION<br /><small>COMPARE STATEMENT</small></span>
               </button>
             </div>
@@ -303,12 +314,12 @@
       <div id="inspectionOverlayText" class="inspection-text"></div>
       <div class="inspection-modal-footer">
         <div class="inspection-shortcuts" aria-label="Inspection shortcuts">
-          <button data-action="inspect" data-tool="appointment">RECORD</button>
-          <button data-action="inspect" data-tool="id">ID</button>
-          <button data-action="inspect" data-tool="documents">PAPERS</button>
-          <button data-action="inspect" data-tool="detector">DETECTOR</button>
-          <button data-action="inspect" data-tool="xray">X-RAY</button>
-          <button data-action="inspect" data-tool="question">ASK</button>
+          <button data-action="inspect" data-tool="appointment"><img class="shortcut-sprite" src="assets/generated/passport-documents.png" alt="" aria-hidden="true" />RECORD</button>
+          <button data-action="inspect" data-tool="id"><img class="shortcut-sprite" src="assets/generated/civilian-visitor.png" alt="" aria-hidden="true" />ID</button>
+          <button data-action="inspect" data-tool="documents"><img class="shortcut-sprite" src="assets/generated/passport-documents.png" alt="" aria-hidden="true" />PAPERS</button>
+          <button data-action="inspect" data-tool="detector"><img class="shortcut-sprite" src="assets/generated/detector-clear.png" alt="" aria-hidden="true" />DETECTOR</button>
+          <button data-action="inspect" data-tool="xray"><img class="shortcut-sprite" src="assets/generated/xray-clear.png" alt="" aria-hidden="true" />X-RAY</button>
+          <button data-action="inspect" data-tool="question"><img class="shortcut-sprite" src="assets/generated/anomaly-visitor.png" alt="" aria-hidden="true" />ASK</button>
         </div>
         <button class="modal-return" data-action="close-inspection">RETURN TO CHECKPOINT</button>
       </div>

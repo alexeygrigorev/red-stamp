@@ -16,6 +16,9 @@ The first playable version includes:
 - A sparse monumental checkpoint screen built from generated Veskarian
   environment art, character sprites, documents, X-ray panels, and animated
   inspection overlays
+- Generated sprites are also used inside the case card, checkpoint hotspots,
+  decision buttons, and overlay shortcuts so the interface stays visual during
+  interaction
 - Clickable hotspots for the visitor, record, papers, detector, X-ray, and
   interview; the embassy room remains visible while evidence opens in layers
 

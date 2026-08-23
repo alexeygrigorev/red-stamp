@@ -1012,6 +1012,12 @@ button:focus-visible {
   line-height: 1;
 }
 
+.tool-sprite {
+  padding: 0;
+  object-fit: cover;
+  filter: saturate(0.75) contrast(1.1);
+}
+
 .tool-button small {
   display: block;
   margin-top: 4px;
@@ -1824,6 +1830,30 @@ main {
   backdrop-filter: blur(4px);
 }
 
+.scene-case-card {
+  grid-template-columns: 43px minmax(0, 1fr);
+  column-gap: 9px;
+}
+
+.scene-case-portrait {
+  grid-column: 1;
+  grid-row: 1 / span 5;
+  align-self: center;
+  width: 43px;
+  height: 78px;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 7px 5px rgba(0, 0, 0, 0.6));
+}
+
+.scene-case-card > .panel-kicker,
+.scene-case-card > strong,
+.scene-case-card > small,
+.scene-case-card > .scene-case-tags,
+.scene-case-card > p {
+  grid-column: 2;
+}
+
 .scene-case-card strong {
   overflow: hidden;
   color: #f0d8b8;
@@ -1886,6 +1916,44 @@ main {
   text-shadow: 0 1px 4px #000;
   transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
   backdrop-filter: blur(2px);
+}
+
+.scene-hotspot {
+  overflow: hidden;
+}
+
+.hotspot-sprite {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.28;
+  filter: saturate(0.72) contrast(1.12);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.hotspot-sprite-portrait {
+  object-fit: contain;
+  filter: saturate(0.86) contrast(1.08) drop-shadow(0 7px 6px rgba(0, 0, 0, 0.65));
+  mix-blend-mode: normal;
+  opacity: 0.78;
+}
+
+.hotspot-visitor .hotspot-sprite {
+  top: 5px;
+  right: 5px;
+  bottom: auto;
+  left: auto;
+  width: 82px;
+  height: 100px;
+}
+
+.hotspot-label {
+  position: relative;
+  z-index: 2;
 }
 
 .scene-hotspot:hover:not(:disabled),
@@ -1998,6 +2066,29 @@ main {
   font-weight: 900;
   letter-spacing: 0.09em;
   transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.scene-decision {
+  display: grid;
+  grid-template-columns: 27px minmax(0, 1fr);
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+}
+
+.decision-sprite {
+  display: block;
+  width: 27px;
+  height: 30px;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.58));
+  opacity: 0.9;
+}
+
+.scene-decision span {
+  position: relative;
+  z-index: 1;
 }
 
 .scene-decision:hover:not(:disabled) {
@@ -2311,6 +2402,20 @@ main {
   font-size: 8px;
   letter-spacing: 0.1em;
   padding: 7px 8px;
+}
+
+.inspection-shortcuts button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.shortcut-sprite {
+  display: block;
+  width: 16px;
+  height: 16px;
+  object-fit: cover;
+  filter: saturate(0.78) contrast(1.12);
 }
 
 .inspection-shortcuts button:hover,

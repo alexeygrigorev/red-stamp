@@ -877,6 +877,9 @@ function renderCase() {
     $("#sceneArrivalBadge").textContent = "STANDBY";
     $("#sceneCaseNumber").textContent = "CASE —";
     $("#scenePurpose").textContent = "The checkpoint is quiet. Click the inspector’s desk, the visitor, or the gate equipment to investigate.";
+    $("#sceneCasePortrait").src = "assets/generated/inspector-cutout.png";
+    $("#sceneVisitorSprite").src = "assets/generated/inspector-cutout.png";
+    $("#sceneQuestionSprite").src = "assets/generated/inspector-cutout.png";
     return;
   }
 
@@ -913,6 +916,10 @@ function renderCase() {
   $("#sceneArrivalBadge").textContent = c.modeLabel;
   $("#sceneCaseNumber").textContent = `CASE ${c.caseNumber}`;
   $("#scenePurpose").textContent = c.purpose;
+  $("#sceneCasePortrait").src = visitorAsset(c);
+  $("#sceneCasePortrait").alt = `${c.name}, ${c.role}`;
+  $("#sceneVisitorSprite").src = visitorAsset(c);
+  $("#sceneQuestionSprite").src = visitorAsset(c);
 }
 
 function renderMetrics() {
