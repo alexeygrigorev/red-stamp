@@ -1,7 +1,7 @@
 # Red Stamp — Living Game Design Report
 
-Status: first playable prototype / visual interaction pass
-Last updated: 2026-08-23
+Status: first playable prototype / randomized content and browser-polish pass
+Last updated: 2026-08-24
 
 This is a working document. Decisions below are current direction, not a
 commitment that cannot be changed.
@@ -106,8 +106,9 @@ to the bottom of the scene so the player can inspect, return to the room, and
 decide without losing spatial context.
 
 The visual asset pack lives in `assets/generated/` and includes the
-inspector, embassy background, five visitor sprites, document still life,
-detector panel, three X-ray states, and the physical red stamp. The art is
+inspector, embassy background, eleven named visitor pairs, six dossier page
+families, per-character X-rays, document still life, detector panel, and the
+physical red stamp. The art is
 original to Red Stamp and uses the supplied embassy reference only for broad
 atmosphere: monumental architecture, red fabric, dark stone, and brass.
 
@@ -122,6 +123,34 @@ On phones, the room remains the primary visual, while the six inspection
 sprites move into a thumb-friendly dock and the four authority actions become a
 separate two-by-two tray. Inspection overlays are sized to the viewport and
 remain scroll-safe at narrow widths down to 320px.
+
+### Randomized campaign layer
+
+The campaign is authored from a small cast but does not use one fixed queue.
+Each run has a seed shown in the header. The seed controls the order of the
+cases and whether a named visitor receives their standard scenario or an
+alternate procedural situation. `?seed=424242` is therefore a useful bug
+report or replay link.
+
+The current campaign has three shifts:
+
+- **Morning Intake:** public applicants, emergencies, and first clearance
+  checks
+- **Red Weather:** higher command pressure, compromised credentials, and
+  restricted arrivals
+- **Night Register:** after-hours returns where familiar faces carry new
+  records, old seals, or unresolved authority
+
+There are seventeen cases across the shifts, built from Mara Velen, Irena
+Sava, Viktor Dalen, Radan Kest, Olya Merin, Anton Ryl, Sorin Dask, Director Vel
+Ordan, Nadiya Ost, Milan Vek, and Elias Rhy. A scenario variant changes the
+record, purpose, dialogue, rule, and consequence while retaining that
+visitor’s dedicated art and X-ray language.
+
+The randomizer is deliberately deterministic rather than fully chaotic. This
+keeps a suspicious result reproducible, makes browser tests reliable, and lets
+players share a run seed. A fresh campaign generates a new seed; a URL seed
+overrides that behavior.
 
 ## Embassy arrival and service flow
 

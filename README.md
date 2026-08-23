@@ -5,7 +5,7 @@ embassy of the Union of Veskar.
 
 The first playable version includes:
 
-- Two shifts and eleven visitors
+- Three randomized shifts and seventeen cases built from eleven named visitors
 - Appointment and special-clearance arrival paths
 - Appointment records, identity checks, physical documents, metal detection,
   bag X-ray, questioning, secondary inspection, and liaison calls
@@ -21,6 +21,8 @@ The first playable version includes:
   interaction
 - Clickable hotspots for the visitor, record, papers, detector, X-ray, and
   interview; the embassy room remains visible while evidence opens in layers
+- Every run has a visible seed. Supplying `?seed=424242` replays the same case
+  order and scenario variants; a new campaign gets a fresh seed
 
 ## Run locally
 
@@ -33,11 +35,22 @@ python3 -m http.server 4173
 
 Then open <http://127.0.0.1:4173>.
 
+The project also has a browser smoke suite. It launches the installed system
+Chromium through Playwright, checks the seeded campaign, dossier face crops,
+per-character X-rays, keyboard controls, and the 390px mobile layout:
+
+```bash
+npm install
+npm run test:images
+npm run test:e2e
+```
+
 ## Project files
 
 - `index.html` — page structure and accessible controls
 - `styles.css` — the Veskarian embassy scene, responsive layout, and animation
 - `app.js` — visitor data, inspections, decisions, consequences, and campaign
+- `scripts/playwright-smoke.mjs` — repeatable desktop/mobile browser checks
 - `assets/generated/` — original visual assets used by the checkpoint and
   inspection overlays
 - `DESIGN.md` — the living game design report
