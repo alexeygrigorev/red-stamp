@@ -95,6 +95,175 @@ The first prototype should be a single-screen, mouse-driven experience with
 short shifts. It should be possible to understand the basic loop within a few
 minutes.
 
+## Embassy arrival and service flow
+
+The public entrance is a security checkpoint before a group of service windows.
+Visitors normally have appointments, so the player is checking both physical
+security and whether the person is expected by the embassy.
+
+The visit can follow this sequence:
+
+1. The visitor states which service they need.
+2. The player searches the appointment system by name, case number, or QR code.
+3. The player checks the appointment time, assigned window, photo, and list of
+   documents already submitted.
+4. The visitor presents an ID or passport.
+5. The player compares the identity document with the appointment record.
+6. The player asks for any required physical documents that are missing from
+   the file.
+7. The visitor passes through the metal detector.
+8. The bag goes through the X-ray machine, with a manual search available when
+   something is unclear.
+9. The player sends the visitor to the correct window, requests secondary
+   inspection, calls an embassy employee, or denies entry.
+
+This gives the player several independent sources of evidence. A person may
+have a valid appointment but the wrong identity document, the right identity
+but the wrong service, complete paperwork but a prohibited object, or apparently
+perfect records that have been manipulated.
+
+### Service windows
+
+The first version can use a small number of clearly different services:
+
+- **Citizen Documents:** passports, identity cards, birth records, and
+  replacement documents
+- **Travel and Visas:** visas, travel permissions, invitations, and transit
+  papers
+- **Legal and Notarial Services:** powers of attorney, certified copies, and
+  official declarations
+- **Military and State Affairs:** service records, transfers, sealed orders, and
+  diplomatic-security requests
+- **Special Correspondence:** restricted files, unusual appointments, and cases
+  that ordinary staff are not allowed to explain
+
+Each window can have its own document requirements, staff member, queue, and
+political consequences. A visitor at the wrong window is not necessarily a spy;
+they may simply be confused, frightened, or unable to read the instructions.
+
+### Appointment record
+
+The appointment panel should show information that the player can compare with
+what the visitor says and carries:
+
+- Full name and portrait
+- Date and time
+- Service window
+- Case or appointment number
+- Documents already submitted
+- Documents still required
+- Host employee or department
+- Internal notes, alerts, or restrictions
+
+The system is useful but not infallible. A record may be out of date, duplicated,
+edited by an insider, or technically correct while hiding an important detail.
+
+### Two ways to arrive
+
+The appointment system should not be the only legitimate route into the
+embassy. This creates a key distinction:
+
+#### Scheduled public visitors
+
+Citizens, applicants, families, journalists, and ordinary contractors usually
+need an appointment. Their appointment connects them to a service window and a
+case file. Missing or incorrect appointment information is relevant evidence,
+but it is not automatically proof of hostile intent.
+
+#### Special-clearance visitors
+
+Some people arrive for official work and do not make public appointments:
+
+- Veskarian soldiers and military couriers
+- Contracted auxiliaries or mercenary teams
+- Embassy guards returning from an assignment
+- Diplomats and senior government officials
+- Emergency repair, medical, or security teams
+- A person summoned directly by the ambassador or a restricted department
+
+These visitors may have a military order, diplomatic credential, clearance
+card, encrypted summons, escort authorization, or a vehicle and personnel
+manifest instead of an appointment.
+
+Special clearance changes the procedure, but it is not an automatic free pass.
+Depending on the clearance level, it may allow someone to skip the queue or
+enter without an appointment while still requiring identity verification,
+weapons authorization, a bag check, or confirmation from the sponsoring
+department.
+
+This creates useful cases:
+
+- A mercenary team has a valid mission order, but one member is not on the
+  roster.
+- A soldier has permission to carry a weapon, but the order was cancelled that
+  morning.
+- A senior official is genuine but has brought an unauthorized recording device.
+- An emergency team has no appointment because the situation is real, but the
+  player must verify the emergency code.
+- A spy has stolen a legitimate clearance card from someone the player knows.
+
+The interface should clearly identify the arrival mode—**appointment**,
+**special clearance**, **emergency**, or **escort**—so the player knows which
+rules apply. The challenge is deciding whether the visitor satisfies the rules
+for that mode, not applying the appointment requirement to everyone.
+
+Refusing a legitimate special-clearance visitor can cause command pressure,
+mission failure, or loss of career standing. Admitting someone with forged or
+compromised clearance can create a much more serious security breach.
+
+### Useful evidence and ordinary exceptions
+
+Document inconsistencies can be small and believable:
+
+- A transliteration or glyph differs by one character
+- The appointment is at the correct embassy but the wrong service window
+- The visitor has a photocopy when the appointment requires an original
+- The case number belongs to another person with a similar name
+- The submitted document expired yesterday
+- The person has an emergency that explains why the normal paperwork is absent
+- A family appointment lists one adult, but two people arrive
+
+The player should be able to resolve many issues by asking a question,
+requesting one more document, checking with the service window, or sending the
+visitor to secondary inspection. Denial should be one tool among several, not
+the default response to every irregularity.
+
+### Bags and the X-ray
+
+The X-ray should contain ordinary airport-like objects as well as security
+risks. Early cases can teach the player the difference between an unusual but
+harmless object and a prohibited one:
+
+- Keys, phone, wallet, medication, laptop, camera, and power bank
+- Tools carried by an engineer or contractor
+- Recording equipment or removable storage
+- A knife or other restricted object with a legitimate work permit
+- A sealed envelope that should have been declared at a service window
+- A weapon or ammunition carried by personnel without the correct authorization
+- A device that does not match the declared purpose of the visit
+- A supernatural object that appears as an empty shape or a second silhouette
+
+The X-ray should create questions rather than automatically identify the answer.
+The player can ask the visitor to identify an object, open the bag, surrender a
+restricted item, or explain why it is being carried.
+
+### Candidate first-shift cases
+
+The opening shift could establish the normal routine with five or six visitors:
+
+1. A clean passport-renewal appointment that teaches the basic process.
+2. A mother with a genuine emergency and one missing document.
+3. A Veskarian soldier with a weapon and valid-looking military orders.
+4. A contractor whose tools are allowed but whose appointment is at the wrong
+   window.
+5. A visitor with a legitimate appointment whose identity record has been
+   duplicated.
+6. A final case where the paperwork looks perfect but the X-ray reveals the
+   first unmistakable supernatural anomaly.
+
+The first shift should end with a report or phone call that makes the player
+question whether the embassy’s records are protecting people or hiding them.
+
 ## Visitor groups
 
 ### Ordinary people
