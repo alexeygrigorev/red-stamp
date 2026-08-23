@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Red Stamp — a Veskarian embassy security checkpoint game."
+    />
+    <title>Red Stamp — Veskarian Embassy</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <div id="app" class="app">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true">RS</div>
+          <div>
+            <p class="brand-name">RED STAMP</p>
+            <p class="brand-subtitle">VESKARIAN EMBASSY / SECURITY CONTROL</p>
+          </div>
+        </div>
+
+        <div class="protocol-status">
+          <span class="status-light"></span>
+          <span id="protocolText">PROTOCOL STANDBY</span>
+          <span class="status-divider"></span>
+          <span id="clockText">08:30</span>
+        </div>
+
+        <div class="header-metrics" aria-label="Current shift status">
+          <div class="metric metric-tolerance">
+            <span class="metric-label">SHIFT TOLERANCE</span>
+            <strong id="toleranceValue">100%</strong>
+            <div class="meter"><span id="toleranceMeter"></span></div>
+          </div>
+          <div class="metric metric-career">
+            <span class="metric-label">CAREER STANDING</span>
+            <strong id="careerValue">100%</strong>
+            <div class="meter"><span id="careerMeter"></span></div>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="embassy-wall" aria-label="Veskarian embassy interior">
+          <div class="wall-column wall-column-left" aria-hidden="true"></div>
+          <div class="wall-column wall-column-right" aria-hidden="true"></div>
+          <div class="wall-slogan wall-slogan-left">
+            <span>SERVICE</span>
+            <span>DUTY</span>
+            <span>STABILITY</span>
+          </div>
+          <div class="wall-slogan wall-slogan-right">
+            <span>THE UNION</span>
+            <span>RECOGNIZES</span>
+            <span>ITS OWN</span>
+          </div>
+          <div class="monument-flag">
+            <div class="flag-star" aria-hidden="true">✦</div>
+            <div class="veskar-seal" aria-hidden="true"><span>V</span></div>
+            <div class="flag-country">VESKAR</div>
+            <div class="flag-caption">EMBASSY / 2026</div>
+          </div>
+          <div class="wall-light wall-light-one" aria-hidden="true"></div>
+          <div class="wall-light wall-light-two" aria-hidden="true"></div>
+          <div class="service-rail" aria-label="Embassy service windows">
+            <span>01 / CITIZEN DOCUMENTS</span>
+            <span>02 / TRAVEL &amp; VISAS</span>
+            <span>03 / LEGAL</span>
+            <span>04 / STATE AFFAIRS</span>
+            <span>05 / CORRESPONDENCE</span>
+          </div>
+        </section>
+
+        <section class="checkpoint-scene" aria-label="Security checkpoint">
+          <div class="scene-line scene-line-top">
+            <span id="shiftLabel">SHIFT 01 / MORNING INTAKE</span>
+            <span id="directiveText">PUBLIC ENTRY / APPOINTMENTS REQUIRED</span>
+          </div>
+
+          <div class="scene-floor">
+            <div class="queue-glimpse" aria-label="Queue status">
+              <div class="queue-screen">
+                <span class="queue-screen-label">NOW SERVING</span>
+                <strong id="queueNumber">—</strong>
+                <span id="queueNext">—</span>
+              </div>
+              <div class="queue-caption">ONE VISITOR AT A TIME</div>
+            </div>
+
+            <div class="visitor-stage">
+              <div class="entry-frame" aria-hidden="true">
+                <span class="entry-frame-label">SECURITY GATE</span>
+                <span class="entry-frame-mark">V / 26</span>
+              </div>
+              <div id="visitorPortrait" class="visitor-portrait" aria-hidden="true">
+                <div class="portrait-head"><span></span></div>
+                <div class="portrait-body"></div>
+              </div>
+              <div class="visitor-nameplate">
+                <span id="visitorNamePlate">AWAITING VISITOR</span>
+                <small id="visitorRolePlate">CHECKPOINT STANDBY</small>
+              </div>
+            </div>
+
+            <div class="security-desk">
+              <div class="desk-topline">
+                <span>SECURITY CONTROL</span>
+                <span id="deskCaseNumber">CASE —</span>
+              </div>
+              <div class="desk-panel">
+                <div class="desk-emblem" aria-hidden="true">V</div>
+                <div class="desk-instruction">VERIFY / INSPECT / DECIDE</div>
+                <div class="desk-status">
+                  <span class="status-light"></span>
+                  <span id="deskStatus">AWAITING CASE</span>
+                </div>
+              </div>
+              <div class="desk-edge" aria-hidden="true"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="workbench" aria-label="Security officer workbench">
+          <article class="panel case-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-kicker">CASE FILE</span>
+                <h2 id="caseTitle">No active visitor</h2>
+              </div>
+              <span id="arrivalBadge" class="arrival-badge">STANDBY</span>
+            </div>
+            <div class="case-meta" id="caseMeta">
+              Start the shift to receive the first visitor.
+            </div>
+            <div class="case-purpose" id="casePurpose"></div>
+            <div class="evidence-list" id="evidenceList"></div>
+            <div class="question-card" id="questionCard" hidden>
+              <span class="panel-kicker">STATEMENT</span>
+              <p id="questionPrompt"></p>
+              <p class="quoted" id="questionAnswer"></p>
+            </div>
+          </article>
+
+          <article class="panel inspection-panel">
+            <div class="panel-heading compact-heading">
+              <div>
+                <span class="panel-kicker">INSPECTION DESK</span>
+                <h2>Available checks</h2>
+              </div>
+              <span class="case-progress" id="caseProgress">0 / 0</span>
+            </div>
+            <div class="tool-grid" id="toolGrid">
+              <button class="tool-button" data-action="inspect" data-tool="appointment" disabled>
+                <span class="tool-icon">▤</span>
+                <span>APPOINTMENT<br /><small>SYSTEM RECORD</small></span>
+              </button>
+              <button class="tool-button" data-action="inspect" data-tool="id" disabled>
+                <span class="tool-icon">▣</span>
+                <span>ID / PASSPORT<br /><small>BIOMETRIC MATCH</small></span>
+              </button>
+              <button class="tool-button" data-action="inspect" data-tool="documents" disabled>
+                <span class="tool-icon">▧</span>
+                <span>DOCUMENTS<br /><small>PHYSICAL PAPERS</small></span>
+              </button>
+              <button class="tool-button" data-action="inspect" data-tool="detector" disabled>
+                <span class="tool-icon">⌁</span>
+                <span>METAL DETECTOR<br /><small>WALK-THROUGH</small></span>
+              </button>
+              <button class="tool-button" data-action="inspect" data-tool="xray" disabled>
+                <span class="tool-icon">◈</span>
+                <span>BAG X-RAY<br /><small>DUAL ENERGY</small></span>
+              </button>
+              <button class="tool-button" data-action="inspect" data-tool="question" disabled>
+                <span class="tool-icon">?</span>
+                <span>ASK QUESTION<br /><small>COMPARE STATEMENT</small></span>
+              </button>
+            </div>
+            <div class="inspection-output" id="inspectionOutput">
+              <div class="empty-state">
+                <span class="empty-mark">V</span>
+                <p>Inspection results will appear here.</p>
+              </div>
+            </div>
+            <div class="inspection-log" id="inspectionLog" aria-live="polite">
+              <span class="log-marker">LOG</span>
+              <span>Awaiting first inspection.</span>
+            </div>
+          </article>
+
+          <article class="panel decision-panel">
+            <div class="panel-heading compact-heading">
+              <div>
+                <span class="panel-kicker">AUTHORIZATION</span>
+                <h2>Make a decision</h2>
+              </div>
+              <span id="decisionState" class="decision-state">LOCKED</span>
+            </div>
+            <p class="decision-copy" id="decisionCopy">
+              Review the case and complete the checks you consider necessary.
+            </p>
+            <div class="decision-actions" id="decisionActions">
+              <button class="decision-button admit" data-action="resolve" data-decision="admit" disabled>
+                <span>APPLY RED STAMP</span>
+                <small>AUTHORIZE ENTRY</small>
+              </button>
+              <button class="decision-button hold" data-action="secondary" disabled>
+                <span>SECONDARY INSPECTION</span>
+                <small>HOLD AT THE GATE</small>
+              </button>
+              <button class="decision-button call" data-action="liaison" disabled>
+                <span>CALL LIAISON</span>
+                <small>REQUEST AUTHORITY</small>
+              </button>
+              <button class="decision-button deny" data-action="resolve" data-decision="deny" disabled>
+                <span>DENY ENTRY</span>
+                <small>ISSUE REFUSAL</small>
+              </button>
+            </div>
+            <div class="decision-note" id="decisionNote">
+              The red stamp is the final authority at this gate.
+            </div>
+          </article>
+        </section>
+      </main>
+
+      <footer class="footer-bar">
+        <span>UNION OF VESKAR / EXTERNAL MISSIONS DIRECTORATE</span>
+        <span>FORM RS-26 / SECURITY CONTROL</span>
+        <button class="footer-help" data-action="help">PROTOCOL NOTES</button>
+      </footer>
+    </div>
+
+    <div id="overlay" class="overlay is-open" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+      <div class="overlay-card">
+        <div class="overlay-emblem" aria-hidden="true"><span>V</span></div>
+        <span class="panel-kicker" id="overlayKicker">VESKAR EMBASSY / SECURITY CONTROL</span>
+        <h1 id="overlayTitle">RED STAMP</h1>
+        <p id="overlayBody">
+          The public entrance opens at 08:30. Verify identity, inspect what is
+          carried, and decide who may cross the gate.
+        </p>
+        <div class="briefing-strip" id="overlayStats">
+          <span><b>01</b> ACTIVE SHIFT</span>
+          <span><b>06</b> CASES</span>
+          <span><b>100%</b> TOLERANCE</span>
+        </div>
+        <button class="primary-button" data-action="start">BEGIN SHIFT <span>→</span></button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>

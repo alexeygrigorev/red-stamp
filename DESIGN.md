@@ -1,6 +1,6 @@
 # Red Stamp — Living Game Design Report
 
-Status: early concept / active ideation  
+Status: first playable prototype / active refinement
 Last updated: 2026-08-23
 
 This is a working document. Decisions below are current direction, not a
