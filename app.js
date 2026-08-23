@@ -833,6 +833,8 @@ const TOOL_ART = {
 };
 
 function xrayAsset(c) {
+  const caseAsset = window.RedStampXrayArt?.[c?.id]?.filename;
+  if (caseAsset) return caseAsset;
   if (c.kind === "anomaly") return "assets/generated/xray-anomaly.png";
   if (c.kind === "spy" || (c.xray && !/(clear|ordinary|personal|medical|military|authorized)/i.test(c.xray.status))) {
     return "assets/generated/xray-threat.png";
@@ -866,6 +868,8 @@ function triggerMaraBlink() {
   const c = currentCase();
   const image = $("#visitorImage");
   if (!state.started || c?.id !== "mara-velen" || !image || image.dataset.blinking === "true") return;
+  if (visitorBlinkTimer) window.clearTimeout(visitorBlinkTimer);
+  visitorBlinkTimer = null;
   image.dataset.blinking = "true";
   image.classList.add("visitor-blink");
   image.src = "assets/generated/mara-visitor-blink.png";
