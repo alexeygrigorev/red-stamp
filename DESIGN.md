@@ -1,6 +1,6 @@
 # Red Stamp — Living Game Design Report
 
-Status: first playable prototype / active refinement
+Status: first playable prototype / visual interaction pass
 Last updated: 2026-08-23
 
 This is a working document. Decisions below are current direction, not a
@@ -94,6 +94,22 @@ The intended basic loop is:
 The first prototype should be a single-screen, mouse-driven experience with
 short shifts. It should be possible to understand the basic loop within a few
 minutes.
+
+### Single-screen interaction direction
+
+The checkpoint is now treated as one persistent scene rather than a page of
+separate panels. The player clicks the visitor, desk record, document tray,
+metal detector, X-ray station, or the visitor to ask a question. Each action
+opens an evidence overlay while keeping the monumental flag, visitor, and
+security desk visible behind it. The final authority controls remain anchored
+to the bottom of the scene so the player can inspect, return to the room, and
+decide without losing spatial context.
+
+The visual asset pack lives in `assets/generated/` and includes the
+inspector, embassy background, five visitor sprites, document still life,
+detector panel, three X-ray states, and the physical red stamp. The art is
+original to Red Stamp and uses the supplied embassy reference only for broad
+atmosphere: monumental architecture, red fabric, dark stone, and brass.
 
 ## Embassy arrival and service flow
 

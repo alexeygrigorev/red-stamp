@@ -13,8 +13,11 @@ The first playable version includes:
   supernatural anomalies
 - Daily tolerance, persistent career standing, public pressure, command
   pressure, security breaches, delayed case outcomes, and campaign endings
-- A sparse monumental visual style with CSS-built Veskarian architecture,
-  emblem, flag, visitor silhouettes, and checkpoint animations
+- A sparse monumental checkpoint screen built from generated Veskarian
+  environment art, character sprites, documents, X-ray panels, and animated
+  inspection overlays
+- Clickable hotspots for the visitor, record, papers, detector, X-ray, and
+  interview; the embassy room remains visible while evidence opens in layers
 
 ## Run locally
 
@@ -32,5 +35,6 @@ Then open <http://127.0.0.1:4173>.
 - `index.html` — page structure and accessible controls
 - `styles.css` — the Veskarian embassy scene, responsive layout, and animation
 - `app.js` — visitor data, inspections, decisions, consequences, and campaign
+- `assets/generated/` — original visual assets used by the checkpoint and
+  inspection overlays
 - `DESIGN.md` — the living game design report
-

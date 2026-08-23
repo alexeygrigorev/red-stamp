@@ -72,6 +72,60 @@
             <span>04 / STATE AFFAIRS</span>
             <span>05 / CORRESPONDENCE</span>
           </div>
+
+          <div class="scene-case-card" aria-live="polite">
+            <span class="panel-kicker">ACTIVE THRESHOLD</span>
+            <strong id="sceneCaseTitle">AWAITING VISITOR</strong>
+            <small id="sceneCaseRole">BEGIN THE SHIFT TO OPEN THE GATE</small>
+            <div class="scene-case-tags">
+              <span id="sceneArrivalBadge">STANDBY</span>
+              <span id="sceneCaseNumber">CASE —</span>
+            </div>
+            <p id="scenePurpose">The checkpoint is quiet. Click the inspector’s desk, the visitor, or the gate equipment to investigate.</p>
+          </div>
+
+          <div class="scene-hotspots" aria-label="Checkpoint controls">
+            <button class="scene-hotspot hotspot-record" data-action="inspect" data-tool="appointment" aria-label="Open the appointment record">
+              <span class="hotspot-pulse"></span>
+              <span class="hotspot-label">RECORD</span>
+            </button>
+            <button class="scene-hotspot hotspot-visitor" data-action="inspect" data-tool="id" aria-label="Inspect the visitor's identity">
+              <span class="hotspot-pulse"></span>
+              <span class="hotspot-label">VISITOR / ID</span>
+            </button>
+            <button class="scene-hotspot hotspot-documents" data-action="inspect" data-tool="documents" aria-label="Open the visitor's documents">
+              <span class="hotspot-pulse"></span>
+              <span class="hotspot-label">PAPERS</span>
+            </button>
+            <button class="scene-hotspot hotspot-detector" data-action="inspect" data-tool="detector" aria-label="Inspect the metal detector result">
+              <span class="hotspot-pulse"></span>
+              <span class="hotspot-label">DETECTOR</span>
+            </button>
+            <button class="scene-hotspot hotspot-xray" data-action="inspect" data-tool="xray" aria-label="Open the bag X-ray">
+              <span class="hotspot-pulse"></span>
+              <span class="hotspot-label">BAG X-RAY</span>
+            </button>
+            <button class="scene-hotspot hotspot-question" data-action="inspect" data-tool="question" aria-label="Ask the visitor a question">
+              <span class="hotspot-pulse"></span>
+              <span class="hotspot-label">ASK</span>
+            </button>
+          </div>
+
+          <div class="scene-actions" id="sceneActions" aria-label="Authorization decisions">
+            <span class="scene-actions-label">FINAL AUTHORITY</span>
+            <button class="scene-decision admit" data-action="resolve" data-decision="admit" disabled>
+              <span>RED STAMP / ADMIT</span>
+            </button>
+            <button class="scene-decision hold" data-action="secondary" disabled>
+              <span>HOLD / SEARCH</span>
+            </button>
+            <button class="scene-decision call" data-action="liaison" disabled>
+              <span>CALL LIAISON</span>
+            </button>
+            <button class="scene-decision deny" data-action="resolve" data-decision="deny" disabled>
+              <span>DENY ENTRY</span>
+            </button>
+          </div>
         </section>
 
         <section class="checkpoint-scene" aria-label="Security checkpoint">
@@ -96,6 +150,7 @@
                 <span class="entry-frame-mark">V / 26</span>
               </div>
               <div id="visitorPortrait" class="visitor-portrait" aria-hidden="true">
+                <img id="visitorImage" class="visitor-image" src="assets/generated/inspector-cutout.png" alt="" />
                 <div class="portrait-head"><span></span></div>
                 <div class="portrait-body"></div>
               </div>
@@ -111,6 +166,7 @@
                 <span id="deskCaseNumber">CASE —</span>
               </div>
               <div class="desk-panel">
+                <img class="desk-stamp-art" src="assets/generated/red-stamp.png" alt="" aria-hidden="true" />
                 <div class="desk-emblem" aria-hidden="true">V</div>
                 <div class="desk-instruction">VERIFY / INSPECT / DECIDE</div>
                 <div class="desk-status">
@@ -230,11 +286,38 @@
         <span>UNION OF VESKAR / EXTERNAL MISSIONS DIRECTORATE</span>
         <span>FORM RS-26 / SECURITY CONTROL</span>
         <button class="footer-help" data-action="help">PROTOCOL NOTES</button>
-      </footer>
-    </div>
+    </footer>
+  </div>
 
-    <div id="overlay" class="overlay is-open" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
-      <div class="overlay-card">
+  <div id="inspectionOverlay" class="inspection-overlay" role="dialog" aria-modal="true" aria-labelledby="inspectionOverlayTitle" hidden>
+    <div class="inspection-modal">
+      <button class="modal-close" data-action="close-inspection" aria-label="Close inspection">×</button>
+      <div class="inspection-modal-heading">
+        <div>
+          <span class="panel-kicker" id="inspectionOverlayKicker">SECURITY CONTROL / REVIEW</span>
+          <h2 id="inspectionOverlayTitle">Inspection</h2>
+        </div>
+        <span id="inspectionOverlayStatus" class="inspection-status">READY</span>
+      </div>
+      <div id="inspectionOverlayVisual" class="inspection-visual"></div>
+      <div id="inspectionOverlayText" class="inspection-text"></div>
+      <div class="inspection-modal-footer">
+        <div class="inspection-shortcuts" aria-label="Inspection shortcuts">
+          <button data-action="inspect" data-tool="appointment">RECORD</button>
+          <button data-action="inspect" data-tool="id">ID</button>
+          <button data-action="inspect" data-tool="documents">PAPERS</button>
+          <button data-action="inspect" data-tool="detector">DETECTOR</button>
+          <button data-action="inspect" data-tool="xray">X-RAY</button>
+          <button data-action="inspect" data-tool="question">ASK</button>
+        </div>
+        <button class="modal-return" data-action="close-inspection">RETURN TO CHECKPOINT</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay is-open" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+    <div class="overlay-card">
+        <img id="overlayInspector" class="overlay-inspector" src="assets/generated/inspector-cutout.png" alt="Veskarian security inspector holding a red stamp" />
         <div class="overlay-emblem" aria-hidden="true"><span>V</span></div>
         <span class="panel-kicker" id="overlayKicker">VESKAR EMBASSY / SECURITY CONTROL</span>
         <h1 id="overlayTitle">RED STAMP</h1>

@@ -763,6 +763,32 @@ function currentCase() {
   return currentShift()?.cases[state.caseIndex] || null;
 }
 
+const VISITOR_ART = {
+  civilian: "assets/generated/civilian-visitor.png",
+  soldier: "assets/generated/soldier-visitor.png",
+  official: "assets/generated/official-visitor.png",
+  worker: "assets/generated/worker-visitor.png",
+  anomaly: "assets/generated/anomaly-visitor.png",
+};
+
+const TOOL_ART = {
+  appointment: "assets/generated/passport-documents.png",
+  documents: "assets/generated/passport-documents.png",
+  detector: "assets/generated/detector-clear.png",
+};
+
+function xrayAsset(c) {
+  if (c.kind === "anomaly") return "assets/generated/xray-anomaly.png";
+  if (c.kind === "spy" || (c.xray && !/(clear|ordinary|personal|medical|military|authorized)/i.test(c.xray.status))) {
+    return "assets/generated/xray-threat.png";
+  }
+  return "assets/generated/xray-clear.png";
+}
+
+function visitorAsset(c) {
+  return VISITOR_ART[c.look] || VISITOR_ART.civilian;
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -835,6 +861,8 @@ function renderCase() {
     $("#visitorNamePlate").textContent = "AWAITING VISITOR";
     $("#visitorRolePlate").textContent = "CHECKPOINT STANDBY";
     $("#visitorPortrait").dataset.look = "civilian";
+    $("#visitorImage").src = "assets/generated/inspector-cutout.png";
+    $("#visitorImage").alt = "Veskarian security inspector at the checkpoint";
     $("#arrivalBadge").textContent = "STANDBY";
     $("#arrivalBadge").className = "arrival-badge";
     $("#caseProgress").textContent = "0 / 0";
@@ -844,6 +872,11 @@ function renderCase() {
     $("#deskStatus").textContent = "AWAITING CASE";
     $("#shiftLabel").textContent = "SHIFT STANDBY";
     $("#directiveText").textContent = "SECURITY CONTROL OFFLINE";
+    $("#sceneCaseTitle").textContent = "AWAITING VISITOR";
+    $("#sceneCaseRole").textContent = "BEGIN THE SHIFT TO OPEN THE GATE";
+    $("#sceneArrivalBadge").textContent = "STANDBY";
+    $("#sceneCaseNumber").textContent = "CASE —";
+    $("#scenePurpose").textContent = "The checkpoint is quiet. Click the inspector’s desk, the visitor, or the gate equipment to investigate.";
     return;
   }
 
@@ -864,6 +897,8 @@ function renderCase() {
   $("#visitorNamePlate").textContent = c.name.toUpperCase();
   $("#visitorRolePlate").textContent = c.role.toUpperCase();
   $("#visitorPortrait").dataset.look = c.look;
+  $("#visitorImage").src = visitorAsset(c);
+  $("#visitorImage").alt = `${c.name}, ${c.role}`;
   $("#arrivalBadge").textContent = c.modeLabel;
   $("#arrivalBadge").className = `arrival-badge ${modeClass(c.mode)} ${c.kind === "spy" || c.kind === "anomaly" ? "alert" : ""}`;
   $("#caseProgress").textContent = `${state.caseIndex + 1} / ${currentShift().cases.length}`;
@@ -873,6 +908,11 @@ function renderCase() {
   $("#deskStatus").textContent = state.resolved ? "CASE CLOSED" : "INSPECTION ACTIVE";
   $("#shiftLabel").textContent = `SHIFT 0${state.day} / ${currentShift().title}`;
   $("#directiveText").textContent = currentShift().directive;
+  $("#sceneCaseTitle").textContent = c.name.toUpperCase();
+  $("#sceneCaseRole").textContent = c.role.toUpperCase();
+  $("#sceneArrivalBadge").textContent = c.modeLabel;
+  $("#sceneCaseNumber").textContent = `CASE ${c.caseNumber}`;
+  $("#scenePurpose").textContent = c.purpose;
 }
 
 function renderMetrics() {
@@ -921,11 +961,102 @@ function renderInspection() {
   $("#inspectionLog").innerHTML = `<span class="log-marker">LOG</span><span>${label} REVIEWED / ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>`;
 }
 
+function inspectionResult(c, tool) {
+  if (tool === "appointment") return c.record;
+  if (tool === "id") return c.idCheck;
+  if (tool === "documents") return c.documents;
+  if (tool === "detector") return c.detector;
+  if (tool === "xray") return c.xray;
+  if (tool === "question") return c.question;
+  if (tool === "secondary") return c.secondary;
+  if (tool === "liaison") return c.liaison;
+  return null;
+}
+
+function inspectionImage(c, tool) {
+  if (tool === "appointment" || tool === "documents") return TOOL_ART[tool];
+  if (tool === "detector") return TOOL_ART.detector;
+  if (tool === "xray") return xrayAsset(c);
+  if (tool === "question" || tool === "id") return visitorAsset(c);
+  if (tool === "secondary") return c.kind === "anomaly" ? "assets/generated/xray-anomaly.png" : xrayAsset(c);
+  if (tool === "liaison") return TOOL_ART.documents;
+  return TOOL_ART.documents;
+}
+
+function inspectionTitle(tool) {
+  return {
+    appointment: "Appointment record",
+    id: "Identity and passport",
+    documents: "Physical documents",
+    detector: "Metal detector",
+    xray: "Bag X-ray",
+    question: "Visitor statement",
+    secondary: "Secondary inspection",
+    liaison: "Liaison response",
+  }[tool] || "Inspection";
+}
+
+function inspectionVisualAlt(c, tool) {
+  return {
+    appointment: "Veskarian passport and appointment papers on a dark stone desk",
+    id: `${c.name} waiting at the Veskarian checkpoint`,
+    documents: "Veskarian identity papers and passport on the security desk",
+    detector: "Veskarian metal detector readout",
+    xray: "Veskarian embassy bag X-ray",
+    question: `${c.name} answering a security question`,
+    secondary: "Secondary security inspection scan",
+    liaison: "Veskarian embassy document review",
+  }[tool] || "Veskarian security inspection";
+}
+
+function renderInspectionOverlay(tool) {
+  const c = currentCase();
+  const result = c && inspectionResult(c, tool);
+  if (!state.started || !c || !result) return;
+
+  const status = result.status || result.consistency || "RECORDED";
+  const tone = statusClass(status);
+  const image = inspectionImage(c, tool);
+  const title = inspectionTitle(tool);
+  const detail = result.detail || result.answer || "The statement has been recorded in the case file.";
+  const heading = tool === "question"
+    ? `<p class="inspection-question"><b>${escapeHtml(result.prompt)}</b></p><p class="inspection-quote">“${escapeHtml(result.answer)}”</p><span class="inspection-consistency">${escapeHtml(result.consistency)}</span>`
+    : `<p>${escapeHtml(detail)}</p>`;
+
+  $("#inspectionOverlayKicker").textContent = `CASE ${c.caseNumber} / ${tool.toUpperCase()}`;
+  $("#inspectionOverlayTitle").textContent = title;
+  $("#inspectionOverlayStatus").textContent = status;
+  $("#inspectionOverlayStatus").className = `inspection-status ${tone}`;
+  const imageClass = tool === "xray" ? "xray-art" : ["id", "question"].includes(tool) ? "portrait-art" : "";
+  $("#inspectionOverlayVisual").innerHTML = `<img class="inspection-art ${imageClass}" src="${image}" alt="${inspectionVisualAlt(c, tool)}" />`;
+
+  let metadata = "";
+  if (tool === "appointment") {
+    metadata = `<div class="inspection-meta">${c.record.rows.map(([label, value]) => metaRow(label, value)).join("")}</div>`;
+  }
+  if (tool === "id") {
+    metadata = `<div class="inspection-meta"><div><span>NAME</span><b>${escapeHtml(c.name)}</b></div><div><span>ROLE</span><b>${escapeHtml(c.role)}</b></div><div><span>ARRIVAL</span><b>${escapeHtml(c.modeLabel)}</b></div></div>`;
+  }
+
+  $("#inspectionOverlayText").innerHTML = `<div class="inspection-result-copy ${tone}"><span class="result-code">${escapeHtml(status)}</span><h3>${escapeHtml(result.title || title)}</h3>${heading}${metadata}</div>`;
+  $("#inspectionOverlay").hidden = false;
+  window.requestAnimationFrame(() => $("#inspectionOverlay").classList.add("is-open"));
+}
+
+function closeInspectionOverlay() {
+  const modal = $("#inspectionOverlay");
+  modal.classList.remove("is-open");
+  window.setTimeout(() => {
+    if (!modal.classList.contains("is-open")) modal.hidden = true;
+  }, 180);
+}
+
 function renderTools() {
   $$("[data-tool]").forEach((button) => {
     const active = Boolean(state.revealed[button.dataset.tool]);
     button.disabled = !state.started || state.resolved;
     button.classList.toggle("revealed", active);
+    button.classList.toggle("selected", state.selectedTool === button.dataset.tool);
   });
 }
 
@@ -934,16 +1065,14 @@ function renderDecision() {
   $$("[data-action='resolve'], [data-action='secondary'], [data-action='liaison']").forEach((button) => {
     button.disabled = !active;
   });
-  const secondary = $("[data-action='secondary']");
-  const liaison = $("[data-action='liaison']");
-  if (secondary) {
+  $$("[data-action='secondary']").forEach((secondary) => {
     secondary.disabled = !active || state.secondaryUsed;
     secondary.querySelector("span").textContent = state.secondaryUsed ? "SECONDARY COMPLETE" : "SECONDARY INSPECTION";
-  }
-  if (liaison) {
+  });
+  $$("[data-action='liaison']").forEach((liaison) => {
     liaison.disabled = !active || state.liaisonCalled;
     liaison.querySelector("span").textContent = state.liaisonCalled ? "LIAISON CONTACTED" : "CALL LIAISON";
-  }
+  });
   $("#decisionState").textContent = !state.started ? "LOCKED" : state.resolved ? "CLOSED" : "READY";
   $("#decisionCopy").textContent = state.secondaryUsed || state.liaisonCalled
     ? "Additional authority has been recorded. You still hold the final authorization."
@@ -1013,6 +1142,7 @@ function inspectTool(tool) {
   state.revealed[tool] = true;
   state.selectedTool = tool;
   render();
+  renderInspectionOverlay(tool);
   const c = currentCase();
   if (tool === "xray" && c.xray.status !== "CLEAR" && c.xray.status !== "ORDINARY CONTENTS" && c.xray.status !== "PERSONAL ITEMS ONLY" && c.xray.status !== "MEDICAL CONTENTS" && c.xray.status !== "MILITARY KIT") {
     showToast("X-ray review flagged an item. Decide whether to hold the visitor.", "bad");
@@ -1029,6 +1159,7 @@ function useSecondary() {
   state.selectedTool = "secondary";
   state.dailyTolerance = clamp(state.dailyTolerance - 1, 0, 100);
   render();
+  renderInspectionOverlay("secondary");
   showToast("Visitor held at the gate. Secondary findings entered into the file.", "good");
 }
 
@@ -1040,6 +1171,7 @@ function callLiaison() {
   state.selectedTool = "liaison";
   state.dailyTolerance = clamp(state.dailyTolerance - 1, 0, 100);
   render();
+  renderInspectionOverlay("liaison");
   showToast("Liaison channel connected. Read the response before deciding.", "good");
 }
 
@@ -1119,6 +1251,7 @@ function evaluateCase(c, decision) {
 function resolveCase(decision) {
   if (!state.started || state.resolved) return;
   const c = currentCase();
+  closeInspectionOverlay();
   state.resolved = true;
   state.finalDecision = decision;
   if (decision === "admit") state.stats.admitted += 1;
@@ -1269,6 +1402,7 @@ function handleAction(element) {
   if (action === "end-shift") return endShift();
   if (action === "next-shift") return startNextShift();
   if (action === "close-overlay") return closeOverlay();
+  if (action === "close-inspection") return closeInspectionOverlay();
   if (action === "help") return showHelp();
   if (action === "inspect") return inspectTool(element.dataset.tool);
   if (action === "secondary") return useSecondary();
