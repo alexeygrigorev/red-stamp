@@ -621,3 +621,15 @@ palette when creating another visitor.
   player opens a document.
 - Use references on every new generation and record the reference assets in
   the commit message or asset note.
+
+### Aspect-ratio gate
+
+Before a generated image is included, run
+
+`node scripts/check-image-aspect-ratios.mjs`
+
+The check reads PNG dimensions directly, verifies dossier and X-ray ratios,
+rejects undersized character sources, checks Mara's blink frame against the
+base frame, and fails if CSS introduces `object-fit: fill`. GitHub Pages runs
+the same check before uploading the site artifact. Cropping an ID portrait is
+allowed; geometric stretching is not.

@@ -58,7 +58,7 @@
       title: "VESKARIAN IDENTITY RECORD",
       subtitle: "PERSONAL PARTICULARS / SECURITY COPY",
       pages: 2,
-      ratio: "972 / 1619",
+      ratio: "972 / 1618",
     }),
     appointment: Object.freeze({
       label: "APPOINTMENT REGISTER",
@@ -72,28 +72,28 @@
       title: "SPECIAL CLEARANCE ORDER",
       subtitle: "AUTHORIZED ROUTE / INTERNAL CONTROL COPY",
       pages: 3,
-      ratio: "972 / 1619",
+      ratio: "2 / 3",
     }),
     emergency: Object.freeze({
       label: "EMERGENCY CHANNEL",
       title: "EMERGENCY ENTRY FILE",
       subtitle: "URGENT REQUEST / CONFIRMATION REQUIRED",
       pages: 3,
-      ratio: "972 / 1619",
+      ratio: "2 / 3",
     }),
     legal: Object.freeze({
       label: "LEGAL & NOTARIAL",
       title: "LEGAL MATTER DOSSIER",
       subtitle: "CERTIFIED PAPERS / WITNESS CONTROL",
       pages: 3,
-      ratio: "972 / 1619",
+      ratio: "2 / 3",
     }),
     correspondence: Object.freeze({
       label: "RESTRICTED CORRESPONDENCE",
       title: "CORRESPONDENCE CONTROL FILE",
       subtitle: "SEALED MATERIAL / RECIPIENT UNVERIFIED",
       pages: 3,
-      ratio: "972 / 1619",
+      ratio: "2 / 3",
     }),
   });
 

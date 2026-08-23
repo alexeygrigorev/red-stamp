@@ -26,7 +26,7 @@
 .rs-dossier-page {
   position: relative;
   width: 100%;
-  aspect-ratio: var(--rs-dossier-page-ratio, 972 / 1619);
+  aspect-ratio: var(--rs-dossier-page-ratio, 972 / 1618);
   overflow: hidden;
   isolation: isolate;
   background: var(--rs-dossier-paper);
@@ -51,7 +51,8 @@
 
 .rs-dossier-base-image {
   display: block;
-  object-fit: fill;
+  object-fit: contain;
+  object-position: center;
   user-select: none;
   pointer-events: none;
 }
@@ -288,6 +289,13 @@
   object-fit: contain;
   object-position: center bottom;
   mix-blend-mode: multiply;
+}
+
+/* Identity records show a face crop, not a tiny full-body silhouette. Cover
+ * crops the source while preserving its aspect ratio; it never stretches it. */
+.rs-dossier-page--identity .rs-dossier-portrait-frame img {
+  object-fit: cover;
+  object-position: center 12%;
 }
 
 .rs-dossier-portrait--image .rs-dossier-portrait-monogram {

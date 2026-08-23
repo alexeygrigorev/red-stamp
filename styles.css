@@ -1018,6 +1018,11 @@ button:focus-visible {
   filter: saturate(0.75) contrast(1.1);
 }
 
+#toolIdSprite,
+#idShortcutSprite {
+  object-position: center top;
+}
+
 .tool-button small {
   display: block;
   margin-top: 4px;
