@@ -433,22 +433,30 @@ history strategy game, while the decisions remain personal and consequential.
 
 ### Visual north star
 
-The current visual reference is a dark, monumental Veskarian embassy service
-hall: brutalist concrete, deep red banners, black metal counters, warm bronze
-lettering, red accent lights, ticket queues, service windows, framed officials,
-and uniformed security staff. It should feel like a modern public institution
-that has inherited the visual language of a much older authoritarian state.
+The current visual reference is a dark, monumental Veskarian embassy entrance:
+brutalist concrete, one enormous red flag, black metal, warm bronze lettering,
+red accent lights, and a strong central emblem. It should feel like a modern
+public institution that has inherited the visual language of a much older
+authoritarian state.
+
+The composition should be sparse. The player should usually see one active
+visitor, the security desk, the gate or detector, and the monumental flag or
+architecture behind them. A distant queue or service area can be suggested,
+but the screen should not be filled with many people, windows, and tiny signs.
+The environment establishes power and scale; the interaction focuses attention
+on the current visitor and their evidence.
 
 Important elements to preserve:
 
 - A strong central security desk where the player works
-- Several clearly labeled service windows behind the queue
-- A ticket or appointment board showing the flow of visitors
-- Red fabric, signage, and light against gray concrete and dark metal
-- A mixture of ordinary civilians, officials, and uniformed personnel
-- A large Veskarian emblem and slogans that make the state feel present
-- Human-scale details: waiting chairs, folders, bags, counters, glass, and
-  small signs explaining procedures
+- One enormous Veskarian flag or banner behind the desk
+- Monumental columns, a high ceiling, and deliberate architectural symmetry
+- Red fabric, sparse signage, and light against gray concrete and dark metal
+- One clearly readable visitor silhouette at a time
+- A large Veskarian emblem and one or two slogans that make the state feel
+  present
+- Focused human details: the visitor’s hands, folders, bags, documents, and the
+  inspection equipment
 
 For the browser game, this should become a readable 2D or 2.5D composition
 rather than a photorealistic room. The background can be richly textured, but
@@ -456,8 +464,8 @@ the interactive documents, X-ray panel, appointment record, and decision
 buttons must remain visually clear at a glance.
 
 The attached reference is a mood and composition guide, not a source to copy
-literally. Veskar’s emblem, glyphs, slogans, uniforms, portraits, and signage
-will be designed as original assets.
+literally. Veskar’s flag, emblem, glyphs, slogans, uniforms, portraits, and
+signage will be designed as original assets.
 
 ### Simple animation language
 
