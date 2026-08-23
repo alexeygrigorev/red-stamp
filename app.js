@@ -723,9 +723,871 @@ const shifts = [
   },
 ];
 
-function initialState() {
+// A visitor is a person; a case is the situation that brings them to the
+// gate. These patches let the same cast return with a different pressure,
+// document trail, or consequence without multiplying character assets.
+const CASE_VARIANTS = {
+  "mara-velen": [
+    {
+      variantId: "same-day-override",
+      variantLabel: "SAME-DAY OVERRIDE",
+      rule: "A same-day replacement can bypass the queue only after the document desk confirms the override.",
+      mode: "emergency",
+      modeLabel: "SAME-DAY OVERRIDE",
+      time: "NOW",
+      caseNumber: "CIV-1840-R",
+      queue: "EM-04",
+      purpose: "Replace a lost identity card before a border appointment closes.",
+      record: {
+        status: "MANUAL OVERRIDE",
+        rows: [
+          ["Applicant", "Mara Velen"],
+          ["Appointment", "NONE / same-day override"],
+          ["Case file", "CIV-1840-R"],
+          ["Submitted", "Loss declaration"],
+          ["Required", "Identity card / photo"],
+          ["Host", "Citizen Documents"],
+        ],
+        detail: "The document desk opened a same-day slot, but the override must be confirmed before entry.",
+      },
+      idCheck: {
+        status: "MATCH",
+        title: "BIOMETRIC MATCH",
+        detail: "Mara’s face and temporary identity record agree with the manual override.",
+      },
+      documents: {
+        status: "COMPLETE",
+        title: "LOSS DECLARATION PRESENT",
+        detail: "The loss declaration, temporary number, and new photograph are present.",
+      },
+      question: {
+        prompt: "Which desk opened the same-day override?",
+        answer: "Citizen Documents. They told me the border appointment could not be moved.",
+        consistency: "PLAUSIBLE / CONFIRM",
+      },
+      liaison: {
+        status: "PROCEED",
+        title: "DOCUMENT DESK CONFIRMS",
+        detail: "The override is genuine. Send Mara to Window 01 once the record is logged.",
+      },
+      kind: "emergency",
+      expected: "admit",
+      requiresLiaison: true,
+    },
+  ],
+  "irena-sava": [
+    {
+      variantId: "guardian-dispute",
+      variantLabel: "GUARDIAN DISPUTE",
+      rule: "An emergency may bypass the queue, but a guardian conflict needs a live confirmation from Travel and Visas.",
+      caseNumber: "MED-2207-B",
+      queue: "EM-05",
+      purpose: "Request emergency travel permission while the second guardian is unreachable.",
+      record: {
+        status: "EMERGENCY / GUARDIAN REVIEW",
+        rows: [
+          ["Applicant", "Irena Sava"],
+          ["Appointment", "NONE / emergency code"],
+          ["Case file", "MED-2207-B"],
+          ["Submitted", "Hospital referral / guardian form"],
+          ["Required", "Child identity / live confirmation"],
+          ["Host", "Travel and Visas"],
+        ],
+        detail: "The hospital referral is genuine, but the second guardian has not signed the travel record.",
+      },
+      documents: {
+        status: "REVIEW",
+        title: "CO-SIGNATURE NOT FOUND",
+        detail: "The hospital referral and guardian ID are present. The second guardian’s approval is not in the system.",
+      },
+      question: {
+        prompt: "Why is the second guardian not on the travel record?",
+        answer: "He is at the hospital. The travel desk told me they could confirm him by telephone.",
+        consistency: "PLAUSIBLE / CONFIRM",
+      },
+      secondary: {
+        status: "CLEAR",
+        title: "FAMILY SEARCH COMPLETE",
+        detail: "The bag contains medication and personal effects. The open question belongs to Travel and Visas.",
+      },
+      liaison: {
+        status: "PROCEED",
+        title: "TRAVEL DESK CONFIRMS THE EXCEPTION",
+        detail: "The second guardian is verified by telephone. Send Irena to Window 02 without delay.",
+      },
+      kind: "emergency",
+      expected: "admit",
+      requiresLiaison: true,
+    },
+  ],
+  "viktor-dalen": [
+    {
+      variantId: "expired-order",
+      variantLabel: "EXPIRED ORDER",
+      rule: "A service weapon can be declared and still be attached to an order that is no longer active.",
+      modeLabel: "CLEARANCE / REVIEW",
+      caseNumber: "MIL-7710-X",
+      queue: "C-18",
+      purpose: "Deliver sealed orders using a clearance code that was cancelled at first light.",
+      record: {
+        status: "ORDER EXPIRED",
+        rows: [
+          ["Officer", "Viktor Dalen"],
+          ["Appointment", "NONE / military channel"],
+          ["Order", "MIL-7710-X / cancelled"],
+          ["Unit", "17th Civic Defense"],
+          ["Weapon", "Sidearm listed / authority expired"],
+          ["Sponsor", "State Affairs Directorate"],
+        ],
+        detail: "The courier is genuine, but the order was withdrawn after a route change this morning.",
+      },
+      documents: {
+        status: "REVOKED",
+        title: "SEAL NO LONGER ACTIVE",
+        detail: "The packet is intact. Its command glyph was cancelled at 06:00 and cannot authorize entry now.",
+      },
+      question: {
+        prompt: "Who reactivated the cancelled route?",
+        answer: "My unit told me the old order would still open the gate. I have no newer code.",
+        consistency: "NOT VERIFIED",
+      },
+      secondary: {
+        status: "SECURITY HOLD",
+        title: "ORDER CONFIRMED CANCELLED",
+        detail: "State Affairs confirms the route change. Secure the packet and keep the courier outside.",
+      },
+      liaison: {
+        status: "DENY",
+        title: "STATE AFFAIRS ORDERS HOLD",
+        detail: "The receiving officer will issue a new route after the cancelled order is surrendered.",
+      },
+      kind: "risk",
+      expected: "deny",
+      requiresSecondary: true,
+    },
+  ],
+  "radan-kest": [
+    {
+      variantId: "escort-swap",
+      variantLabel: "ESCORT SWAP",
+      rule: "A real mission order does not cover a person or device that was added after the roster was sealed.",
+      caseNumber: "AUX-4418-S",
+      queue: "C-21",
+      purpose: "Bring a contracted security team inside after an unlisted escort joins the convoy.",
+      record: {
+        status: "ROSTER ALTERED",
+        rows: [
+          ["Team lead", "Radan Kest"],
+          ["Appointment", "NONE / auxiliary channel"],
+          ["Mission", "AUX-4418-S / overnight"],
+          ["Roster", "4 names / 3 present"],
+          ["Equipment", "Weapons / secure comms / capsule"],
+          ["Sponsor", "External Security Office"],
+        ],
+        detail: "The sponsor confirms the mission but not the person who joined the convoy outside the embassy.",
+      },
+      documents: {
+        status: "ROSTER MISMATCH",
+        title: "ESCORT ADDED AFTER SEAL",
+        detail: "The roster is stamped for three auxiliaries. Radan says the fourth name is a temporary driver.",
+      },
+      question: {
+        prompt: "Why was the escort added after the roster was sealed?",
+        answer: "The driver knows the route. The sponsor will correct the paper when we are inside.",
+        consistency: "EVASIVE / NOT VERIFIED",
+      },
+      secondary: {
+        status: "BLACKLISTED SERIAL",
+        title: "CAPSULE FLAGGED BY SECURITY",
+        detail: "The capsule serial is still listed as missing from a Veskarian archive. Hold the team.",
+      },
+      liaison: {
+        status: "HOLD",
+        title: "SPONSOR DENIES THE ADDITION",
+        detail: "External Security confirms the mission but will not authorize the unlisted escort or capsule.",
+      },
+      kind: "risk",
+      expected: "deny",
+      requiresSecondary: true,
+    },
+  ],
+  "olya-merin": [
+    {
+      variantId: "living-record",
+      variantLabel: "LIVING DUPLICATE",
+      rule: "A genuine document is not enough when the same case file is active under another living portrait.",
+      caseNumber: "LEG-5109-L",
+      queue: "B146",
+      purpose: "Submit a power-of-attorney document while another applicant uses the same legal file.",
+      record: {
+        status: "DUPLICATE / ACTIVE NOW",
+        rows: [
+          ["Applicant", "Olya Merin"],
+          ["Appointment", "09:20 / Window 03"],
+          ["Case file", "LEG-5109-L"],
+          ["Submitted", "Power of attorney / copy"],
+          ["Required", "Original ID / witness form"],
+          ["Alert", "Second applicant active at Window 03"],
+        ],
+        detail: "The same case number is currently being opened by a different person in the legal office.",
+      },
+      idCheck: {
+        status: "MATCH / DUPLICATE",
+        title: "DOCUMENT IS REAL / RECORD IS NOT UNIQUE",
+        detail: "The card is genuine and belongs to Olya, but the active legal file is already being used by another portrait.",
+      },
+      documents: {
+        status: "INCOMPLETE",
+        title: "ORIGINAL WITNESS FORM MISSING",
+        detail: "The copy is present. The original form is attached to the other active file.",
+      },
+      question: {
+        prompt: "Who is already using the same legal case number?",
+        answer: "I only know that the clerk told me to take a seat. I was not shown another applicant.",
+        consistency: "INCONSISTENT WITH LIVE FILE",
+      },
+      secondary: {
+        status: "IDENTITY FRAUD SUSPECTED",
+        title: "SECOND RECORD IS A LIVE ALERT",
+        detail: "Legal security confirms that the duplicate file was opened minutes ago under a different portrait.",
+      },
+      liaison: {
+        status: "INVESTIGATE",
+        title: "LEGAL DESK REQUESTS SECURITY HOLD",
+        detail: "No one may enter until the duplicate power-of-attorney file is reconciled.",
+      },
+      kind: "spy",
+      expected: "deny",
+      requiresSecondary: true,
+    },
+  ],
+  "anton-ryl": [
+    {
+      variantId: "returning-seal",
+      variantLabel: "RETURNING SEAL",
+      rule: "The restricted office must identify the recipient before an old seal can authorize a new crossing.",
+      caseNumber: "COR-0000-R",
+      queue: "S-04",
+      purpose: "Return a sealed letter that appears in the correspondence register before it is delivered.",
+      record: {
+        status: "VALID / RECIPIENT MISSING",
+        rows: [
+          ["Visitor", "Anton Ryl"],
+          ["Appointment", "NONE / restricted channel"],
+          ["Case file", "COR-0000-R"],
+          ["Clearance", "Old seal / recipient absent"],
+          ["Package", "One sealed letter"],
+          ["Sponsor", "Not listed"],
+        ],
+        detail: "The letter is now listed, but the recipient field changes every time the page is refreshed.",
+      },
+      documents: {
+        status: "OLD SEAL",
+        title: "RECIPIENT FIELD IS BLANK",
+        detail: "The envelope carries the pre-Union mark. Its recipient line has no stable text under magnification.",
+      },
+      question: {
+        prompt: "Who should receive this letter?",
+        answer: "The person who is missing from the register. They are already waiting behind the red door.",
+        consistency: "NO MATCHING RECORD",
+      },
+      secondary: {
+        status: "THRESHOLD HOLD",
+        title: "THE RED STAMP WILL NOT DRY",
+        detail: "Keep Anton outside the inner gate and contact the restricted office before recognizing the seal.",
+      },
+      liaison: {
+        status: "HOLD",
+        title: "RESTRICTED OFFICE REFUSES TO ANSWER",
+        detail: "The line rings once. The display returns: DO NOT RECOGNIZE THE RECIPIENT.",
+      },
+      kind: "anomaly",
+      expected: "deny",
+      requiresSecondary: true,
+    },
+  ],
+  "sorin-dask": [
+    {
+      variantId: "unlisted-transmitter",
+      variantLabel: "UNLISTED TRANSMITTER",
+      rule: "Emergency repair status explains the tools, not a module that can transmit from inside the embassy.",
+      caseNumber: "ENG-1182-T",
+      queue: "E-09",
+      purpose: "Repair the scanner with an extra module that is absent from the work order.",
+      record: {
+        status: "EMERGENCY / MODULE UNLISTED",
+        rows: [
+          ["Engineer", "Sorin Dask"],
+          ["Appointment", "NONE / emergency channel"],
+          ["Order", "ENG-1182-T"],
+          ["Equipment", "Diagnostic tools / module?"],
+          ["Sponsor", "Facilities Directorate"],
+          ["Restriction", "No transmitters beyond gate"],
+        ],
+        detail: "Facilities sent a repair team, but the black module has no serial in the work order.",
+      },
+      xray: {
+        status: "UNDECLARED MODULE",
+        title: "BLACK MODULE REQUIRES SEARCH",
+        detail: "The spare-board shape is denser than the listed scanner parts and has a second connector row.",
+      },
+      question: {
+        prompt: "Who assigned the black module to this repair?",
+        answer: "Facilities gave it to me at the loading bay. I assumed the serial was already attached.",
+        consistency: "PLAUSIBLE / VERIFY SERIAL",
+      },
+      secondary: {
+        status: "TRANSMITTER FLAGGED",
+        title: "MODULE IS NOT A SPARE BOARD",
+        detail: "Secondary inspection identifies a short-range transmitter. The repair crew must wait outside.",
+      },
+      liaison: {
+        status: "HOLD",
+        title: "FACILITIES CANNOT VERIFY THE MODULE",
+        detail: "The work order is real, but Facilities has no record of this transmitter. Do not release it.",
+      },
+      kind: "risk",
+      expected: "deny",
+      requiresSecondary: true,
+    },
+  ],
+  "director-vel": [
+    {
+      variantId: "sealed-recorder",
+      variantLabel: "SEALED RECORDER",
+      rule: "Priority clearance skips the queue; it does not erase a no-recording-device restriction.",
+      caseNumber: "DIR-9011-S",
+      queue: "P-03",
+      purpose: "Attend a closed meeting after a recorder is found sealed inside the executive portfolio.",
+      record: {
+        status: "PRIORITY / DEVICE REVIEW",
+        rows: [
+          ["Official", "Vel Ordan"],
+          ["Appointment", "NONE / executive channel"],
+          ["Clearance", "Priority red / level 4"],
+          ["Sponsor", "Ambassador’s Office"],
+          ["Restriction", "No recording devices"],
+          ["Exception", "One sealed recorder found"],
+        ],
+        detail: "The device is sealed and inactive, but the meeting file still requires it to be secured outside.",
+      },
+      xray: {
+        status: "PROHIBITED DEVICE",
+        title: "RECORDER SEALED IN PORTFOLIO",
+        detail: "The recorder is powered down and wrapped, but the portfolio cannot cross with it inside.",
+      },
+      question: {
+        prompt: "Will you leave the recorder in the outer locker?",
+        answer: "If the ambassador insists, I will. I was told the meeting could not wait for a locker key.",
+        consistency: "PRESSURE / CONDITIONALLY COMPLIANT",
+      },
+      secondary: {
+        status: "DEVICE SECURED",
+        title: "RECORDER LOCKED OUTSIDE",
+        detail: "The device contains no active transmission. The portfolio is clear after the locker seal is logged.",
+      },
+      liaison: {
+        status: "HOLD DEVICE",
+        title: "AMBASSADOR’S OFFICE CONFIRMS",
+        detail: "The director may enter after the recorder is sealed in the outer locker.",
+      },
+      kind: "risk",
+      expected: "admit",
+      requiresSecondary: true,
+      requiresLiaison: true,
+    },
+  ],
+  "nadiya-ost": [
+    {
+      variantId: "registry-window",
+      variantLabel: "REGISTRY WINDOW",
+      rule: "A family-record discrepancy belongs to Citizen Documents, but the desk must confirm the applicant before entry.",
+      mode: "emergency",
+      modeLabel: "SAME-DAY REVIEW",
+      caseNumber: "FAM-2403-R",
+      queue: "A-091",
+      purpose: "Resolve a family registry discrepancy before the record is archived at the end of the day.",
+      record: {
+        status: "SAME-DAY REVIEW",
+        rows: [
+          ["Applicant", "Nadiya Ost"],
+          ["Appointment", "NONE / registry desk"],
+          ["Case file", "FAM-2403-R"],
+          ["Submitted", "Family registry request"],
+          ["Required", "Identity card / receipt"],
+          ["Host", "Citizen Documents"],
+        ],
+        detail: "The registry desk opened a same-day review because one family member is being removed from the file.",
+      },
+      question: {
+        prompt: "Who told you to come before the normal appointment queue?",
+        answer: "The registry clerk said the record would close tonight. They told me the desk could confirm it.",
+        consistency: "PLAUSIBLE / CONFIRM",
+      },
+      liaison: {
+        status: "PROCEED",
+        title: "CITIZEN DOCUMENTS CONFIRMS",
+        detail: "The registry discrepancy is genuine and not a gate issue. Send Nadiya to Window 01.",
+      },
+      kind: "emergency",
+      expected: "admit",
+      requiresLiaison: true,
+    },
+  ],
+  "milan-vek": [
+    {
+      variantId: "duplicate-pass",
+      variantLabel: "DUPLICATE PASS",
+      rule: "A real former guard may still be carrying an access credential that must not cross the gate.",
+      caseNumber: "GUA-6671-D",
+      queue: "C-25",
+      purpose: "Collect a replacement credential while the original pass appears in a second security record.",
+      record: {
+        status: "CREDENTIAL DUPLICATED",
+        rows: [
+          ["Visitor", "Milan Vek"],
+          ["Appointment", "NONE / guard channel"],
+          ["Credential", "GUA-6671-D / duplicate"],
+          ["Unit", "Embassy Guard Detail"],
+          ["Request", "Replacement pass"],
+          ["Alert", "Original pass seen at Archive"],
+        ],
+        detail: "The guard office confirms Milan’s identity but reports the missing pass near the archive overnight.",
+      },
+      documents: {
+        status: "REVOKED",
+        title: "DUPLICATE PASS NOT ACCEPTED",
+        detail: "The presented pass is authentic but revoked. The replacement token is not ready at the gate.",
+      },
+      question: {
+        prompt: "Who used the original pass near the archive?",
+        answer: "I do not know. I reported it lost. The guard office said I should collect the replacement here.",
+        consistency: "NO ORDER FOUND",
+      },
+      secondary: {
+        status: "SECURITY HOLD",
+        title: "ORIGINAL PASS LOCATED",
+        detail: "The old credential was used near the archive. Milan must wait outside for the investigator.",
+      },
+      liaison: {
+        status: "DENY",
+        title: "GUARD COMMAND ORDERS HOLD",
+        detail: "Milan must surrender the duplicate pass and weapon before the case can proceed.",
+      },
+      kind: "spy",
+      expected: "deny",
+      requiresSecondary: true,
+    },
+  ],
+  "elias-rhy": [
+    {
+      variantId: "second-page",
+      variantLabel: "SECOND PAGE",
+      rule: "A page carrying the red seal is still only paper until its issuing office can name its origin.",
+      caseNumber: "COR-0001-P",
+      queue: "S-05",
+      purpose: "Return a second red-stamped page that the correspondence register says was never issued.",
+      record: {
+        status: "RECORD CHANGED AGAIN",
+        rows: [
+          ["Visitor", "Elias Rhy"],
+          ["Appointment", "NONE / restricted channel"],
+          ["Case file", "COR-0001-P"],
+          ["Last visit", "NOT FOUND / AGAIN"],
+          ["Document", "One red-stamped page / duplicate"],
+          ["Sponsor", "The gate"],
+        ],
+        detail: "The file now contains two identical pages. Neither has a ministry, serial, date, or issuing origin.",
+      },
+      documents: {
+        status: "UNISSUED",
+        title: "SECOND PAGE HAS NO ORIGIN",
+        detail: "The seal is identical to the first page, but the paper grain and blank reverse do not match any ministry stock.",
+      },
+      question: {
+        prompt: "Who gave you the second page?",
+        answer: "You did. You stamped the first one when the room was empty. This is the page you meant to keep.",
+        consistency: "IMPOSSIBLE / FAMILIAR",
+      },
+      secondary: {
+        status: "DO NOT STAMP",
+        title: "THE PAGE IS A COPY OF THE GATE",
+        detail: "Deny recognition and keep Elias outside the inner line. The page is not an entry authority.",
+      },
+      liaison: {
+        status: "NO RESPONSE",
+        title: "ALL INTERNAL LINES ARE BUSY",
+        detail: "The service windows display one message: WE ARE ALREADY INSIDE.",
+      },
+      kind: "anomaly",
+      expected: "deny",
+      requiresSecondary: true,
+    },
+  ],
+};
+
+const BONUS_CASES = [
+  {
+    baseId: "mara-velen",
+    patch: {
+      variantId: "night-audit",
+      variantLabel: "NIGHT AUDIT",
+      rule: "A familiar face and a clear bag do not resolve a duplicate identity record after hours.",
+      mode: "clearance",
+      modeLabel: "AFTER-HOURS SUMMONS",
+      time: "22:10",
+      caseNumber: "AUD-1840",
+      queue: "N-01",
+      purpose: "Answer an after-hours summons from Citizen Documents after a second Mara Velen record appears.",
+      record: {
+        status: "DUPLICATE / AFTER HOURS",
+        rows: [
+          ["Visitor", "Mara Velen"],
+          ["Appointment", "NONE / internal summons"],
+          ["Case file", "AUD-1840"],
+          ["Alert", "Second Mara record opened"],
+          ["Host", "Citizen Documents"],
+          ["Route", "Outer gate only"],
+        ],
+        detail: "A second identity record opened after the public desk closed. The face is familiar; the route is not.",
+      },
+      idCheck: {
+        status: "MATCH / DUPLICATE",
+        title: "FACE MATCHES TWO ACTIVE RECORDS",
+        detail: "The portrait matches Mara, but the same biometric token is active on a second after-hours file.",
+      },
+      documents: {
+        status: "INCOMPLETE",
+        title: "SUMMONS LACKS HOST SIGNATURE",
+        detail: "The printed summons names Citizen Documents but has no staff signature or secure dispatch number.",
+      },
+      question: {
+        prompt: "Who sent the after-hours summons?",
+        answer: "The document desk. They said you would recognize my face and let me through.",
+        consistency: "PRESSURE / NOT VERIFIED",
+      },
+      secondary: {
+        status: "DUPLICATE ALERT",
+        title: "SECOND RECORD IS ACTIVE",
+        detail: "Security finds a second live identity token. Keep Mara outside until the host is confirmed.",
+      },
+      liaison: {
+        status: "HOLD",
+        title: "NO AFTER-HOURS HOST FOUND",
+        detail: "Citizen Documents is closed and cannot confirm the summons. Do not recognize the duplicate.",
+      },
+      kind: "spy",
+      expected: "deny",
+      requiresSecondary: true,
+    },
+  },
+  {
+    baseId: "irena-sava",
+    patch: {
+      variantId: "night-medical",
+      variantLabel: "NIGHT MEDICAL",
+      rule: "The emergency route is compassionate, but the liaison must confirm who is responsible for the child tonight.",
+      caseNumber: "MED-2207-N",
+      queue: "N-02",
+      purpose: "Reach the embassy medical liaison after a hospital transfer is redirected through the closed entrance.",
+      record: {
+        status: "NIGHT EMERGENCY",
+        rows: [
+          ["Applicant", "Irena Sava"],
+          ["Appointment", "NONE / medical liaison"],
+          ["Case file", "MED-2207-N"],
+          ["Submitted", "Hospital transfer note"],
+          ["Required", "Guardian ID / liaison call"],
+          ["Host", "Travel and Visas"],
+        ],
+        detail: "The hospital transfer is real, but the overnight liaison must authorize the route through the embassy.",
+      },
+      question: {
+        prompt: "Who is waiting for you inside after hours?",
+        answer: "The medical liaison. The hospital gave me a number and told me to use the red entrance.",
+        consistency: "PLAUSIBLE / CALL LIAISON",
+      },
+      liaison: {
+        status: "PROCEED",
+        title: "NIGHT LIAISON AUTHORIZES ENTRY",
+        detail: "The medical liaison confirms the transfer. Send Irena directly to the protected waiting room.",
+      },
+      kind: "emergency",
+      expected: "admit",
+      requiresLiaison: true,
+    },
+  },
+  {
+    baseId: "radan-kest",
+    patch: {
+      variantId: "night-lockdown",
+      variantLabel: "NIGHT LOCKDOWN",
+      rule: "A mission order cannot override a lockdown when its equipment manifest has a missing serial.",
+      caseNumber: "AUX-4418-N",
+      queue: "N-03",
+      purpose: "Bring a contracted team to the embassy during an overnight archive lockdown.",
+      record: {
+        status: "LOCKDOWN / REVIEW",
+        rows: [
+          ["Team lead", "Radan Kest"],
+          ["Appointment", "NONE / auxiliary channel"],
+          ["Mission", "AUX-4418-N / archive"],
+          ["Roster", "3 names / 3 present"],
+          ["Equipment", "Weapons / secure comms"],
+          ["Alert", "One serial missing"],
+        ],
+        detail: "The roster is correct, but an equipment serial is missing during an archive lockdown.",
+      },
+      documents: {
+        status: "SERIAL MISSING",
+        title: "MANIFEST CANNOT BE CLOSED",
+        detail: "Every person is listed. The secure-comms case still contains one item with no serial entry.",
+      },
+      question: {
+        prompt: "Which item has the missing serial?",
+        answer: "The comms case. It was sealed before the archive alarm and nobody opened it afterward.",
+        consistency: "NOT VERIFIED",
+      },
+      secondary: {
+        status: "BLACKLISTED SERIAL",
+        title: "LOCKDOWN ITEM CONFIRMED",
+        detail: "The hidden capsule matches the archive alert. Hold the team outside the inner gate.",
+      },
+      liaison: {
+        status: "HOLD",
+        title: "ARCHIVE SECURITY DENIES ENTRY",
+        detail: "The mission is real, but no unlisted item may cross during the lockdown.",
+      },
+      kind: "risk",
+      expected: "deny",
+      requiresSecondary: true,
+    },
+  },
+  {
+    baseId: "director-vel",
+    patch: {
+      variantId: "ambassador-errand",
+      variantLabel: "AMBASSADOR’S ERRAND",
+      rule: "A senior official may be expected and still must leave the recorder in the outer locker.",
+      caseNumber: "DIR-9011-N",
+      queue: "N-04",
+      purpose: "Carry a sealed portfolio to the ambassador after a late meeting changes rooms.",
+      record: {
+        status: "PRIORITY / ROOM CHANGE",
+        rows: [
+          ["Official", "Vel Ordan"],
+          ["Appointment", "NONE / executive channel"],
+          ["Clearance", "Priority red / level 4"],
+          ["Sponsor", "Ambassador’s Office"],
+          ["Meeting", "Room changed after 21:00"],
+          ["Restriction", "No recording devices"],
+        ],
+        detail: "The room change is confirmed, but the portfolio still contains the recorder listed in the restriction.",
+      },
+      question: {
+        prompt: "Did the room change authorize the recorder?",
+        answer: "No. The ambassador only changed rooms. The recorder can stay with security if you make this quick.",
+        consistency: "CONSISTENT / RESTRICTION REMAINS",
+      },
+      secondary: {
+        status: "DEVICE SECURED",
+        title: "RECORDER LOCKED OUTSIDE",
+        detail: "The recorder is sealed and the portfolio is clear for the new meeting room.",
+      },
+      liaison: {
+        status: "PROCEED",
+        title: "AMBASSADOR CONFIRMS THE ROOM CHANGE",
+        detail: "The director may enter after the recorder is deposited in the outer locker.",
+      },
+      kind: "risk",
+      expected: "admit",
+      requiresSecondary: true,
+      requiresLiaison: true,
+    },
+  },
+  {
+    baseId: "olya-merin",
+    patch: {
+      variantId: "witness-switch",
+      variantLabel: "WITNESS SWITCH",
+      rule: "Legal paperwork must name the same witness on the system record and the physical original.",
+      caseNumber: "LEG-5109-N",
+      queue: "N-05",
+      purpose: "Deliver a power-of-attorney after the witness named in the appointment is replaced.",
+      record: {
+        status: "WITNESS CHANGED",
+        rows: [
+          ["Applicant", "Olya Merin"],
+          ["Appointment", "NONE / legal recall"],
+          ["Case file", "LEG-5109-N"],
+          ["Submitted", "Power of attorney / original"],
+          ["Required", "ID / named witness"],
+          ["Alert", "Witness changed after filing"],
+        ],
+        detail: "The original paper is present, but the named witness differs from the witness in the live legal file.",
+      },
+      documents: {
+        status: "WITNESS MISMATCH",
+        title: "ORIGINAL NAMES A DIFFERENT WITNESS",
+        detail: "The paper is stamped and complete, but its witness line does not match the active legal record.",
+      },
+      question: {
+        prompt: "Why was the witness changed after filing?",
+        answer: "The first witness could not travel. The clerk said the name could be fixed after I entered.",
+        consistency: "PROCEDURE BYPASSED",
+      },
+      secondary: {
+        status: "LEGAL HOLD",
+        title: "WITNESS LINE REQUIRES INVESTIGATION",
+        detail: "Legal security confirms that the original and live file cannot both be valid.",
+      },
+      liaison: {
+        status: "DENY",
+        title: "LEGAL DESK REFUSES THE PAPER",
+        detail: "Keep Olya outside until a new witnessed original is issued.",
+      },
+      kind: "spy",
+      expected: "deny",
+      requiresSecondary: true,
+    },
+  },
+  {
+    baseId: "elias-rhy",
+    patch: {
+      variantId: "night-shadow",
+      variantLabel: "NIGHT SHADOW",
+      rule: "When the X-ray shows the page but not the person’s shadow, ordinary clearance cannot authorize recognition.",
+      caseNumber: "COR-0001-N",
+      queue: "N-06",
+      purpose: "Return a red-stamped page at the hour when the correspondence office is dark.",
+      record: {
+        status: "NIGHT ENTRY / UNKNOWN",
+        rows: [
+          ["Visitor", "Elias Rhy"],
+          ["Appointment", "NONE / restricted channel"],
+          ["Case file", "COR-0001-N"],
+          ["Last visit", "NOT FOUND"],
+          ["Document", "One red-stamped page"],
+          ["Sponsor", "The gate"],
+        ],
+        detail: "The system recognizes the page but returns no human origin. The correspondence office is closed.",
+      },
+      question: {
+        prompt: "Who will receive the page tonight?",
+        answer: "The person who has always received it. You can hear them on the other side of the gate.",
+        consistency: "IMPOSSIBLE / FAMILIAR",
+      },
+      secondary: {
+        status: "DO NOT STAMP",
+        title: "SHADOW ABSENCE CONFIRMED",
+        detail: "The page remains visible in the scan while the visitor’s shadow does not. Keep Elias outside.",
+      },
+      liaison: {
+        status: "NO RESPONSE",
+        title: "CORRESPONDENCE OFFICE IS DARK",
+        detail: "The internal line answers with the sound of a stamp and no voice.",
+      },
+      kind: "anomaly",
+      expected: "deny",
+      requiresSecondary: true,
+    },
+  },
+];
+
+function cloneData(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function mergeCaseData(base, patch = {}) {
+  const output = cloneData(base);
+  const merge = (target, source) => {
+    Object.entries(source).forEach(([key, value]) => {
+      if (value && typeof value === "object" && !Array.isArray(value) && target[key] && typeof target[key] === "object" && !Array.isArray(target[key])) {
+        merge(target[key], value);
+      } else {
+        target[key] = cloneData(value);
+      }
+    });
+    return target;
+  };
+  return merge(output, patch);
+}
+
+function mulberry32(seed) {
+  let value = seed >>> 0;
+  return () => {
+    value += 0x6d2b79f5;
+    let t = value;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function shuffle(items, random) {
+  const output = [...items];
+  for (let index = output.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(random() * (index + 1));
+    [output[index], output[swapIndex]] = [output[swapIndex], output[index]];
+  }
+  return output;
+}
+
+function applyCasePatch(base, patch = null) {
+  const next = mergeCaseData(base, patch || {});
+  next.variantId = patch?.variantId || "standard";
+  next.variantLabel = patch?.variantLabel || "STANDARD CHECKS";
+  next.scenarioId = `${base.id}::${next.variantId}`;
+  next.rule = patch?.rule || "Compare the record, the person, the papers, and the scan before applying the stamp.";
+  return next;
+}
+
+function campaignSeedFromUrl() {
+  const raw = new URLSearchParams(window.location.search).get("seed");
+  if (raw === null || raw.trim() === "") return null;
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) ? (parsed >>> 0) : null;
+}
+
+function newCampaignSeed() {
+  if (window.crypto?.getRandomValues) {
+    const buffer = new Uint32Array(1);
+    window.crypto.getRandomValues(buffer);
+    return buffer[0];
+  }
+  return Math.floor(Math.random() * 4294967296) >>> 0;
+}
+
+function buildCampaign(seed) {
+  const random = mulberry32(seed);
+  const campaign = shifts.map((shift) => ({
+    ...shift,
+    cases: shuffle(shift.cases.map((base) => {
+      const variants = CASE_VARIANTS[base.id] || [];
+      const patch = variants.length && random() < 0.62
+        ? variants[Math.floor(random() * variants.length)]
+        : null;
+      return applyCasePatch(base, patch);
+    }), random),
+  }));
+  const baseById = Object.fromEntries(shifts.flatMap((shift) => shift.cases.map((base) => [base.id, base])));
+  const nightCases = BONUS_CASES.map(({ baseId, patch }) => applyCasePatch(baseById[baseId], patch));
+  campaign.push({
+    day: 3,
+    title: "NIGHT REGISTER",
+    directive: "AFTER-HOURS VISITORS / EVERY EXCEPTION LEAVES A TRACE",
+    cases: shuffle(nightCases, random),
+  });
+  return campaign;
+}
+
+const initialCampaignSeed = campaignSeedFromUrl() ?? newCampaignSeed();
+let campaignShifts = buildCampaign(initialCampaignSeed);
+
+function initialState(seed = initialCampaignSeed) {
   return {
     started: false,
+    seed,
     day: 1,
     caseIndex: 0,
     dailyTolerance: 100,
@@ -761,7 +1623,7 @@ let visitorBlinkTimer = null;
 let visitorBlinkResetTimer = null;
 
 function currentShift() {
-  return shifts[state.day - 1];
+  return campaignShifts[state.day - 1];
 }
 
 function currentCase() {
@@ -831,6 +1693,8 @@ const TOOL_ART = {
   documents: "assets/generated/passport-documents.png",
   detector: "assets/generated/detector-clear.png",
 };
+
+const PRIMARY_TOOLS = ["appointment", "id", "documents", "detector", "xray", "question"];
 
 function xrayAsset(c) {
   const caseAsset = window.RedStampXrayArt?.[c?.id]?.filename;
@@ -958,6 +1822,8 @@ function renderCase() {
     $("#caseTitle").textContent = "No active visitor";
     $("#caseMeta").textContent = "Start the shift to receive the first visitor.";
     $("#casePurpose").textContent = "";
+    $("#caseRule").hidden = true;
+    $("#caseRule").textContent = "";
     $("#evidenceList").innerHTML = "";
     $("#questionCard").hidden = true;
     $("#visitorNamePlate").textContent = "AWAITING VISITOR";
@@ -971,7 +1837,8 @@ function renderCase() {
     $("#questionShortcutSprite").src = "assets/generated/inspector-cutout.png";
     $("#arrivalBadge").textContent = "STANDBY";
     $("#arrivalBadge").className = "arrival-badge";
-    $("#caseProgress").textContent = "0 / 0";
+    $("#caseProgress").textContent = "VISITOR —";
+    $("#evidenceProgress").textContent = "CHECKS 0 / 6";
     $("#queueNumber").textContent = "—";
     $("#queueNext").textContent = "—";
     $("#deskCaseNumber").textContent = "CASE —";
@@ -982,6 +1849,7 @@ function renderCase() {
     $("#sceneCaseRole").textContent = "BEGIN THE SHIFT TO OPEN THE GATE";
     $("#sceneArrivalBadge").textContent = "STANDBY";
     $("#sceneCaseNumber").textContent = "CASE —";
+    $("#sceneCaseVariant").textContent = "STANDARD";
     $("#scenePurpose").textContent = "The checkpoint is quiet. Click the inspector’s desk, the visitor, or the gate equipment to investigate.";
     $("#sceneCasePortrait").src = "assets/generated/inspector-cutout.png";
     $("#sceneVisitorSprite").src = "assets/generated/inspector-cutout.png";
@@ -996,10 +1864,13 @@ function renderCase() {
     ["Service", c.service],
     ["Window", `${c.window} / ${c.time}`],
     ["Case", c.caseNumber],
+    ["Scenario", c.variantLabel],
   ];
   $("#caseTitle").textContent = c.name;
   $("#caseMeta").innerHTML = recordMeta.map(([label, value]) => metaRow(label, value)).join("");
   $("#casePurpose").textContent = c.purpose;
+  $("#caseRule").hidden = false;
+  $("#caseRule").textContent = `PROTOCOL NOTE / ${c.rule}`;
   $("#evidenceList").innerHTML = renderEvidenceRows(c);
   $("#questionCard").hidden = !state.revealed.question;
   $("#questionPrompt").textContent = c.question.prompt;
@@ -1018,7 +1889,7 @@ function renderCase() {
   $("#visitorImage").alt = `${c.name}, ${c.role}`;
   $("#arrivalBadge").textContent = c.modeLabel;
   $("#arrivalBadge").className = `arrival-badge ${modeClass(c.mode)} ${c.kind === "spy" || c.kind === "anomaly" ? "alert" : ""}`;
-  $("#caseProgress").textContent = `${state.caseIndex + 1} / ${currentShift().cases.length}`;
+  $("#caseProgress").textContent = `VISITOR ${String(state.caseIndex + 1).padStart(2, "0")} / ${String(currentShift().cases.length).padStart(2, "0")}`;
   $("#queueNumber").textContent = c.queue;
   $("#queueNext").textContent = currentShift().cases[state.caseIndex + 1]?.queue || "END";
   $("#deskCaseNumber").textContent = `CASE ${c.caseNumber}`;
@@ -1029,6 +1900,7 @@ function renderCase() {
   $("#sceneCaseRole").textContent = c.role.toUpperCase();
   $("#sceneArrivalBadge").textContent = c.modeLabel;
   $("#sceneCaseNumber").textContent = `CASE ${c.caseNumber}`;
+  $("#sceneCaseVariant").textContent = c.variantLabel;
   $("#scenePurpose").textContent = c.purpose;
   $("#sceneCasePortrait").src = visitorSceneAsset(c);
   $("#sceneCasePortrait").alt = `${c.name}, ${c.role}`;
@@ -1219,8 +2091,16 @@ function renderTools() {
   });
 }
 
+function inspectedCount() {
+  return PRIMARY_TOOLS.filter((tool) => state.revealed[tool]).length;
+}
+
 function renderDecision() {
   const active = state.started && Boolean(currentCase()) && !state.resolved;
+  const checks = inspectedCount();
+  const checkLabel = `${checks} / ${PRIMARY_TOOLS.length}`;
+  $("#evidenceProgress").textContent = `CHECKS ${checkLabel}`;
+  $("#decisionProgress").textContent = `${checkLabel} CHECKS LOGGED`;
   $$("[data-action='resolve'], [data-action='secondary'], [data-action='liaison']").forEach((button) => {
     button.disabled = !active;
   });
@@ -1234,13 +2114,18 @@ function renderDecision() {
   });
   $("#decisionState").textContent = !state.started ? "LOCKED" : state.resolved ? "CLOSED" : "READY";
   $("#decisionCopy").textContent = state.secondaryUsed || state.liaisonCalled
-    ? "Additional authority has been recorded. You still hold the final authorization."
-    : "Review the case and complete the checks you consider necessary.";
+    ? `Additional authority has been recorded. ${checkLabel} primary checks logged; you still hold the final authorization.`
+    : `${checkLabel} primary checks logged. Review the evidence you consider necessary before applying the stamp.`;
   $("#decisionNote").textContent = state.secondaryUsed
     ? "Secondary findings are now part of the official case record."
     : state.liaisonCalled
       ? "The liaison response is logged. The red stamp remains your decision."
       : "The red stamp is the final authority at this gate.";
+}
+
+function renderLobbyStats() {
+  const totalCases = campaignShifts.reduce((total, shift) => total + shift.cases.length, 0);
+  $("#overlayStats").innerHTML = `<span><b>${String(campaignShifts.length).padStart(2, "0")}</b> SHIFTS</span><span><b>${String(totalCases).padStart(2, "0")}</b> CASES</span><span><b>100%</b> TOLERANCE</span>`;
 }
 
 function render() {
@@ -1249,7 +2134,9 @@ function render() {
   renderInspection();
   renderTools();
   renderDecision();
+  if (!state.started) renderLobbyStats();
   $("#protocolText").textContent = state.started ? "PROTOCOL ACTIVE" : "PROTOCOL STANDBY";
+  $("#runSeed").textContent = state.started ? `RUN ${String(state.seed).padStart(6, "0")}` : "RUN —";
   if (state.started) {
     const totalMinutes = 30 + state.caseIndex * 7;
     const hours = 8 + Math.floor(totalMinutes / 60);
@@ -1289,11 +2176,17 @@ function closeOverlay() {
   $("#overlay").classList.remove("is-open");
 }
 
+function resetCampaign(started = false) {
+  const seed = campaignSeedFromUrl() ?? newCampaignSeed();
+  campaignShifts = buildCampaign(seed);
+  Object.assign(state, initialState(seed), { started });
+}
+
 function startGame() {
-  Object.assign(state, initialState(), { started: true });
+  resetCampaign(true);
   closeOverlay();
   render();
-  showToast("Shift 01 opened. Check the arrival mode before applying the stamp.");
+  showToast(`Shift 01 opened. Run ${String(state.seed).padStart(6, "0")}. Check the arrival mode before applying the stamp.`);
 }
 
 function inspectTool(tool) {
@@ -1475,7 +2368,7 @@ function endShift() {
   state.started = false;
   const summary = shiftSummary();
   render();
-  if (state.day < shifts.length) {
+  if (state.day < campaignShifts.length) {
     openOverlay({
       kicker: `SHIFT 0${state.day} / REPORT FILED`,
       title: "SHIFT COMPLETE",
@@ -1555,10 +2448,10 @@ function handleAction(element) {
   const action = element.dataset.action;
   if (action === "start") return startGame();
   if (action === "restart") {
-    Object.assign(state, initialState());
+    resetCampaign(false);
     closeOverlay();
     render();
-    showToast("Campaign reset. The entrance opens at 08:30.");
+    showToast(`Campaign reset. New run ${String(state.seed).padStart(6, "0")} opens at 08:30.`);
     return;
   }
   if (action === "next-case") return nextCase();
@@ -1573,6 +2466,46 @@ function handleAction(element) {
   if (action === "resolve") return resolveCase(element.dataset.decision);
 }
 
+document.addEventListener("keydown", (event) => {
+  if (event.defaultPrevented || event.target.closest("input, textarea, select")) return;
+  if (event.key === "Escape") {
+    if (!$("#inspectionOverlay").hidden && $("#inspectionOverlay").classList.contains("is-open")) {
+      closeInspectionOverlay();
+    } else if ($("#overlay").classList.contains("is-open") && state.started) {
+      closeOverlay();
+    }
+    return;
+  }
+  if (!state.started || state.resolved) return;
+  const tool = {
+    "1": "appointment",
+    "2": "id",
+    "3": "documents",
+    "4": "detector",
+    "5": "xray",
+    "6": "question",
+  }[event.key];
+  if (tool) {
+    event.preventDefault();
+    inspectTool(tool);
+    return;
+  }
+  const shortcut = event.key.toLowerCase();
+  if (shortcut === "a") {
+    event.preventDefault();
+    resolveCase("admit");
+  } else if (shortcut === "d") {
+    event.preventDefault();
+    resolveCase("deny");
+  } else if (shortcut === "s") {
+    event.preventDefault();
+    useSecondary();
+  } else if (shortcut === "l") {
+    event.preventDefault();
+    callLiaison();
+  }
+});
+
 document.addEventListener("click", (event) => {
   const dossierElement = event.target.closest("[data-dossier-action]");
   if (dossierElement) {
@@ -1582,5 +2515,12 @@ document.addEventListener("click", (event) => {
   if (!actionElement) return;
   handleAction(actionElement);
 });
+
+if (new URLSearchParams(window.location.search).has("debug")) {
+  window.RedStampDebug = {
+    getState: () => cloneData(state),
+    getCampaign: () => cloneData(campaignShifts),
+  };
+}
 
 render();

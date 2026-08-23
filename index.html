@@ -30,6 +30,8 @@
           <span id="protocolText">PROTOCOL STANDBY</span>
           <span class="status-divider"></span>
           <span id="clockText">08:30</span>
+          <span class="status-divider"></span>
+          <span id="runSeed">RUN —</span>
         </div>
 
         <div class="header-metrics" aria-label="Current shift status">
@@ -84,6 +86,7 @@
             <div class="scene-case-tags">
               <span id="sceneArrivalBadge">STANDBY</span>
               <span id="sceneCaseNumber">CASE —</span>
+              <span id="sceneCaseVariant">STANDARD</span>
             </div>
             <p id="scenePurpose">The checkpoint is quiet. Click the inspector’s desk, the visitor, or the gate equipment to investigate.</p>
           </div>
@@ -206,6 +209,7 @@
               Start the shift to receive the first visitor.
             </div>
             <div class="case-purpose" id="casePurpose"></div>
+            <div class="case-rule" id="caseRule" hidden></div>
             <div class="evidence-list" id="evidenceList"></div>
             <div class="question-card" id="questionCard" hidden>
               <span class="panel-kicker">STATEMENT</span>
@@ -220,7 +224,10 @@
                 <span class="panel-kicker">INSPECTION DESK</span>
                 <h2>Available checks</h2>
               </div>
-              <span class="case-progress" id="caseProgress">0 / 0</span>
+              <div class="panel-heading-status">
+                <span class="case-progress" id="caseProgress">VISITOR —</span>
+                <span class="case-progress" id="evidenceProgress">CHECKS 0 / 6</span>
+              </div>
             </div>
             <div class="tool-grid" id="toolGrid">
               <button class="tool-button" data-action="inspect" data-tool="appointment" disabled>
@@ -271,6 +278,10 @@
             <p class="decision-copy" id="decisionCopy">
               Review the case and complete the checks you consider necessary.
             </p>
+            <div class="decision-progress">
+              <span id="decisionProgress">0 / 6 CHECKS LOGGED</span>
+              <span>1–6 CHECK · A ADMIT · D DENY</span>
+            </div>
             <div class="decision-actions" id="decisionActions">
               <button class="decision-button admit" data-action="resolve" data-decision="admit" disabled>
                 <span>APPLY RED STAMP</span>
@@ -341,7 +352,7 @@
         </p>
         <div class="briefing-strip" id="overlayStats">
           <span><b>01</b> ACTIVE SHIFT</span>
-          <span><b>06</b> CASES</span>
+          <span><b>17</b> CASES</span>
           <span><b>100%</b> TOLERANCE</span>
         </div>
         <button class="primary-button" data-action="start">BEGIN SHIFT <span>→</span></button>
