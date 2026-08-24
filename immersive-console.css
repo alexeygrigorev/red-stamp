@@ -252,6 +252,35 @@
   line-height: 1.35;
 }
 
+.observation-row-hint > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.observation-hint {
+  display: inline-grid;
+  width: 17px;
+  height: 17px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(216, 188, 147, 0.58);
+  border-radius: 50%;
+  background: #252524;
+  color: #e4c994;
+  cursor: pointer;
+  font-family: var(--console-mono);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.observation-hint:hover,
+.observation-hint.is-open {
+  border-color: var(--console-red-hot);
+  background: #54211f;
+  color: #f4d2a3;
+}
+
 .finding-controls {
   display: flex;
   align-items: center;

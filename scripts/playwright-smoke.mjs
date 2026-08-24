@@ -68,10 +68,15 @@ async function startRun(page, seed) {
   assert.notEqual((await page.locator("#caseTitle").textContent()).trim(), "No active visitor");
   const activeCase = (await readCampaign(page))[0].cases[0];
   assert.doesNotMatch(await page.locator(".scene-case-card").innerText(), new RegExp(activeCase.variantLabel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "Scenario variant must not be shown before inspection");
-  assert.equal(await page.locator('[data-action="resolve"][data-decision="admit"]').first().isDisabled(), true, "Authority must stay locked until findings are filed");
-  assert.equal(await page.locator('[data-action="submit-checklist"]').isDisabled(), true, "Checklist submission must wait for all findings");
-  await page.keyboard.press("a");
-  assert.equal((await page.evaluate(() => window.RedStampDebug.getState())).resolved, false, "Keyboard admission must respect the filed-card gate");
+  for (const selector of [
+    '[data-action="resolve"][data-decision="admit"]',
+    '[data-action="resolve"][data-decision="deny"]',
+    '[data-action="secondary"]',
+    '[data-action="liaison"]',
+  ]) {
+    assert.equal(await page.locator(selector).first().isDisabled(), false, `${selector} must be active as soon as a visitor arrives`);
+  }
+  assert.equal(await page.locator('[data-action="submit-checklist"]').isDisabled(), false, "Checklist submission should remain available for partial findings");
   await assertNoStretching(page);
 }
 
@@ -153,6 +158,10 @@ async function inspectXrayAndShortcuts(page) {
   const xrayCopy = await page.locator("#inspectionOverlayText").innerText();
   assert.match(xrayCopy, /OBSERVED IN BAG/);
   assert.doesNotMatch(xrayCopy, new RegExp(caseData.xray.status.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "X-ray drawer must expose observations, not the authored verdict");
+  assert.equal(await page.locator("[data-xray-task-hint]").isHidden(), true, "X-ray coaching text should start hidden");
+  await page.locator('[data-action="toggle-hint"]').click();
+  assert.equal(await page.locator("[data-xray-task-hint]").isHidden(), false, "X-ray coaching text should open from the hint button");
+  assert.match(await page.locator("[data-xray-task-hint]").innerText(), /Compare the scan silhouette with the declared contents/);
   const xrayImage = await page.locator("#inspectionOverlayVisual img").evaluate((image) => ({
     src: image.currentSrc || image.src,
     naturalWidth: image.naturalWidth,

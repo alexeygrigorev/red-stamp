@@ -2607,10 +2607,10 @@ function renderChecklist() {
     : state.checklistSubmitted
       ? "Findings are filed. Use the authority rail to close the case."
       : marked === PRIMARY_TOOLS.length
-        ? "The card is complete. Submit it before making an entry decision."
-        : "Inspect each source, mark what you found, then submit the card.";
+        ? "The card is complete. File it for the record, or use the authority rail now."
+        : "Inspect each source and mark what you found, or use the authority rail now.";
   const submit = $("[data-action='submit-checklist']");
-  submit.disabled = !active || state.resolved || state.checklistSubmitted || marked !== PRIMARY_TOOLS.length;
+  submit.disabled = !active || state.resolved || state.checklistSubmitted;
   submit.textContent = state.checklistSubmitted ? "FINDINGS FILED" : "SUBMIT FINDINGS";
 }
 
@@ -2768,7 +2768,12 @@ function inspectionObservationMarkup(c, tool) {
     rows.push(["ANSWER", `“${c.question.answer}”`]);
     rows.push(["PLAYER TASK", "Compare the statement with the record and the visitor's papers."]);
   }
-  return `<div class="observation-list">${rows.map(([label, value]) => `<div class="observation-row"><span>${escapeHtml(label)}</span><p>${escapeHtml(value)}</p></div>`).join("")}</div>`;
+  return `<div class="observation-list">${rows.map(([label, value]) => {
+    if (label === "PLAYER TASK" && tool === "xray") {
+      return `<div class="observation-row observation-row-hint"><span>PLAYER TASK <button type="button" class="observation-hint" data-action="toggle-hint" aria-expanded="false" aria-controls="xrayTaskHint" aria-label="Show X-ray reading hint">?</button></span><p id="xrayTaskHint" data-xray-task-hint hidden>${escapeHtml(value)}</p></div>`;
+    }
+    return `<div class="observation-row"><span>${escapeHtml(label)}</span><p>${escapeHtml(value)}</p></div>`;
+  }).join("")}</div>`;
 }
 
 function findingControlsMarkup(tool) {
@@ -2856,11 +2861,11 @@ function inspectedCount() {
 }
 
 function renderDecision() {
-  const active = state.started && Boolean(currentCase()) && !state.resolved && state.checklistSubmitted;
+  const active = state.started && Boolean(currentCase()) && !state.resolved;
   const checks = inspectedCount();
   const checkLabel = `${checks} / ${PRIMARY_TOOLS.length}`;
   $("#evidenceProgress").textContent = `CHECKS ${checkLabel}`;
-  $("#decisionProgress").textContent = state.checklistSubmitted ? `${checkLabel} FINDINGS FILED` : `${checkLabel} CHECKS / FILE CARD OPEN`;
+  $("#decisionProgress").textContent = state.checklistSubmitted ? `${checkLabel} FINDINGS FILED` : `${checkLabel} CHECKS / CARD OPTIONAL`;
   $$("[data-action='resolve'], [data-action='secondary'], [data-action='liaison']").forEach((button) => {
     button.disabled = !active;
   });
@@ -2877,7 +2882,7 @@ function renderDecision() {
     ? `Additional authority has been recorded. ${checkLabel} primary checks logged; you still hold the final authorization.`
     : state.checklistSubmitted
       ? `${checkLabel} findings filed. Use secondary inspection or the liaison before applying the stamp if the record still conflicts.`
-      : `${checkLabel} checks logged. Complete and submit the working card before making an entry decision.`;
+      : `${checkLabel} checks logged. Evidence is available when you need it; the authority rail is active.`;
   $("#decisionNote").textContent = state.secondaryUsed
     ? "Secondary findings are now part of the official case record."
     : state.liaisonCalled
@@ -3030,6 +3035,17 @@ function markFinding(mark) {
   showToast(`${tool.toUpperCase()} marked ${findingLabel(mark)}.`);
 }
 
+function toggleInspectionHint(button) {
+  const hintId = button.getAttribute("aria-controls");
+  const hint = hintId ? document.getElementById(hintId) : null;
+  if (!hint) return;
+  const expanded = button.getAttribute("aria-expanded") === "true";
+  hint.hidden = expanded;
+  button.setAttribute("aria-expanded", String(!expanded));
+  button.classList.toggle("is-open", !expanded);
+  playGameSound("click");
+}
+
 function submitChecklist() {
   if (!state.started || state.resolved || state.checklistSubmitted) return;
   if (checklistMarkedCount() !== PRIMARY_TOOLS.length) {
@@ -3060,7 +3076,7 @@ function inspectTool(tool) {
 }
 
 function useSecondary() {
-  if (!state.started || state.resolved || !state.checklistSubmitted || state.secondaryUsed) return;
+  if (!state.started || state.resolved || state.secondaryUsed) return;
   state.secondaryUsed = true;
   state.stats.secondary += 1;
   state.revealed.secondary = true;
@@ -3072,7 +3088,7 @@ function useSecondary() {
 }
 
 function callLiaison() {
-  if (!state.started || state.resolved || !state.checklistSubmitted || state.liaisonCalled) return;
+  if (!state.started || state.resolved || state.liaisonCalled) return;
   state.liaisonCalled = true;
   state.stats.liaison += 1;
   state.revealed.liaison = true;
@@ -3158,10 +3174,6 @@ function evaluateCase(c, decision) {
 
 function resolveCase(decision) {
   if (!state.started || state.resolved) return;
-  if (!state.checklistSubmitted) {
-    showToast("File the verification card before authorizing entry.", "bad");
-    return;
-  }
   const c = currentCase();
   closeInspectionOverlay();
   state.resolved = true;
@@ -3170,8 +3182,8 @@ function resolveCase(decision) {
   if (decision === "admit") state.stats.admitted += 1;
   if (decision === "deny") state.stats.denied += 1;
   const result = evaluateCase(c, decision);
-  const accuracy = checklistAccuracy(c);
-  if (accuracy < PRIMARY_TOOLS.length) {
+  const accuracy = state.checklistSubmitted ? checklistAccuracy(c) : null;
+  if (accuracy !== null && accuracy < PRIMARY_TOOLS.length) {
     result.effects = {
       ...result.effects,
       tolerance: (result.effects.tolerance || 0) - (accuracy <= 2 ? 3 : 1),
@@ -3342,6 +3354,7 @@ function handleAction(element) {
   if (action === "close-overlay") return closeOverlay();
   if (action === "close-inspection") return closeInspectionOverlay();
   if (action === "help") return showHelp();
+  if (action === "toggle-hint") return toggleInspectionHint(element);
   if (action === "mark-finding") return markFinding(element.dataset.finding);
   if (action === "submit-checklist") return submitChecklist();
   if (action === "inspect") return inspectTool(element.dataset.tool);
