@@ -8,6 +8,18 @@
   background: #050909;
 }
 
+/* Dedicated character plates are complete 3:2 images. This rule intentionally
+ * keeps them undistorted; the legacy CSS composite below is only a temporary
+ * fallback until the visitor’s detector plate is generated. */
+.rs-detector-art {
+  width: 100%;
+  height: auto;
+  max-height: 360px;
+  aspect-ratio: 1536 / 1024;
+  object-fit: contain;
+  object-position: center;
+}
+
 .rs-detector-scan {
   position: relative;
   width: 100%;

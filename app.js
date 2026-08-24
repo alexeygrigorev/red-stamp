@@ -53,7 +53,7 @@ const shifts = [
         xray: {
           status: "CLEAR",
           title: "ORDINARY CONTENTS",
-          detail: "Phone, keys, wallet, folded umbrella. No concealed mass or undeclared device.",
+          detail: "Phone, keys, wallet, and folded umbrella are visible. No extra dense object or unknown device is visible in this pass.",
         },
         question: {
           prompt: "Why are you visiting the embassy today?",
@@ -180,7 +180,7 @@ const shifts = [
         xray: {
           status: "AUTHORIZED",
           title: "MILITARY KIT",
-          detail: "Sidearm, radio, field dressing, and sealed packet. No undeclared object detected.",
+          detail: "Sidearm, radio, field dressing, and sealed packet are visible. The scanned masses correspond to the listed kit.",
         },
         question: {
           prompt: "Who authorized your entry through the public checkpoint?",
@@ -241,9 +241,9 @@ const shifts = [
           detail: "A sidearm and heavy tools trigger the detector. The order authorizes the sidearm.",
         },
         xray: {
-          status: "UNDECLARED DEVICE",
-          title: "BLACK DATA CAPSULE",
-          detail: "A sealed data capsule is hidden beneath the lining. Its serial is not on the equipment manifest.",
+          status: "SCAN REVIEW",
+          title: "DENSE RECTANGULAR OBJECT",
+          detail: "A compact rectangular mass sits beneath the bag lining. Its serial plate is too small to read in this pass.",
         },
         question: {
           prompt: "Why is the equipment manifest missing one device and one team member?",
@@ -305,9 +305,9 @@ const shifts = [
           detail: "No metal alarm. A phone and small wallet are visible in the tray.",
         },
         xray: {
-          status: "CONCEALED STORAGE",
-          title: "UNDECLARED MICRODRIVE",
-          detail: "A small encrypted storage device is taped inside the spine of the folder.",
+          status: "SCAN REVIEW",
+          title: "SECOND MATERIAL IN FOLDER",
+          detail: "A thin rectangular layer follows the folder spine. Its connector is not visible in this scan; compare it with the papers and the case record.",
         },
         question: {
           prompt: "Which relative is named in the power-of-attorney document?",
@@ -441,8 +441,8 @@ const shifts = [
         },
         xray: {
           status: "REVIEW",
-          title: "ONE UNLISTED MODULE",
-          detail: "A small black module is inside the tool case. It is labeled as a spare scanner part.",
+          title: "BLACK MODULE IN TOOL CASE",
+          detail: "A small black module is inside the tool case and is labeled as a spare scanner part. Compare its shape and serial with the work order.",
         },
         question: {
           prompt: "Who told you to bring the extra module?",
@@ -504,9 +504,9 @@ const shifts = [
           detail: "No metal alarm. A phone is visible in the tray.",
         },
         xray: {
-          status: "PROHIBITED DEVICE",
-          title: "RECORDING EQUIPMENT DETECTED",
-          detail: "A compact audio recorder is inside the official’s portfolio. The file forbids it.",
+          status: "SCAN REVIEW",
+          title: "COMPACT DEVICE IN PORTFOLIO",
+          detail: "A small electronic recorder-shaped object is visible in the portfolio. Compare it with the restriction in the priority file.",
         },
         question: {
           prompt: "Why are you carrying a recorder when the priority clearance forbids one?",
@@ -1226,6 +1226,507 @@ const CASE_VARIANTS = {
   ],
 };
 
+// The person is not the verdict. A seeded scenario can move the same visitor
+// between a clean, questionable, or compromised case. These polarity variants
+// fill the gaps in the authored pool so every named visitor can be legitimate
+// in one run and a genuine security problem in another.
+const POLARITY_VARIANTS = {
+  "irena-sava": [
+    {
+      variantId: "false-medical-code",
+      variantLabel: "FALSE MEDICAL CODE",
+      rule: "A real guardian and a real hospital letter do not authorize an emergency code that the travel desk did not issue.",
+      mode: "emergency",
+      modeLabel: "EMERGENCY / REVIEW",
+      time: "URGENT",
+      caseNumber: "MED-2207-F",
+      queue: "EM-09",
+      purpose: "Request emergency travel permission using a hospital referral with a code the embassy cannot verify.",
+      record: {
+        status: "CODE NOT FOUND",
+        rows: [
+          ["Applicant", "Irena Sava"],
+          ["Appointment", "NONE / emergency claim"],
+          ["Case file", "MED-2207-F"],
+          ["Submitted", "Hospital referral"],
+          ["Required", "Live travel-desk confirmation"],
+          ["Host", "Not verified"],
+        ],
+        detail: "The hospital is real, but the emergency code on the paper does not resolve to a live embassy file.",
+      },
+      idCheck: {
+        status: "MATCH",
+        title: "GUARDIAN IDENTITY CONFIRMED",
+        detail: "Irena’s identity and guardian record are genuine. The unresolved question is the emergency authorization.",
+      },
+      documents: {
+        status: "REVIEW",
+        title: "REFERRAL NUMBER DOES NOT RESOLVE",
+        detail: "The hospital referral and guardian ID are present, but the number printed on the referral is absent from the travel desk.",
+      },
+      detector: {
+        status: "CLEAR",
+        title: "NO ALARM",
+        detail: "A phone, keys, and a small metal toy are visible in the tray.",
+      },
+      xray: {
+        status: "CLEAR",
+        title: "PERSONAL CONTENTS",
+        detail: "Medication, a child’s toy, clothing, and a water bottle are visible. The scan does not resolve the travel authorization.",
+      },
+      question: {
+        prompt: "Who issued the emergency code on the referral?",
+        answer: "The hospital desk gave it to me. They said the embassy would know what it meant.",
+        consistency: "PLAUSIBLE / NOT VERIFIED",
+      },
+      secondary: {
+        status: "SECURITY HOLD",
+        title: "CODE CANNOT BE AUTHENTICATED",
+        detail: "The hospital confirms the patient, but not the embassy code. Keep Irena outside until Travel and Visas takes responsibility.",
+      },
+      liaison: {
+        status: "HOLD",
+        title: "TRAVEL DESK DENIES THE CODE",
+        detail: "Travel and Visas has no emergency file for this number. Do not release the visitor through the gate.",
+      },
+      kind: "spy",
+      expected: "deny",
+      requiresSecondary: true,
+      requiresLiaison: true,
+    },
+  ],
+  "radan-kest": [
+    {
+      variantId: "verified-convoy",
+      variantLabel: "VERIFIED CONVOY",
+      rule: "A contracted team may bypass the public queue when the sealed roster, equipment count, and sponsor confirmation agree.",
+      mode: "clearance",
+      modeLabel: "SPECIAL CLEARANCE",
+      time: "DIRECT",
+      caseNumber: "AUX-4418-V",
+      queue: "C-24",
+      purpose: "Bring a contracted security team into the embassy for a scheduled overnight assignment.",
+      record: {
+        status: "MISSION VERIFIED",
+        rows: [
+          ["Team lead", "Radan Kest"],
+          ["Appointment", "NONE / auxiliary channel"],
+          ["Mission", "AUX-4418-V / overnight"],
+          ["Roster", "3 names / 3 present"],
+          ["Equipment", "Weapons / secure comms / tools"],
+          ["Sponsor", "External Security Office"],
+        ],
+        detail: "The sealed roster and equipment manifest were issued together and the sponsor is expecting all three auxiliaries.",
+      },
+      documents: {
+        status: "COMPLETE",
+        title: "ROSTER AND MANIFEST AGREE",
+        detail: "Three people are named and three people are present. The equipment count and serial marks match the sealed order.",
+      },
+      detector: {
+        status: "AUTHORIZED ALARM",
+        title: "EQUIPMENT PRESENT",
+        detail: "A sidearm and heavy tools trigger the detector. The authorization covers the listed equipment.",
+      },
+      xray: {
+        status: "AUTHORIZED",
+        title: "LISTED EQUIPMENT MATCHES",
+        detail: "Sidearm, radio, field tools, and the sealed communications case are visible. The scan shows no additional dense object.",
+      },
+      question: {
+        prompt: "Who sealed the roster and equipment case?",
+        answer: "External Security at 06:10. The sponsor told us to report directly to the fourth window.",
+        consistency: "CONSISTENT WITH CLEARANCE",
+      },
+      secondary: {
+        status: "CLEAR",
+        title: "CONVOY COUNT CONFIRMED",
+        detail: "The roster, people, equipment count, and serial marks are confirmed. No item needs to be held outside.",
+      },
+      liaison: {
+        status: "PROCEED",
+        title: "SPONSOR CONFIRMS THE MISSION",
+        detail: "External Security confirms the team and route. Send Radan to State Affairs.",
+      },
+      kind: "authorized",
+      expected: "admit",
+      requiresSecondary: true,
+      requiresLiaison: true,
+    },
+  ],
+  "olya-merin": [
+    {
+      variantId: "verified-filing",
+      variantLabel: "VERIFIED FILING",
+      rule: "A legal applicant may enter when the live case, original witness form, portrait, and physical papers all agree.",
+      caseNumber: "LEG-5109-V",
+      queue: "B-149",
+      purpose: "Submit an original power-of-attorney document for a relative abroad.",
+      record: {
+        status: "CONFIRMED",
+        rows: [
+          ["Applicant", "Olya Merin"],
+          ["Appointment", "09:20 / Window 03"],
+          ["Case file", "LEG-5109-V"],
+          ["Submitted", "Draft power of attorney"],
+          ["Required", "Original ID / witness form"],
+          ["Host", "Legal and Notarial"],
+        ],
+        detail: "The legal desk has one active file, a matching portrait, and the original witness form ready at Window 03.",
+      },
+      idCheck: {
+        status: "MATCH",
+        title: "PORTRAIT AND ID AGREE",
+        detail: "Olya’s face, name, document number, and live legal record match.",
+      },
+      documents: {
+        status: "COMPLETE",
+        title: "ORIGINAL WITNESS FORM PRESENT",
+        detail: "The original power of attorney and the required witness form are present and carry the same case number.",
+      },
+      detector: {
+        status: "CLEAR",
+        title: "NO ALARM",
+        detail: "Phone and small wallet are visible in the tray.",
+      },
+      xray: {
+        status: "CLEAR",
+        title: "FOLDER CONTENTS ORDINARY",
+        detail: "Paper sheets, a phone, and a small wallet are visible. No extra dense layer follows the folder spine.",
+      },
+      question: {
+        prompt: "Which witness signed the original form?",
+        answer: "Anya Serev. The legal clerk told me the original would be waiting at Window 03.",
+        consistency: "CONSISTENT WITH LIVE FILE",
+      },
+      secondary: {
+        status: "CLEAR",
+        title: "LEGAL FILE CONFIRMED",
+        detail: "The original and live record agree. No security finding requires a hold.",
+      },
+      liaison: {
+        status: "PROCEED",
+        title: "LEGAL DESK EXPECTS OLYA",
+        detail: "Send Olya to Window 03 for the notarization appointment.",
+      },
+      kind: "routine",
+      expected: "admit",
+    },
+  ],
+  "anton-ryl": [
+    {
+      variantId: "recognized-messenger",
+      variantLabel: "RECOGNIZED MESSENGER",
+      rule: "A restricted courier may enter when the old seal, recipient, and current correspondence register agree.",
+      mode: "clearance",
+      modeLabel: "RESTRICTED CLEARANCE",
+      caseNumber: "COR-0000-C",
+      queue: "S-07",
+      purpose: "Deliver a sealed letter to the restricted correspondence office.",
+      record: {
+        status: "RECIPIENT CONFIRMED",
+        rows: [
+          ["Visitor", "Anton Ryl"],
+          ["Appointment", "NONE / restricted channel"],
+          ["Case file", "COR-0000-C"],
+          ["Clearance", "Old seal / current recipient"],
+          ["Package", "One sealed letter"],
+          ["Sponsor", "Correspondence Office"],
+        ],
+        detail: "The restricted office opened a current recipient record and expects Anton at the inner correspondence desk.",
+      },
+      idCheck: {
+        status: "MATCH",
+        title: "MESSENGER RECOGNIZED",
+        detail: "The face and courier mark match the restricted register.",
+      },
+      documents: {
+        status: "VALID",
+        title: "CURRENT RECIPIENT MARK",
+        detail: "The old seal is paired with a current recipient glyph and a valid dispatch line.",
+      },
+      detector: {
+        status: "CLEAR",
+        title: "NO PHYSICAL ALARM",
+        detail: "A small key and the sealed letter are visible. No additional metal is detected.",
+      },
+      xray: {
+        status: "CLEAR",
+        title: "SEALED LETTER ONLY",
+        detail: "The letter is visible as a single flat package. Its seal and recipient must be checked against the register.",
+      },
+      question: {
+        prompt: "Who is waiting for this letter at the correspondence office?",
+        answer: "Archivist Teren. The current recipient mark is on the dispatch line.",
+        consistency: "CONSISTENT WITH REGISTER",
+      },
+      secondary: {
+        status: "CLEAR",
+        title: "RESTRICTED ROUTE CONFIRMED",
+        detail: "The old seal is recognized by the current correspondence officer. Anton may cross the inner line.",
+      },
+      liaison: {
+        status: "PROCEED",
+        title: "CORRESPONDENCE OFFICE ANSWERS",
+        detail: "The recipient is waiting. Release the messenger to Window 05.",
+      },
+      kind: "authorized",
+      expected: "admit",
+      requiresSecondary: true,
+      requiresLiaison: true,
+    },
+  ],
+  "director-vel": [
+    {
+      variantId: "active-recorder",
+      variantLabel: "ACTIVE RECORDER",
+      rule: "Priority clearance does not authorize a recording device that is powered and transmitting inside a closed meeting.",
+      caseNumber: "DIR-9011-F",
+      queue: "P-08",
+      purpose: "Attend a closed meeting while carrying a powered recording device in the executive portfolio.",
+      record: {
+        status: "PRIORITY / RESTRICTION ACTIVE",
+        rows: [
+          ["Official", "Vel Ordan"],
+          ["Appointment", "NONE / executive channel"],
+          ["Clearance", "Priority red / level 4"],
+          ["Sponsor", "Ambassador’s Office"],
+          ["Restriction", "No recording devices"],
+          ["Alert", "Portfolio device transmitting"],
+        ],
+        detail: "The official is expected, but the priority file warns that the portfolio device must remain outside the closed meeting.",
+      },
+      idCheck: {
+        status: "MATCH",
+        title: "OFFICIAL CONFIRMED",
+        detail: "Vel Ordan’s credential and biometric profile match the executive record.",
+      },
+      documents: {
+        status: "VALID / RESTRICTED",
+        title: "CLEARANCE HAS A DEVICE LIMIT",
+        detail: "The red clearance card authorizes entry but explicitly excludes recording equipment.",
+      },
+      detector: {
+        status: "CLEAR",
+        title: "NO METAL ALARM",
+        detail: "A phone and the portfolio are visible in the tray.",
+      },
+      xray: {
+        status: "SCAN REVIEW",
+        title: "POWERED DEVICE IN PORTFOLIO",
+        detail: "A compact electronic device is visible beside the portfolio papers. The power state cannot be read from this scan.",
+      },
+      question: {
+        prompt: "Will you leave the device in the outer locker?",
+        answer: "It is active for a reason. The meeting is important enough to make an exception.",
+        consistency: "PRESSURE / RESTRICTION IGNORED",
+      },
+      secondary: {
+        status: "SECURITY HOLD",
+        title: "TRANSMISSION CONFIRMED",
+        detail: "The device is powered and recording. It must remain in the outer locker before the official crosses.",
+      },
+      liaison: {
+        status: "HOLD DEVICE",
+        title: "AMBASSADOR’S OFFICE DENIES THE EXCEPTION",
+        detail: "The meeting remains valid, but the recorder cannot cross the gate. Hold the portfolio until it is secured.",
+      },
+      kind: "risk",
+      expected: "deny",
+      requiresSecondary: true,
+      requiresLiaison: true,
+    },
+  ],
+  "nadiya-ost": [
+    {
+      variantId: "registry-impersonator",
+      variantLabel: "REGISTRY IMPERSONATOR",
+      rule: "A plausible family story does not authorize entry when the identity token belongs to a different live record.",
+      mode: "appointment",
+      modeLabel: "APPOINTMENT / REVIEW",
+      time: "10:10",
+      caseNumber: "FAM-2403-F",
+      queue: "A-096",
+      purpose: "Request a family registry extract using a case number copied from another applicant.",
+      record: {
+        status: "PORTRAIT CONFLICT",
+        rows: [
+          ["Applicant", "Nadiya Ost"],
+          ["Appointment", "10:10 / Window 01"],
+          ["Case file", "FAM-2403-F"],
+          ["Submitted", "Family registry request"],
+          ["Required", "Identity card / receipt"],
+          ["Alert", "Token active on another file"],
+        ],
+        detail: "The family request exists, but the biometric token on this appointment is active under another live portrait.",
+      },
+      idCheck: {
+        status: "MISMATCH",
+        title: "TOKEN BELONGS TO ANOTHER RECORD",
+        detail: "The physical card is genuine, but the biometric token does not resolve to this appointment.",
+      },
+      documents: {
+        status: "REVIEW",
+        title: "RECEIPT NUMBER COPIED",
+        detail: "The request and payment receipt use a valid format, but the number belongs to another family file.",
+      },
+      detector: {
+        status: "CLEAR",
+        title: "NO ALARM",
+        detail: "Phone, wallet, notebook, and a small framed photograph are visible.",
+      },
+      xray: {
+        status: "CLEAR",
+        title: "PERSONAL CONTENTS",
+        detail: "Phone, wallet, notebook, and a small framed photograph are visible. The scan does not resolve the identity record.",
+      },
+      question: {
+        prompt: "Which registry clerk gave you this case number?",
+        answer: "I spoke to someone at the public desk. I did not write down their name.",
+        consistency: "NOT VERIFIED",
+      },
+      secondary: {
+        status: "SECURITY HOLD",
+        title: "TOKEN CONFLICT CONFIRMED",
+        detail: "The biometric token is active on a second file. Keep Nadiya outside until Citizen Documents investigates.",
+      },
+      liaison: {
+        status: "HOLD",
+        title: "CITIZEN DOCUMENTS REQUESTS INVESTIGATION",
+        detail: "The desk cannot authorize this portrait against the live record. Do not release the visitor.",
+      },
+      kind: "spy",
+      expected: "deny",
+      requiresSecondary: true,
+      requiresLiaison: true,
+    },
+  ],
+  "milan-vek": [
+    {
+      variantId: "replacement-cleared",
+      variantLabel: "REPLACEMENT CLEARED",
+      rule: "A former guard may enter unarmed to collect a replacement credential after the old pass is formally retired.",
+      mode: "clearance",
+      modeLabel: "GUARD CLEARANCE",
+      caseNumber: "GUA-6671-V",
+      queue: "C-28",
+      purpose: "Collect a replacement security credential after reporting the original pass lost.",
+      record: {
+        status: "REPLACEMENT READY",
+        rows: [
+          ["Visitor", "Milan Vek"],
+          ["Appointment", "NONE / guard channel"],
+          ["Credential", "GUA-6671-V / retired"],
+          ["Unit", "Embassy Guard Detail"],
+          ["Request", "Replacement pass"],
+          ["Weapon", "None carried"],
+        ],
+        detail: "The old credential was retired and the guard office has placed a replacement token at the security desk.",
+      },
+      idCheck: {
+        status: "MATCH",
+        title: "FORMER GUARD CONFIRMED",
+        detail: "Milan Vek’s identity and former unit record match the replacement request.",
+      },
+      documents: {
+        status: "VALID",
+        title: "REPLACEMENT TOKEN READY",
+        detail: "The old pass is retired and the new credential is logged for collection at this desk.",
+      },
+      detector: {
+        status: "CLEAR",
+        title: "NO WEAPON PRESENT",
+        detail: "Keys and a wallet are visible in the tray. No service weapon is carried.",
+      },
+      xray: {
+        status: "CLEAR",
+        title: "PERSONAL CONTENTS",
+        detail: "Wallet, keys, and replacement receipt are visible. No weapon or access device is present.",
+      },
+      question: {
+        prompt: "Where did you report the original pass?",
+        answer: "At Guard Command before the morning briefing. They told me the replacement would be waiting here.",
+        consistency: "CONSISTENT WITH GUARD RECORD",
+      },
+      secondary: {
+        status: "CLEAR",
+        title: "OLD PASS RETIRED",
+        detail: "Guard Command confirms the loss report and replacement token. Milan may proceed unarmed.",
+      },
+      liaison: {
+        status: "PROCEED",
+        title: "GUARD COMMAND AUTHORIZES ENTRY",
+        detail: "Release Milan to collect the new credential.",
+      },
+      kind: "authorized",
+      expected: "admit",
+    },
+  ],
+  "elias-rhy": [
+    {
+      variantId: "recognized-return",
+      variantLabel: "RECOGNIZED RETURN",
+      rule: "A restricted return may cross when the page, recipient, and old seal are all recognized by the correspondence office.",
+      mode: "clearance",
+      modeLabel: "RESTRICTED CLEARANCE",
+      caseNumber: "COR-0001-C",
+      queue: "S-09",
+      purpose: "Return a red-stamped page to the restricted correspondence office after a documented first delivery.",
+      record: {
+        status: "RETURN REGISTERED",
+        rows: [
+          ["Visitor", "Elias Rhy"],
+          ["Appointment", "NONE / restricted channel"],
+          ["Case file", "COR-0001-C"],
+          ["Last visit", "LOGGED / 08:02"],
+          ["Document", "One red-stamped page"],
+          ["Sponsor", "Correspondence Office"],
+        ],
+        detail: "The correspondence office logged the first delivery and requested the page’s return before the next dispatch.",
+      },
+      idCheck: {
+        status: "MATCH",
+        title: "RETURN VISITOR RECOGNIZED",
+        detail: "Elias and the restricted courier token match the return register.",
+      },
+      documents: {
+        status: "VALID",
+        title: "PAGE HAS A REGISTERED ORIGIN",
+        detail: "The red seal, paper stock, ministry mark, and return number agree with the correspondence register.",
+      },
+      detector: {
+        status: "CLEAR",
+        title: "NO PHYSICAL ALARM",
+        detail: "The visitor carries the stamped page and a key listed on the restricted route.",
+      },
+      xray: {
+        status: "AUTHORIZED",
+        title: "REGISTERED PAGE",
+        detail: "One flat page and one small key are visible. No second silhouette appears in this scan.",
+      },
+      question: {
+        prompt: "Who requested the page’s return?",
+        answer: "The correspondence archivist. The return number is written beside the old seal.",
+        consistency: "CONSISTENT WITH REGISTER",
+      },
+      secondary: {
+        status: "CLEAR",
+        title: "RESTRICTED ROUTE CONFIRMED",
+        detail: "The page’s origin and recipient are verified. Elias may cross the inner line.",
+      },
+      liaison: {
+        status: "PROCEED",
+        title: "CORRESPONDENCE OFFICE ANSWERS",
+        detail: "The archivist confirms the return. Release Elias to Window 05.",
+      },
+      kind: "authorized",
+      expected: "admit",
+      requiresSecondary: true,
+      requiresLiaison: true,
+    },
+  ],
+};
+
 const BONUS_CASES = [
   {
     baseId: "mara-velen",
@@ -1494,6 +1995,76 @@ const BONUS_CASES = [
   },
 ];
 
+/*
+ * Evidence is authored in three separate layers:
+ *
+ *   declared  -> what the record/manifest says the visitor carries
+ *   observed  -> what the player can see in the detector or X-ray
+ *   concealed -> an internal truth revealed only by search, serial lookup,
+ *               or liaison confirmation
+ *
+ * The normal UI never prints `concealed`. That separation prevents a case
+ * writer from accidentally turning a deduction into a spoiler and makes the
+ * same visitor reusable across clean and compromised scenario variants.
+ */
+const CHARACTER_EVIDENCE = {
+  "mara-velen": {
+    declared: ["damaged identity card", "application form", "new photograph"],
+    observed: ["phone", "keys", "wallet", "folded umbrella"],
+    concealed: null,
+  },
+  "irena-sava": {
+    declared: ["hospital referral", "guardian ID", "child identity document"],
+    observed: ["medication", "child’s toy", "clothing", "water bottle"],
+    concealed: null,
+  },
+  "viktor-dalen": {
+    declared: ["sealed orders", "authorized sidearm", "radio", "field dressing"],
+    observed: ["sidearm", "radio", "field dressing", "sealed packet"],
+    concealed: null,
+  },
+  "radan-kest": {
+    declared: ["sealed team roster", "sidearm", "heavy tools", "secure communications"],
+    observed: ["sidearm", "heavy tools", "secure communications case", "dense rectangular mass"],
+    concealed: "data capsule / serial not matched to the manifest",
+  },
+  "olya-merin": {
+    declared: ["identity card", "power-of-attorney papers", "witness form"],
+    observed: ["folder", "phone", "small wallet", "second material in the folder spine"],
+    concealed: "encrypted microdrive in the folder spine",
+  },
+  "anton-ryl": {
+    declared: ["sealed correspondence", "restricted courier mark", "small key"],
+    observed: ["flat sealed letter", "small key", "unresolved shadow geometry"],
+    concealed: "second silhouette / no ordinary shadow",
+  },
+  "sorin-dask": {
+    declared: ["emergency work order", "diagnostic tools", "scanner parts"],
+    observed: ["soldering iron", "diagnostic probe", "black module"],
+    concealed: "short-range transmitter inside the module",
+  },
+  "director-vel": {
+    declared: ["priority clearance", "executive portfolio", "personal phone"],
+    observed: ["portfolio", "phone", "compact electronic device"],
+    concealed: "recording device subject to a no-device restriction",
+  },
+  "nadiya-ost": {
+    declared: ["identity card", "family registry request", "payment receipt"],
+    observed: ["phone", "wallet", "notebook", "framed photograph"],
+    concealed: "biometric token associated with another live record",
+  },
+  "milan-vek": {
+    declared: ["replacement request", "retired credential", "service weapon if authorized"],
+    observed: ["service pistol", "spare magazine", "access-card device"],
+    concealed: "access-card duplicator carried under a revoked credential",
+  },
+  "elias-rhy": {
+    declared: ["red-stamped page", "restricted return mark", "listed key"],
+    observed: ["flat stamped page", "small key", "shadow absence"],
+    concealed: "page or visitor origin cannot be resolved by the ordinary register",
+  },
+};
+
 function cloneData(value) {
   return JSON.parse(JSON.stringify(value));
 }
@@ -1539,6 +2110,10 @@ function applyCasePatch(base, patch = null) {
   next.variantLabel = patch?.variantLabel || "STANDARD CHECKS";
   next.scenarioId = `${base.id}::${next.variantId}`;
   next.rule = patch?.rule || "Compare the record, the person, the papers, and the scan before applying the stamp.";
+  next.evidenceLedger = mergeCaseData(
+    CHARACTER_EVIDENCE[base.id] || { declared: [], observed: [], concealed: null },
+    patch?.evidenceLedger || {},
+  );
   return next;
 }
 
@@ -1563,8 +2138,11 @@ function buildCampaign(seed) {
   const campaign = shifts.map((shift) => ({
     ...shift,
     cases: shuffle(shift.cases.map((base) => {
-      const variants = CASE_VARIANTS[base.id] || [];
-      const patch = variants.length && random() < 0.62
+      const variants = [
+        ...(CASE_VARIANTS[base.id] || []),
+        ...(POLARITY_VARIANTS[base.id] || []),
+      ];
+      const patch = variants.length && random() < 0.72
         ? variants[Math.floor(random() * variants.length)]
         : null;
       return applyCasePatch(base, patch);
@@ -1646,56 +2224,67 @@ const CHARACTER_ART = {
     scene: "assets/generated/mara-visitor-scene.png",
     portrait: "assets/generated/mara-visitor.png",
     face: "assets/generated/mara-face.png",
+    detector: null,
   },
   "irena-sava": {
     scene: "assets/generated/irena-visitor-scene.png",
     portrait: "assets/generated/irena-visitor.png",
     face: "assets/generated/irena-face.png",
+    detector: null,
   },
   "viktor-dalen": {
     scene: "assets/generated/viktor-visitor-scene.png",
     portrait: "assets/generated/viktor-visitor.png",
     face: "assets/generated/viktor-face.png",
+    detector: null,
   },
   "radan-kest": {
     scene: "assets/generated/radan-visitor-scene.png",
     portrait: "assets/generated/radan-visitor.png",
     face: "assets/generated/radan-face.png",
+    detector: null,
   },
   "olya-merin": {
     scene: "assets/generated/olya-visitor-scene.png",
     portrait: "assets/generated/olya-visitor.png",
     face: "assets/generated/olya-face.png",
+    detector: null,
   },
   "anton-ryl": {
     scene: "assets/generated/anton-visitor-scene.png",
     portrait: "assets/generated/anton-visitor.png",
     face: "assets/generated/anton-face.png",
+    detector: null,
   },
   "sorin-dask": {
     scene: "assets/generated/sorin-dask-visitor-scene.png",
     portrait: "assets/generated/sorin-dask-visitor.png",
     face: "assets/generated/sorin-dask-face.png",
+    detector: null,
   },
   "director-vel": {
     scene: "assets/generated/director-vel-ordan-visitor-scene.png",
     portrait: "assets/generated/director-vel-ordan-visitor.png",
     face: "assets/generated/director-vel-ordan-face.png",
+    detector: null,
   },
   "nadiya-ost": {
     scene: "assets/generated/nadiya-ost-visitor-scene.png",
     portrait: "assets/generated/nadiya-ost-visitor.png",
     face: "assets/generated/nadiya-ost-face.png",
+    detector: null,
   },
   "milan-vek": {
     scene: "assets/generated/milan-vek-visitor-scene.png",
     portrait: "assets/generated/milan-vek-visitor.png",
     face: "assets/generated/milan-vek-face.png",
+    detector: null,
   },
   "elias-rhy": {
     scene: "assets/generated/elias-rhy-visitor-scene.png",
     portrait: "assets/generated/elias-rhy-visitor.png",
     face: "assets/generated/elias-rhy-face.png",
+    detector: null,
   },
 };
 
@@ -1730,6 +2319,10 @@ function faceAsset(c) {
 function visitorSceneAsset(c) {
   if (CHARACTER_ART[c?.id]?.scene) return CHARACTER_ART[c.id].scene;
   return visitorAsset(c);
+}
+
+function detectorAsset(c) {
+  return window.RedStampDetectorArt?.[c?.id]?.filename || CHARACTER_ART[c?.id]?.detector || null;
 }
 
 function clearVisitorBlink() {
@@ -1798,13 +2391,13 @@ function metaRow(label, value) {
 
 function recordMarkup(record) {
   const rows = record.rows.map(([label, value]) => metaRow(label, value)).join("");
-  return `<div class="result-card"><span class="result-code">SYSTEM RECORD / ${escapeHtml(record.status)}</span><div class="case-meta">${rows}</div><p>${escapeHtml(record.detail)}</p></div>`;
+  return `<div class="result-card"><span class="result-code">SYSTEM RECORD / ${escapeHtml(record.status)}</span><span class="manifest-caption">DECLARED CONTENTS / COMPARE WITH SCAN</span><div class="case-meta">${rows}</div><p>${escapeHtml(record.detail)}</p></div>`;
 }
 
-function resultMarkup(result, tool) {
+function resultMarkup(result, tool, c = null) {
   const tone = statusClass(result.status);
   const extra = tool === "xray"
-    ? `<div class="xray-box" data-xray-result><span>${escapeHtml(result.status)}<br />SCAN DATA READY</span></div>`
+    ? `<div class="xray-box" data-xray-result><span>${escapeHtml(result.status)}<br />SCAN DATA READY</span></div>${c?.evidenceLedger ? `<div class="inspection-observation"><span>OBSERVED IN SCAN</span><p>${c.evidenceLedger.observed.map(escapeHtml).join(" · ")}</p><small>COMPARE WITH FILE / NO AUTOMATIC MATCH</small></div>` : ""}`
     : "";
   return `<div class="result-card ${tone}"><span class="result-code">${escapeHtml(result.status)}</span><h3>${escapeHtml(result.title)}</h3><p>${escapeHtml(result.detail)}</p>${extra}</div>`;
 }
@@ -1947,13 +2540,13 @@ function renderInspection() {
   const tool = state.selectedTool;
   let markup = "";
   if (tool === "appointment") markup = recordMarkup(c.record);
-  if (tool === "id") markup = resultMarkup(c.idCheck, tool);
-  if (tool === "documents") markup = resultMarkup(c.documents, tool);
-  if (tool === "detector") markup = resultMarkup(c.detector, tool);
-  if (tool === "xray") markup = resultMarkup(c.xray, tool);
+  if (tool === "id") markup = resultMarkup(c.idCheck, tool, c);
+  if (tool === "documents") markup = resultMarkup(c.documents, tool, c);
+  if (tool === "detector") markup = resultMarkup(c.detector, tool, c);
+  if (tool === "xray") markup = resultMarkup(c.xray, tool, c);
   if (tool === "question") markup = questionMarkup(c.question);
-  if (tool === "secondary") markup = resultMarkup(c.secondary, tool);
-  if (tool === "liaison") markup = resultMarkup(c.liaison, tool);
+  if (tool === "secondary") markup = resultMarkup(c.secondary, tool, c);
+  if (tool === "liaison") markup = resultMarkup(c.liaison, tool, c);
   $("#inspectionOutput").innerHTML = markup;
 
   if (tool === "xray") {
@@ -2020,6 +2613,10 @@ function inspectionVisualAlt(c, tool) {
 }
 
 function detectorVisualMarkup(c) {
+  const dedicatedAsset = detectorAsset(c);
+  if (dedicatedAsset) {
+    return '<img class="inspection-art rs-detector-art" src="' + escapeHtml(dedicatedAsset) + '" alt="' + escapeHtml(`${c.name} in the Veskarian metal detector`) + '" />';
+  }
   const personAsset = visitorAsset(c);
   const personLabel = `${c.name}, ${c.role} body profile in the Veskarian metal detector`;
   return [

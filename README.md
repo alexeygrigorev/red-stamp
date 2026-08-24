@@ -16,6 +16,8 @@ The first playable version includes:
 - A single-screen checkpoint instrument built from generated Veskarian
   environment art, character sprites, documents, X-ray panels, and animated
   inspection overlays
+- A larger game-oriented typography pass, a generated Veskarian emblem/icon,
+  and a generated desk-level stamp impact plate
 - Generated sprites are also used inside the case card, checkpoint hotspots,
   decision buttons, and overlay shortcuts so the interface stays visual during
   interaction
@@ -56,4 +58,6 @@ npm run test:e2e
   inspection overlays
 - `DESIGN.md` — the living game design report
 - `docs/character-asset-checklist.md` — required assets for every new visitor
+- `docs/declared-concealed-evidence.md` — the declared/observed/resolved
+  evidence model and randomized character truth rules
 - `docs/immersion-reference.md` — research notes and the interaction grammar

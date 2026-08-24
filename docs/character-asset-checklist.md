@@ -10,6 +10,7 @@ case. The `<slug>` is lowercase and stable, for example `mara-velen`.
 | Full-body portrait | `assets/generated/<slug>-visitor.png` | ID fallback, inspection shortcuts, detector person layer | Transparent PNG; face and hands readable; no matte fringe |
 | Scene cutout | `assets/generated/<slug>-visitor-scene.png` | Main checkpoint, case card, visitor/ask hotspots | Transparent PNG; full silhouette with comfortable margins; never stretched |
 | Face/shoulders portrait | `assets/generated/<slug>-face.png` | Identity cards, appointment papers, clearance papers, legal papers, and correspondence papers | Newly rendered face/shoulders image; do not use a CSS crop of the full body |
+| Metal-detector plate | `assets/generated/detector-<slug>.png` | Character-specific gate inspection | 1536×1024 (3:2); full detector composition with the correct visitor silhouette, posture, clothing, carried metal, and scan lighting; no HTML body composite |
 | Personal X-ray | `assets/generated/xray-<slug>.png` | Bag X-ray inspection and the case-specific clue | 1536×1024 (3:2); character-specific contents and subtle clue |
 
 ## Animation asset
@@ -22,27 +23,73 @@ The frame must preserve the base portrait’s dimensions and transparent
 silhouette. More elaborate visitors can add a small gesture frame set later,
 but animation should never be faked by moving a static image alone.
 
-## No separate asset required
+## Shared systems
 
-- **Metal detector silhouette:** composed at runtime from the visitor’s
-  full-body portrait over the detector frame.
 - **Documents:** shared document-family backgrounds with live case text and
   the visitor’s dedicated face/shoulders asset.
 - **Decision stamp:** one shared physical stamp plus the generated document and
   ink animation.
 
+The detector is deliberately not a shared system anymore. A generic frame with
+a CSS-filtered body silhouette makes every visitor feel like the same person.
+Each character receives a composed detector plate. The runtime can use the old
+frame composite only as a temporary fallback while the character batch is
+being generated.
+
+## Character generation pipeline
+
+Use this order for every new named visitor:
+
+1. **Style anchor:** send the approved Mara dark-background character render,
+   the embassy background, and the current character brief as references. Keep
+   the same painterly Veskarian material language, edge treatment, and light
+   direction; change the person, clothing, posture, and story.
+2. **Scene cutout:** generate the full-body visitor and a separate checkpoint
+   cutout with comfortable transparent margins.
+3. **Face shot:** generate a new face-and-shoulders image for documents. Do not
+   crop the body render with CSS or use a full torso in an ID portrait.
+4. **Detector plate:** generate a complete 3:2 detector image using the same
+   character as reference. Show the person standing naturally inside the gate,
+   with their actual silhouette, clothing, hairstyle, posture, and carried
+   metal. If a scenario changes the declared equipment, the scan clue may
+   change, but the person must remain unmistakably the same.
+5. **X-ray plate:** generate the character-specific bag contents separately.
+   The good/bad distinction must be subtle: an extra shape, count, serial tag,
+   or unusual placement—not a giant red warning.
+6. **Motion frame:** add a blink or small gesture frame for recurring visitors.
+7. **Dark-edge cleanup:** remove white matte pixels and checkerboard residue;
+   inspect every transparent asset over the actual dark embassy background.
+8. **Registration:** add scene, portrait, face, detector, and X-ray paths to
+   `CHARACTER_ART`/`xray-art.js`, then record the declared, observed, and
+   concealed evidence in the case data.
+9. **Validation:** check natural aspect ratios, no stretching, matching
+   identity across all assets, and desktop/mobile screenshots before merging.
+
+### Detector prompt contract
+
+The detector prompt must describe a complete asset, not a request to paste a
+sprite into a generic frame:
+
+> Original Veskarian embassy metal-detector inspection plate, 3:2 landscape.
+> Use the supplied character and dark embassy references. Show the same person
+> standing naturally inside a worn charcoal detector arch, with their actual
+> hairstyle, clothing, proportions, posture, and declared carried items. Use a
+> restrained teal scan glow, dark red/brass edge lighting, and readable empty
+> instrument space. No labels, no warning text, no extra people, no white
+> background, no checkerboard, no stretched anatomy.
+
 ## Registration checklist
 
 After generating the files:
 
-1. Add the `scene`, `portrait`, and `face` paths to the character registry in
+1. Add the `scene`, `portrait`, `face`, and `detector` paths to the character registry in
    `app.js` or the dossier sidecar as appropriate.
 2. Add the X-ray filename and comparison note to `xray-art.js`.
 3. Add the visitor to the case data with a unique `id`, evidence, purpose,
    dialogue, expected decision, and scenario rule.
 4. Use the shared Mara style reference and the embassy background when judging
    a new render. The face must be recognizably the same person in the scene,
-   dossier, and detector.
+   dossier, detector, and X-ray context.
 5. Composite every transparent asset on the dark embassy background and check
    edges at desktop and phone size.
 6. Run the gates:
@@ -52,7 +99,7 @@ After generating the files:
    npm run test:e2e
    ```
 
-The image gate checks source dimensions, X-ray/dossier ratios, and rejects
-`object-fit: fill`. The browser gate checks that the face appears in the
-dossier, the X-ray is loaded, the detector uses the active visitor, and the
-mobile scene does not overflow.
+The image gate checks source dimensions, X-ray/dossier/detector ratios, and
+rejects `object-fit: fill`. The browser gate checks that the face appears in the
+dossier, the X-ray is loaded, the detector prefers the active visitor’s
+dedicated plate when registered, and the mobile scene does not overflow.

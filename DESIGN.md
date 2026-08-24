@@ -106,15 +106,16 @@ to the bottom of the scene so the player can inspect, return to the room, and
 decide without losing spatial context.
 
 The visual asset pack lives in `assets/generated/` and includes the
-inspector, embassy background, eleven named visitor pairs, six dossier page
-families, per-character X-rays, document still life, detector panel, and the
-physical red stamp. The art is
+inspector, embassy background, eleven named visitor sets, six dossier page
+families, per-character detector plates and X-rays, document still life, the
+Veskarian game emblem, and the physical red stamp. The art is
 original to Red Stamp and uses the supplied embassy reference only for broad
 atmosphere: monumental architecture, red fabric, dark stone, and brass.
 
 The sprites are not limited to the large scene. The active visitor portrait is
-reused in the case card and identity/question hotspots; document, detector, and
-X-ray sprites appear on their matching controls; and the final authority
+reused in the case card and identity/question hotspots; each character gets a
+separate detector plate instead of a generic silhouette composite; document
+and X-ray sprites appear on their matching controls; and the final authority
 buttons carry the stamp, threat scan, official, and anomaly art. This keeps
 the player reading the room and its objects instead of navigating a text-only
 control panel.
@@ -644,6 +645,17 @@ palette when creating another visitor.
    small, regenerate the dedicated face asset rather than enlarging or
    geometrically cropping the full-body scene asset. Use the full checklist in
    [docs/character-asset-checklist.md](docs/character-asset-checklist.md).
+9. Generate a complete `detector-<slug>.png` plate from the same character
+   references. The person must stand naturally inside the detector with their
+   own hairstyle, clothing, posture, proportions, and declared metal. This is
+   a finished 3:2 inspection image, not a generic detector background with a
+   CSS-filtered body pasted on top.
+10. Generate the character's X-ray plate after the detector plate. Keep the
+    good/bad difference subtle: a count, serial, density, or placement clue;
+    never a giant warning icon that gives away the answer.
+11. Record the character's declared, observed, and concealed inventory in the
+    evidence ledger described in
+    [docs/declared-concealed-evidence.md](docs/declared-concealed-evidence.md).
 
 ### Style and quality checks
 
@@ -654,6 +666,9 @@ palette when creating another visitor.
 - Warm red/amber edge light, muted saturation, and shared grain treatment.
 - Different props and posture must communicate the visitor's case before the
   player opens a document.
+- The detector plate must be recognizably the same person as the scene and
+  dossier portrait, while making the carried metal legible as a separate
+  inspection clue.
 - Use references on every new generation and record the reference assets in
   the commit message or asset note.
 
@@ -667,5 +682,6 @@ The check reads PNG dimensions directly, verifies dossier and X-ray ratios,
 rejects undersized character sources, checks Mara's blink frame against the
 base frame, and fails if CSS introduces `object-fit: fill`. GitHub Pages runs
 the same check before uploading the site artifact. A generated
-face-and-shoulders portrait is required for documents; geometric stretching
-and CSS body crops are not accepted.
+face-and-shoulders portrait and a character-specific detector plate are
+required for documents and gate inspection; geometric stretching, generic
+detector composites, and CSS body crops are not accepted.

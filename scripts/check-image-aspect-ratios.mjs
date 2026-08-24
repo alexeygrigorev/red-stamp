@@ -83,6 +83,21 @@ const xrayIds = [
 ];
 for (const id of xrayIds) checkRatio(`assets/generated/xray-${id}.png`, 3 / 2);
 
+const detectorIds = [
+  "mara-velen", "irena-sava", "viktor-dalen", "radan-kest", "olya-merin",
+  "anton-ryl", "sorin-dask", "director-vel", "nadiya-ost", "milan-vek", "elias-rhy",
+];
+for (const id of detectorIds) {
+  const relativePath = `assets/generated/detector-${id}.png`;
+  if (!fs.existsSync(path.join(root, relativePath))) {
+    console.warn(`PENDING ${relativePath} (required character-specific detector plate)`);
+    continue;
+  }
+  checkRatio(relativePath, 3 / 2);
+}
+
+checkRatio("assets/generated/red-stamp-emblem.png", 1);
+
 const css = ["styles.css", "dossier-viewer.css", "immersive-console.css", "detector-person.css"]
   .map((file) => fs.readFileSync(path.join(root, file), "utf8"))
   .join("\n");

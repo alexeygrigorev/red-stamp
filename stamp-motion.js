@@ -18,6 +18,7 @@
   const DOCUMENT_ACTIVE_CLASS = "stamp-motion-document-active";
   const DOCUMENT_ISSUED_CLASS = "stamp-motion-document-issued";
   const INK_ISSUED_CLASS = "stamp-motion-ink-issued";
+  const IMPACT_ACTIVE_CLASS = "stamp-motion-impact-active";
   const MOTION_DURATION = 820;
   const REDUCED_DURATION = 220;
   const timers = new WeakMap();
@@ -68,6 +69,22 @@
     }
 
     return ink;
+  }
+
+  function ensureImpact(target) {
+    const panel = target.querySelector(".desk-panel") || target;
+    let impact = Array.from(panel.children).find((child) => child.classList.contains("stamp-motion-impact"));
+
+    if (!impact) {
+      impact = document.createElement("img");
+      impact.className = "stamp-motion-impact";
+      impact.src = "assets/generated/red-stamp-impact.png";
+      impact.alt = "";
+      impact.setAttribute("aria-hidden", "true");
+      panel.appendChild(impact);
+    }
+
+    return impact;
   }
 
   function makeDocumentChild(className, text) {
@@ -156,6 +173,7 @@
 
     const sheet = ensureDocument(stampTarget);
     const ink = ensureInk(stampTarget);
+    const impact = ensureImpact(stampTarget);
     updateDocument(sheet, stampTarget);
 
     const previousDocumentTimer = documentTimers.get(stampTarget);
@@ -165,12 +183,14 @@
     restartClass(sheet, DOCUMENT_ACTIVE_CLASS);
     ink.classList.remove(INK_ISSUED_CLASS);
     restartClass(stampTarget, ACTIVE_CLASS);
+    restartClass(impact, IMPACT_ACTIVE_CLASS);
 
     const duration = reducedMotion() ? REDUCED_DURATION : MOTION_DURATION;
     triggerAuthorityResponse(duration);
 
     const timer = global.setTimeout(() => {
       stampTarget.classList.remove(ACTIVE_CLASS);
+      impact.classList.remove(IMPACT_ACTIVE_CLASS);
       timers.delete(stampTarget);
     }, duration);
     timers.set(stampTarget, timer);

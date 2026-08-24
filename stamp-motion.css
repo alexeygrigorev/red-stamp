@@ -195,6 +195,34 @@
 
 .security-desk .desk-panel {
   position: relative;
+  overflow: visible;
+}
+
+/* Generated desk-level impact plate. It is deliberately much larger than the
+ * normal stamp sprite so the player can read the contact, paper, and fresh ink
+ * even in the full-room view. The dark plate blends into the desk. */
+.security-desk .stamp-motion-impact {
+  position: absolute;
+  right: -88px;
+  bottom: -106px;
+  z-index: 7;
+  display: block;
+  width: clamp(230px, 22vw, 340px);
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(18px, 30px, 0) rotate(-7deg) scale(0.42);
+  transform-origin: 68% 73%;
+  filter: saturate(1.16) contrast(1.1) drop-shadow(0 17px 15px rgba(0, 0, 0, 0.72));
+  mix-blend-mode: screen;
+}
+
+.security-desk .stamp-motion-impact-active {
+  animation: stamp-motion-impact-plate 960ms cubic-bezier(0.16, 0.78, 0.23, 1) both;
+  will-change: opacity, transform;
 }
 
 .security-desk .stamp-motion-ink::before,
@@ -294,6 +322,38 @@
   100% {
     filter: drop-shadow(0 7px 6px rgba(0, 0, 0, 0.62));
     transform: translate3d(0, 0, 0) rotate(7deg) scale(1);
+  }
+}
+
+@keyframes stamp-motion-impact-plate {
+  0% {
+    opacity: 0;
+    transform: translate3d(18px, 30px, 0) rotate(-7deg) scale(0.42);
+  }
+
+  23% {
+    opacity: 0.96;
+    transform: translate3d(4px, 8px, 0) rotate(-4deg) scale(0.82);
+  }
+
+  42% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(-2deg) scale(1.08);
+  }
+
+  55% {
+    opacity: 0.98;
+    transform: translate3d(0, 0, 0) rotate(-2deg) scale(0.98);
+  }
+
+  78% {
+    opacity: 0.34;
+    transform: translate3d(-3px, -4px, 0) rotate(-1deg) scale(0.94);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(-4px, -8px, 0) rotate(0deg) scale(0.9);
   }
 }
 
@@ -444,6 +504,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .security-desk .stamp-motion-impact-active {
+    animation: none;
+    opacity: 0.96;
+    transform: translate3d(0, 0, 0) rotate(-2deg) scale(0.96);
+  }
+
   .security-desk.stamp-hit,
   .security-desk.stamp-motion-active {
     animation: none !important;

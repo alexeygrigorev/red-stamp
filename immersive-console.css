@@ -1191,3 +1191,403 @@ main {
     opacity: 0.03;
   }
 }
+
+/* Readability pass: the checkpoint is a game instrument, so anything the
+ * player must read or press gets display space. Decorative engraving may stay
+ * small, but evidence and decisions must never look like browser chrome. */
+:root {
+  --console-display: "Nimbus Sans Narrow", "Arial Narrow", "DejaVu Sans Condensed", Impact, sans-serif;
+  --console-body: "DejaVu Sans", "Segoe UI", Arial, sans-serif;
+  --console-mono: "Ubuntu Mono", "Courier New", monospace;
+}
+
+body {
+  font-family: var(--console-body);
+  font-size: 17px;
+}
+
+h1,
+h2,
+h3,
+.brand-name,
+.scene-case-card strong,
+.inspection-modal-heading h2,
+.inspection-result-copy h3,
+.overlay-card h1 {
+  font-family: var(--console-display);
+  font-stretch: condensed;
+}
+
+.brand-mark {
+  display: block;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(232, 192, 132, 0.48);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  background: #140b0c;
+}
+
+.brand-lockup {
+  gap: 13px;
+  min-width: 285px;
+}
+
+.brand-name {
+  font-size: 21px;
+  letter-spacing: 0.16em;
+}
+
+.brand-subtitle {
+  font-family: var(--console-mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+}
+
+.protocol-status {
+  font-family: var(--console-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.metric-label {
+  font-family: var(--console-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.metric strong {
+  font-family: var(--console-mono);
+  font-size: 21px;
+}
+
+.scene-line,
+.desk-topline,
+.desk-instruction,
+.desk-status,
+.scene-actions-label,
+.footer-bar,
+.footer-help {
+  font-family: var(--console-mono);
+}
+
+.scene-line {
+  font-size: 11px;
+  letter-spacing: 0.055em;
+}
+
+.scene-case-card {
+  width: min(348px, 29vw);
+  padding: 17px 18px 18px;
+}
+
+.scene-case-portrait {
+  display: none;
+}
+
+.scene-case-card strong {
+  font-size: clamp(23px, 1.7vw, 30px);
+  line-height: 0.98;
+  letter-spacing: 0.07em;
+}
+
+.scene-case-card small {
+  font-family: var(--console-mono);
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+}
+
+.scene-case-card p {
+  max-width: 30ch;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.scene-case-tags span {
+  font-family: var(--console-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+/* The person is an object in the room, not a card with captions pasted over
+ * it. The invisible visitor target remains clickable, while the question
+ * control moves to the empty intercom area above the desk. */
+.visitor-nameplate {
+  display: none;
+}
+
+.hotspot-visitor {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.hotspot-visitor .hotspot-sprite,
+.hotspot-visitor .hotspot-label,
+.hotspot-visitor .hotspot-pulse {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.hotspot-question {
+  top: 18%;
+  right: 32%;
+  bottom: auto;
+  left: auto;
+}
+
+.hotspot-label {
+  font-family: var(--console-mono);
+  font-size: 12px;
+  letter-spacing: 0.055em;
+}
+
+.scene-hotspot {
+  min-height: 44px;
+  padding: 7px 10px;
+}
+
+.desk-topline {
+  font-size: 12px;
+}
+
+.desk-instruction,
+.desk-status {
+  font-size: 11px;
+}
+
+.scene-actions-label {
+  font-size: 11px;
+}
+
+.scene-decision {
+  min-height: 48px;
+  font-family: var(--console-mono);
+  font-size: 13px;
+  letter-spacing: 0.045em;
+}
+
+.footer-bar,
+.footer-help {
+  font-size: 11px;
+  letter-spacing: 0.055em;
+}
+
+.toast {
+  font-family: var(--console-mono);
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.overlay-card h1 {
+  font-size: clamp(32px, 4vw, 52px);
+}
+
+.overlay-card p,
+.overlay-card .overlay-body {
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.overlay-card .primary-button {
+  min-height: 52px;
+  font-family: var(--console-mono);
+  font-size: 15px;
+}
+
+.inspection-modal-heading h2 {
+  font-size: clamp(25px, 3vw, 34px);
+}
+
+.inspection-status,
+.inspection-result-copy .result-code {
+  font-family: var(--console-mono);
+  font-size: 14px;
+}
+
+.inspection-result-copy h3 {
+  font-size: clamp(21px, 2vw, 27px);
+}
+
+.inspection-result-copy p,
+.inspection-question,
+.inspection-quote {
+  font-family: var(--console-body);
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.inspection-meta {
+  font-size: 15px;
+}
+
+.manifest-caption,
+.inspection-observation > span,
+.inspection-observation small {
+  display: block;
+  color: #b68a69;
+  font-family: var(--console-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.manifest-caption {
+  margin: 12px 0 7px;
+}
+
+.inspection-observation {
+  margin-top: 16px;
+  padding: 11px 13px;
+  border-left: 3px solid rgba(214, 182, 136, 0.56);
+  background: rgba(3, 5, 5, 0.32);
+}
+
+.inspection-observation p {
+  margin: 6px 0 7px;
+  color: #e3d0b9;
+  font-family: var(--console-body);
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.inspection-observation small {
+  color: #968a7d;
+  font-size: 11px;
+}
+
+.inspection-meta span,
+.inspection-shortcuts button,
+.modal-return {
+  font-family: var(--console-mono);
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  body {
+    font-size: 15px;
+  }
+
+  .topbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    min-height: 96px;
+    padding: 9px 12px 8px;
+  }
+
+  .brand-lockup {
+    grid-column: 1;
+    grid-row: 1;
+    gap: 9px;
+    min-width: 0;
+  }
+
+  .brand-mark {
+    width: 40px;
+    height: 40px;
+  }
+
+  .brand-name {
+    font-size: 16px;
+    letter-spacing: 0.11em;
+    white-space: nowrap;
+  }
+
+  .brand-subtitle {
+    font-size: 9px;
+    letter-spacing: 0.035em;
+    white-space: nowrap;
+  }
+
+  .protocol-status {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    position: static;
+    min-width: 0;
+    font-size: 10px;
+  }
+
+  .header-metrics {
+    grid-column: 2;
+    grid-row: 1;
+    gap: 8px;
+  }
+
+  .metric {
+    min-width: 56px;
+  }
+
+  .metric-label {
+    font-size: 9px;
+  }
+
+  .metric strong {
+    font-size: 17px;
+  }
+
+  .scene-line {
+    font-size: 9px;
+  }
+
+  .scene-case-card {
+    width: min(300px, 72vw);
+    padding: 13px 14px 14px;
+  }
+
+  .scene-case-card strong {
+    font-size: clamp(19px, 5.4vw, 25px);
+  }
+
+  .scene-case-card small {
+    font-size: 10px;
+  }
+
+  .scene-case-tags span {
+    font-size: 9px;
+  }
+
+  .scene-hotspot {
+    min-height: 52px;
+  }
+
+  .scene-hotspot .hotspot-label {
+    font-size: 10px;
+    letter-spacing: 0.025em;
+  }
+
+  .scene-actions-label {
+    font-size: 9px;
+  }
+
+  .scene-decision {
+    min-height: 48px;
+    font-size: 11px;
+  }
+
+  .overlay-card p,
+  .overlay-card .overlay-body {
+    font-size: 16px;
+  }
+
+  .inspection-modal-heading h2 {
+    font-size: 24px;
+  }
+
+  .inspection-result-copy p,
+  .inspection-question,
+  .inspection-quote {
+    font-size: 15px;
+  }
+
+  .inspection-meta {
+    font-size: 14px;
+  }
+
+  .inspection-shortcuts button,
+  .modal-return {
+    font-size: 11px;
+  }
+}

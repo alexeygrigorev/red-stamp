@@ -7,6 +7,8 @@
       name="description"
       content="Red Stamp — a Veskarian embassy security checkpoint game."
     />
+    <meta name="theme-color" content="#090b0c" />
+    <link rel="icon" type="image/png" href="assets/generated/red-stamp-emblem.png" />
     <title>Red Stamp — Veskarian Embassy</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="mara-motion.css" />
@@ -20,10 +22,10 @@
     <div id="app" class="app">
       <header class="topbar">
         <div class="brand-lockup">
-          <div class="brand-mark" aria-hidden="true">RS</div>
+          <img class="brand-mark" src="assets/generated/red-stamp-emblem.png" alt="Red Stamp emblem" />
           <div>
             <p class="brand-name">RED STAMP</p>
-            <p class="brand-subtitle">VESKARIAN EMBASSY / SECURITY CONTROL</p>
+            <p class="brand-subtitle">VESKARIAN EMBASSY · SECURITY CONTROL</p>
           </div>
         </div>
 
@@ -38,12 +40,12 @@
 
         <div class="header-metrics" aria-label="Current shift status">
           <div class="metric metric-tolerance">
-            <span class="metric-label">SHIFT TOLERANCE</span>
+            <span class="metric-label" title="Shift tolerance">SHIFT TOL.</span>
             <strong id="toleranceValue">100%</strong>
             <div class="meter"><span id="toleranceMeter"></span></div>
           </div>
           <div class="metric metric-career">
-            <span class="metric-label">CAREER STANDING</span>
+            <span class="metric-label" title="Career standing">CAREER</span>
             <strong id="careerValue">100%</strong>
             <div class="meter"><span id="careerMeter"></span></div>
           </div>
@@ -173,7 +175,7 @@
                 <div class="portrait-head"><span></span></div>
                 <div class="portrait-body"></div>
               </div>
-              <div class="visitor-nameplate">
+              <div class="visitor-nameplate" aria-hidden="true">
                 <span id="visitorNamePlate">AWAITING VISITOR</span>
                 <small id="visitorRolePlate">CHECKPOINT STANDBY</small>
               </div>

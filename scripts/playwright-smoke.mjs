@@ -104,13 +104,25 @@ async function inspectXrayAndShortcuts(page) {
   await page.locator('[data-action="inspect"][data-tool="detector"]').first().click();
   await page.locator("#inspectionOverlay.is-open").waitFor();
   assert.equal(await page.locator("#inspectionOverlay").getAttribute("data-tool"), "detector");
-  const detectorPerson = await page.locator(".rs-detector-person").evaluate((image) => ({
-    src: image.currentSrc || image.src,
-    naturalWidth: image.naturalWidth,
-    naturalHeight: image.naturalHeight,
-  }));
-  assert.match(detectorPerson.src, /assets\/generated\/.*visitor\.png/);
-  assert.ok(detectorPerson.naturalWidth > 0 && detectorPerson.naturalHeight > 0, "Detector must load the active visitor silhouette");
+  const detectorAsset = page.locator(".rs-detector-art");
+  const detectorPerson = page.locator(".rs-detector-person");
+  if (await detectorAsset.count()) {
+    const detectorPlate = await detectorAsset.evaluate((image) => ({
+      src: image.currentSrc || image.src,
+      naturalWidth: image.naturalWidth,
+      naturalHeight: image.naturalHeight,
+    }));
+    assert.match(detectorPlate.src, /assets\/generated\/detector-.*\.png/);
+    assert.ok(detectorPlate.naturalWidth > 0 && detectorPlate.naturalHeight > 0, "Dedicated detector plate must load");
+  } else {
+    const detectorFallback = await detectorPerson.evaluate((image) => ({
+      src: image.currentSrc || image.src,
+      naturalWidth: image.naturalWidth,
+      naturalHeight: image.naturalHeight,
+    }));
+    assert.match(detectorFallback.src, /assets\/generated\/.*visitor\.png/);
+    assert.ok(detectorFallback.naturalWidth > 0 && detectorFallback.naturalHeight > 0, "Detector fallback must load the active visitor silhouette");
+  }
   await page.keyboard.press("Escape");
   await page.locator("#inspectionOverlay").waitFor({ state: "hidden" });
 
@@ -136,13 +148,17 @@ async function inspectXrayAndShortcuts(page) {
   await page.locator("#inspectionOverlay").waitFor({ state: "hidden" });
 
   await page.locator('[data-action="resolve"][data-decision="admit"]').first().click();
+  await page.waitForTimeout(420);
+  await page.screenshot({ path: "/tmp/red-stamp-stamp-impact.png", fullPage: true });
   await page.waitForFunction(() => document.querySelector(".stamp-motion-document")?.classList.contains("stamp-motion-document-issued"));
   const stampState = await page.locator(".security-desk").evaluate((desk) => ({
     document: Boolean(desk.querySelector(".stamp-motion-document")),
     ink: desk.querySelector(".stamp-motion-ink")?.classList.contains("stamp-motion-ink-issued"),
+    impact: desk.querySelector(".stamp-motion-impact")?.getAttribute("src") || "",
   }));
   assert.equal(stampState.document, true, "Admit must create a physical authorization document");
   assert.equal(stampState.ink, true, "Admit must leave red ink on the authorization document");
+  assert.match(stampState.impact, /assets\/generated\/red-stamp-impact\.png/, "Admit must use the generated stamp impact plate");
 }
 
 async function checkMobile(browser) {
@@ -161,6 +177,24 @@ async function checkMobile(browser) {
   assert.ok(await page.locator(".rs-dossier-page--identity").count());
   await page.keyboard.press("Escape");
   await page.close();
+}
+
+async function checkRadanPolarity(browser) {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 });
+  const outcomes = new Set();
+  try {
+    for (let seed = 100; seed < 124; seed += 1) {
+      await page.goto(`${baseUrl}/?seed=${seed}&debug=1`, { waitUntil: "networkidle" });
+      const campaign = await readCampaign(page);
+      campaign.flatMap((shift) => shift.cases)
+        .filter((caseData) => caseData.id === "radan-kest")
+        .forEach((caseData) => outcomes.add(caseData.expected));
+      if (outcomes.has("admit") && outcomes.has("deny")) break;
+    }
+  } finally {
+    await page.close();
+  }
+  assert.ok(outcomes.has("admit") && outcomes.has("deny"), `Radan needs both clean and compromised seeded scenarios: ${JSON.stringify([...outcomes])}`);
 }
 
 async function main() {
@@ -184,6 +218,12 @@ async function main() {
     assert.equal(firstCampaign.length, 3);
     assert.deepEqual(firstCampaign.map((shift) => shift.cases.length), [6, 5, 6]);
     assert.ok(firstCampaign.flatMap((shift) => shift.cases).every((caseData) => caseData.variantLabel));
+    assert.ok(firstCampaign.flatMap((shift) => shift.cases).every((caseData) => (
+      Array.isArray(caseData.evidenceLedger?.declared)
+      && Array.isArray(caseData.evidenceLedger?.observed)
+      && Object.prototype.hasOwnProperty.call(caseData.evidenceLedger || {}, "concealed")
+    )), "Every case must carry a declared/observed/concealed evidence ledger");
+    await checkRadanPolarity(browser);
     await page.screenshot({ path: "/tmp/red-stamp-desktop.png", fullPage: true });
     await inspectIdentityAndPages(page);
     await inspectXrayAndShortcuts(page);
