@@ -103,6 +103,7 @@ async function inspectXrayAndShortcuts(page) {
   const caseData = (await page.evaluate(() => window.RedStampDebug.getCampaign()))[0].cases[currentCase];
   await page.locator('[data-action="inspect"][data-tool="detector"]').first().click();
   await page.locator("#inspectionOverlay.is-open").waitFor();
+  assert.equal(await page.locator("#inspectionOverlay").getAttribute("data-tool"), "detector");
   const detectorPerson = await page.locator(".rs-detector-person").evaluate((image) => ({
     src: image.currentSrc || image.src,
     naturalWidth: image.naturalWidth,
@@ -115,6 +116,7 @@ async function inspectXrayAndShortcuts(page) {
 
   await page.locator('[data-action="inspect"][data-tool="xray"]').first().click();
   await page.locator("#inspectionOverlay.is-open").waitFor();
+  assert.equal(await page.locator("#inspectionOverlay").getAttribute("data-tool"), "xray");
   const xrayImage = await page.locator("#inspectionOverlayVisual img").evaluate((image) => ({
     src: image.currentSrc || image.src,
     naturalWidth: image.naturalWidth,

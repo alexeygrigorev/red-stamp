@@ -2077,6 +2077,8 @@ function renderInspectionOverlay(tool) {
   $("#inspectionOverlayStatus").className = `inspection-status ${tone}`;
   const dossierTool = ["appointment", "documents", "id"].includes(tool);
   const visual = $("#inspectionOverlayVisual");
+  const overlay = $("#inspectionOverlay");
+  overlay.dataset.tool = tool;
   visual.classList.toggle("dossier-visual", dossierTool);
   visual.classList.toggle("rs-detector-visual", tool === "detector");
   if (dossierTool) {
@@ -2103,7 +2105,7 @@ function renderInspectionOverlay(tool) {
   }
 
   $("#inspectionOverlayText").innerHTML = `<div class="inspection-result-copy ${tone}"><span class="result-code">${escapeHtml(status)}</span><h3>${escapeHtml(result.title || title)}</h3>${heading}${metadata}</div>`;
-  $("#inspectionOverlay").hidden = false;
+  overlay.hidden = false;
   window.requestAnimationFrame(() => $("#inspectionOverlay").classList.add("is-open"));
 }
 
