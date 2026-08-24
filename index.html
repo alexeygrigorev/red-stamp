@@ -147,6 +147,55 @@
               <span>REFUSE ENTRY</span>
             </button>
           </div>
+
+          <section class="scene-checklist" id="sceneChecklist" aria-label="Visitor verification checklist">
+            <div class="checklist-header">
+              <div>
+                <span class="panel-kicker">WORKING CARD</span>
+                <strong>VERIFY BEFORE ENTRY</strong>
+              </div>
+              <span class="checklist-state" id="checklistState">OPEN</span>
+            </div>
+            <p class="checklist-instruction" id="checklistInstruction">
+              Inspect each source, mark what you found, then submit the card.
+            </p>
+            <div class="checklist-list" id="checklistList">
+              <button class="checklist-row" data-action="inspect" data-tool="appointment">
+                <span class="checklist-index">01</span>
+                <span class="checklist-label">ROUTE / FILE</span>
+                <strong class="checklist-mark" data-checkmark="appointment">OPEN</strong>
+              </button>
+              <button class="checklist-row" data-action="inspect" data-tool="id">
+                <span class="checklist-index">02</span>
+                <span class="checklist-label">FACE / ID</span>
+                <strong class="checklist-mark" data-checkmark="id">OPEN</strong>
+              </button>
+              <button class="checklist-row" data-action="inspect" data-tool="documents">
+                <span class="checklist-index">03</span>
+                <span class="checklist-label">PAPERS</span>
+                <strong class="checklist-mark" data-checkmark="documents">OPEN</strong>
+              </button>
+              <button class="checklist-row" data-action="inspect" data-tool="detector">
+                <span class="checklist-index">04</span>
+                <span class="checklist-label">PERSON / GATE</span>
+                <strong class="checklist-mark" data-checkmark="detector">OPEN</strong>
+              </button>
+              <button class="checklist-row" data-action="inspect" data-tool="xray">
+                <span class="checklist-index">05</span>
+                <span class="checklist-label">BAG / SCAN</span>
+                <strong class="checklist-mark" data-checkmark="xray">OPEN</strong>
+              </button>
+              <button class="checklist-row" data-action="inspect" data-tool="question">
+                <span class="checklist-index">06</span>
+                <span class="checklist-label">STATEMENT</span>
+                <strong class="checklist-mark" data-checkmark="question">OPEN</strong>
+              </button>
+            </div>
+            <div class="checklist-footer">
+              <span id="checklistProgress">0 / 6 MARKED</span>
+              <button class="checklist-submit" data-action="submit-checklist" disabled>SUBMIT FINDINGS</button>
+            </div>
+          </section>
         </section>
 
         <section class="checkpoint-scene" aria-label="Security checkpoint">

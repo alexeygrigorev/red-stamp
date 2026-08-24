@@ -66,11 +66,32 @@ async function startRun(page, seed) {
   });
   await page.locator("#caseTitle").waitFor({ state: "attached" });
   assert.notEqual((await page.locator("#caseTitle").textContent()).trim(), "No active visitor");
+  const activeCase = (await readCampaign(page))[0].cases[0];
+  assert.doesNotMatch(await page.locator(".scene-case-card").innerText(), new RegExp(activeCase.variantLabel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "Scenario variant must not be shown before inspection");
+  assert.equal(await page.locator('[data-action="resolve"][data-decision="admit"]').first().isDisabled(), true, "Authority must stay locked until findings are filed");
+  assert.equal(await page.locator('[data-action="submit-checklist"]').isDisabled(), true, "Checklist submission must wait for all findings");
+  await page.keyboard.press("a");
+  assert.equal((await page.evaluate(() => window.RedStampDebug.getState())).resolved, false, "Keyboard admission must respect the filed-card gate");
   await assertNoStretching(page);
 }
 
+async function completeChecklist(page) {
+  for (const tool of ["appointment", "id", "documents", "detector", "xray", "question"]) {
+    await page.locator(`.checklist-row[data-tool="${tool}"]`).click();
+    await page.locator("#inspectionOverlay.is-open").waitFor();
+    await page.locator('.finding-button[data-finding="review"]').click();
+    await page.waitForFunction((name) => document.querySelector(`[data-checkmark="${name}"]`)?.textContent === "REVIEW", tool);
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => document.querySelector("#inspectionOverlay")?.hidden === true);
+  }
+  assert.equal(await page.locator('[data-action="submit-checklist"]').isDisabled(), false, "Complete findings must unlock checklist submission");
+  await page.locator('[data-action="submit-checklist"]').click();
+  await page.waitForFunction(() => window.RedStampDebug.getState().checklistSubmitted === true);
+  assert.equal(await page.locator('[data-action="resolve"][data-decision="admit"]').first().isDisabled(), false, "Filed findings must unlock authority");
+}
+
 async function inspectIdentityAndPages(page) {
-  await page.locator('[data-action="inspect"][data-tool="id"]').first().click();
+  await page.locator('.checklist-row[data-tool="id"]').click();
   await page.locator("#inspectionOverlay.is-open").waitFor();
   assert.equal(await page.locator(".rs-dossier-page--identity").count(), 1);
   const identityImage = await page.locator(".rs-dossier-base-image").evaluate((image) => ({
@@ -101,7 +122,7 @@ async function inspectIdentityAndPages(page) {
 async function inspectXrayAndShortcuts(page) {
   const currentCase = await page.evaluate(() => window.RedStampDebug.getState().caseIndex);
   const caseData = (await page.evaluate(() => window.RedStampDebug.getCampaign()))[0].cases[currentCase];
-  await page.locator('[data-action="inspect"][data-tool="detector"]').first().click();
+  await page.locator('.checklist-row[data-tool="detector"]').click();
   await page.locator("#inspectionOverlay.is-open").waitFor();
   assert.equal(await page.locator("#inspectionOverlay").getAttribute("data-tool"), "detector");
   const detectorAsset = page.locator(".rs-detector-art");
@@ -126,9 +147,12 @@ async function inspectXrayAndShortcuts(page) {
   await page.keyboard.press("Escape");
   await page.locator("#inspectionOverlay").waitFor({ state: "hidden" });
 
-  await page.locator('[data-action="inspect"][data-tool="xray"]').first().click();
+  await page.locator('.checklist-row[data-tool="xray"]').click();
   await page.locator("#inspectionOverlay.is-open").waitFor();
   assert.equal(await page.locator("#inspectionOverlay").getAttribute("data-tool"), "xray");
+  const xrayCopy = await page.locator("#inspectionOverlayText").innerText();
+  assert.match(xrayCopy, /OBSERVED IN BAG/);
+  assert.doesNotMatch(xrayCopy, new RegExp(caseData.xray.status.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "X-ray drawer must expose observations, not the authored verdict");
   const xrayImage = await page.locator("#inspectionOverlayVisual img").evaluate((image) => ({
     src: image.currentSrc || image.src,
     naturalWidth: image.naturalWidth,
@@ -147,6 +171,7 @@ async function inspectXrayAndShortcuts(page) {
   await page.keyboard.press("Escape");
   await page.locator("#inspectionOverlay").waitFor({ state: "hidden" });
 
+  await completeChecklist(page);
   await page.locator('[data-action="resolve"][data-decision="admit"]').first().click();
   await page.waitForTimeout(420);
   await page.screenshot({ path: "/tmp/red-stamp-stamp-impact.png", fullPage: true });
@@ -194,7 +219,7 @@ async function checkMobile(browser) {
   assert.ok(composition.evidence.top >= composition.desk.bottom - 2, `Evidence tray must sit below the desk: ${JSON.stringify(composition)}`);
   assert.ok(composition.authority.top >= composition.evidence.bottom - 2, `Authority rail must sit below evidence tray: ${JSON.stringify(composition)}`);
   await page.screenshot({ path: "/tmp/red-stamp-mobile.png", fullPage: true });
-  await page.locator('[data-action="inspect"][data-tool="id"]').first().click();
+  await page.locator('.checklist-row[data-tool="id"]').click();
   await page.locator("#inspectionOverlay.is-open").waitFor();
   const modalBox = await page.locator(".inspection-modal").boundingBox();
   assert.ok(modalBox && modalBox.width <= 390, `Inspection modal exceeds mobile width: ${JSON.stringify(modalBox)}`);

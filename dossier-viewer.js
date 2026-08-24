@@ -91,7 +91,7 @@
     correspondence: Object.freeze({
       label: "RESTRICTED CORRESPONDENCE",
       title: "CORRESPONDENCE CONTROL FILE",
-      subtitle: "SEALED MATERIAL / RECIPIENT UNVERIFIED",
+      subtitle: "SEALED MATERIAL / CONTROLLED COPY",
       pages: 3,
       ratio: "2 / 3",
     }),
@@ -324,9 +324,9 @@
       time: firstText(caseObject.time, caseObject.appointmentTime, "—"),
       caseNumber: firstText(caseObject.caseNumber, caseObject.fileNumber, caseObject.id, "UNASSIGNED"),
       queue: firstText(caseObject.queue, caseObject.queueNumber, "—"),
-      purpose: firstText(caseObject.purpose, caseObject.request, caseObject.reason, "No purpose recorded.",),
-      recordStatus: resultStatus(record, "NO RECORD STATUS"),
-      recordDetail: firstText(record.detail, "No internal record note has been entered."),
+      purpose: firstText(caseObject.claimedPurpose, caseObject.purpose, caseObject.request, caseObject.reason, "No purpose recorded.",),
+      recordStatus: "REGISTERED FILE",
+      recordDetail: "Compare the registered fields with the visitor and the papers at the window.",
       rows,
       idCheck,
       documents,
@@ -372,7 +372,7 @@
           field("Bearer", ctx.name),
           field("Authority", ctx.service),
           field("Order / file", ctx.caseNumber),
-          field("Clearance", ctx.recordStatus),
+          field("Clearance", "ROUTE CLAIMED"),
           field("Route", `WINDOW ${ctx.window}`),
           field("Equipment", findRow(rows, ["Weapon", "Equipment", "Mission", "Restriction"])),
         ];
@@ -418,20 +418,20 @@
 
   function verificationFields(ctx) {
     return [
-      field("Record", ctx.recordStatus),
-      field("Identity", resultStatus(ctx.idCheck)),
-      field("Documents", resultStatus(ctx.documents)),
-      field("Detector", resultStatus(ctx.detector)),
-      field("Bag / X-ray", resultStatus(ctx.xray)),
-      field("Statement", resultStatus(ctx.question, "NOT ASKED")),
+      field("Record", "COMPARE CLAIM"),
+      field("Identity", "COMPARE PORTRAIT"),
+      field("Documents", "READ PAPERS"),
+      field("Detector", "READ GATE"),
+      field("Bag / X-ray", "READ SCAN"),
+      field("Statement", "ASK / COMPARE"),
     ];
   }
 
   function annexFields(ctx) {
     const rows = ctx.rows.slice(0, 6);
     const resultRows = [
-      field("Secondary review", resultStatus(ctx.secondary)),
-      field("Liaison", resultStatus(ctx.liaison)),
+      field("Secondary review", "NOT REQUESTED"),
+      field("Liaison", "NOT CONTACTED"),
     ];
     return [...rows.map((row) => field(row.label, row.value)), ...resultRows].slice(0, 8);
   }
@@ -442,22 +442,21 @@
     const ctx = contextFor(caseData, resolvedType);
     const pageOneNotes = [
       note("Declared purpose", ctx.purpose),
-      note("Internal record", ctx.recordDetail),
+      note("Examiner's instruction", ctx.recordDetail),
     ];
     const pageTwoNotes = [
-      note("Identity examiner", resultNote(ctx.idCheck, "Identity review is pending."), resultStatus(ctx.idCheck)),
-      note("Document examiner", resultNote(ctx.documents, "Physical papers have not been recorded."), resultStatus(ctx.documents)),
+      note("Identity examiner", "Compare the face, name, and identity fields with the person at the window."),
+      note("Document examiner", "Compare the declared papers with the physical packet before marking this line."),
       note(
         "Visitor statement",
         ctx.question.prompt && ctx.question.answer
           ? `${displayText(ctx.question.prompt)} / “${displayText(ctx.question.answer)}”`
           : "No statement has been entered.",
-        resultStatus(ctx.question, "NOT ASKED"),
       ),
     ];
     const pageThreeNotes = [
-      note("Secondary finding", resultNote(ctx.secondary, "No secondary finding has been recorded."), resultStatus(ctx.secondary)),
-      note("Liaison / receiving office", resultNote(ctx.liaison, "No liaison response has been entered."), resultStatus(ctx.liaison)),
+      note("Secondary finding", "Use the hold control only after the working card is filed."),
+      note("Liaison / receiving office", "Call the receiving office when the filed evidence needs authority."),
       note("Examiner's margin", `Route: ${ctx.mode}. Purpose: ${ctx.purpose}`, "OPEN FILE"),
     ];
 
@@ -472,7 +471,7 @@
         fields: primaryFields(ctx, resolvedType),
         notes: pageOneNotes,
         seals: [
-          seal("V", "File seal", ctx.recordStatus, "record"),
+          seal("V", "File seal", "REGISTERED FILE", "record"),
           seal("RS", "Red stamp", "PENDING REVIEW", "pending"),
         ],
         portrait: {
@@ -492,8 +491,8 @@
         fields: verificationFields(ctx),
         notes: pageTwoNotes,
         seals: [
-          seal("ID", "Identity", resultStatus(ctx.idCheck), "record"),
-          seal("DOC", "Papers", resultStatus(ctx.documents), "review"),
+          seal("ID", "Identity", "COMPARE", "record"),
+          seal("DOC", "Papers", "COMPARE", "review"),
         ],
         portrait: null,
       },

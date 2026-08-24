@@ -2106,6 +2106,10 @@ function shuffle(items, random) {
 
 function applyCasePatch(base, patch = null) {
   const next = mergeCaseData(base, patch || {});
+  // Variants change the hidden problem, not what the visitor is allowed to
+  // claim at the window. Keep the original request available to the public
+  // case card so the player has to discover the discrepancy.
+  next.claimedPurpose = base.claimedPurpose || base.purpose;
   next.variantId = patch?.variantId || "standard";
   next.variantLabel = patch?.variantLabel || "STANDARD CHECKS";
   next.scenarioId = `${base.id}::${next.variantId}`;
@@ -2174,6 +2178,8 @@ function initialState(seed = initialCampaignSeed) {
     commandPressure: 0,
     securityBreaches: 0,
     revealed: {},
+    checklistMarks: {},
+    checklistSubmitted: false,
     selectedTool: null,
     dossierPage: 0,
     dossierType: null,
@@ -2199,6 +2205,7 @@ const state = initialState();
 let toastTimer = null;
 let visitorBlinkTimer = null;
 let visitorBlinkResetTimer = null;
+let inspectionOpenFrame = null;
 
 function currentShift() {
   return campaignShifts[state.day - 1];
@@ -2385,6 +2392,52 @@ function modeClass(mode) {
   return "";
 }
 
+function claimedPurpose(c) {
+  return c?.claimedPurpose || c?.purpose || "No purpose recorded.";
+}
+
+function publicProtocol(c) {
+  if (c?.mode === "emergency") {
+    return "EMERGENCY ROUTE / CONFIRM THE RECEIVING DESK BEFORE ENTRY.";
+  }
+  if (c?.mode === "clearance") {
+    return "SPECIAL CLEARANCE / VERIFY THE ORDER, BEARER, AND EQUIPMENT.";
+  }
+  if (c?.mode === "appointment") {
+    return "PUBLIC ENTRY / MATCH THE VISITOR TO THE REGISTERED REQUEST.";
+  }
+  return "RESTRICTED ROUTE / EVERY EXCEPTION MUST LEAVE A RECORD.";
+}
+
+function findingTone(status) {
+  const tone = statusClass(status);
+  return tone === "match" ? "match" : tone === "alert" ? "flag" : "review";
+}
+
+function findingLabel(mark) {
+  return {
+    match: "MATCH",
+    flag: "FLAG",
+    review: "REVIEW",
+  }[mark] || "OPEN";
+}
+
+function checklistMarkedCount() {
+  return PRIMARY_TOOLS.filter((tool) => Boolean(state.checklistMarks[tool])).length;
+}
+
+function checklistExpectedTone(c, tool) {
+  const result = inspectionResult(c, tool);
+  if (!result) return "review";
+  return findingTone(result.status || result.consistency || "REVIEW");
+}
+
+function checklistAccuracy(c) {
+  return PRIMARY_TOOLS.reduce((total, tool) => (
+    total + (state.checklistMarks[tool] === checklistExpectedTone(c, tool) ? 1 : 0)
+  ), 0);
+}
+
 function metaRow(label, value) {
   return `<div class="meta-row"><span class="meta-label">${escapeHtml(label)}</span><span class="meta-value">${escapeHtml(value)}</span></div>`;
 }
@@ -2473,13 +2526,13 @@ function renderCase() {
     ["Service", c.service],
     ["Window", `${c.window} / ${c.time}`],
     ["Case", c.caseNumber],
-    ["Scenario", c.variantLabel],
+    ["File state", "UNVERIFIED"],
   ];
   $("#caseTitle").textContent = c.name;
   $("#caseMeta").innerHTML = recordMeta.map(([label, value]) => metaRow(label, value)).join("");
-  $("#casePurpose").textContent = c.purpose;
+  $("#casePurpose").textContent = claimedPurpose(c);
   $("#caseRule").hidden = false;
-  $("#caseRule").textContent = `PROTOCOL NOTE / ${c.rule}`;
+  $("#caseRule").textContent = `PROTOCOL NOTE / ${publicProtocol(c)}`;
   $("#evidenceList").innerHTML = renderEvidenceRows(c);
   $("#questionCard").hidden = !state.revealed.question;
   $("#questionPrompt").textContent = c.question.prompt;
@@ -2509,8 +2562,8 @@ function renderCase() {
   $("#sceneCaseRole").textContent = c.role.toUpperCase();
   $("#sceneArrivalBadge").textContent = c.modeLabel;
   $("#sceneCaseNumber").textContent = `CASE ${c.caseNumber}`;
-  $("#sceneCaseVariant").textContent = c.variantLabel;
-  $("#scenePurpose").textContent = c.purpose;
+  $("#sceneCaseVariant").textContent = "DECLARED / VERIFY";
+  $("#scenePurpose").textContent = claimedPurpose(c);
   $("#sceneCasePortrait").src = visitorSceneAsset(c);
   $("#sceneCasePortrait").alt = `${c.name}, ${c.role}`;
   $("#sceneVisitorSprite").src = visitorSceneAsset(c);
@@ -2527,6 +2580,38 @@ function renderMetrics() {
   $("#careerMeter").style.width = `${career}%`;
   $("#toleranceMeter").style.background = tolerance < 35 ? "var(--danger)" : "var(--brass)";
   $("#careerMeter").style.background = career < 35 ? "var(--danger)" : "var(--red-bright)";
+}
+
+function renderChecklist() {
+  const c = currentCase();
+  const active = state.started && Boolean(c);
+  const marked = checklistMarkedCount();
+  const rows = $$(".checklist-row");
+
+  rows.forEach((row) => {
+    const tool = row.dataset.tool;
+    const mark = state.checklistMarks[tool];
+    row.disabled = !active || state.resolved || state.checklistSubmitted;
+    row.classList.toggle("is-marked", Boolean(mark));
+    row.classList.toggle("is-current", state.selectedTool === tool && !state.checklistSubmitted);
+    row.classList.toggle("is-flagged", mark === "flag");
+    row.classList.toggle("is-review", mark === "review");
+    const markElement = row.querySelector("[data-checkmark]");
+    if (markElement) markElement.textContent = findingLabel(mark);
+  });
+
+  $("#checklistProgress").textContent = `${marked} / ${PRIMARY_TOOLS.length} MARKED`;
+  $("#checklistState").textContent = !active ? "STANDBY" : state.checklistSubmitted ? "SUBMITTED" : marked === PRIMARY_TOOLS.length ? "READY" : "OPEN";
+  $("#checklistInstruction").textContent = !active
+    ? "Begin the shift to receive a visitor."
+    : state.checklistSubmitted
+      ? "Findings are filed. Use the authority rail to close the case."
+      : marked === PRIMARY_TOOLS.length
+        ? "The card is complete. Submit it before making an entry decision."
+        : "Inspect each source, mark what you found, then submit the card.";
+  const submit = $("[data-action='submit-checklist']");
+  submit.disabled = !active || state.resolved || state.checklistSubmitted || marked !== PRIMARY_TOOLS.length;
+  submit.textContent = state.checklistSubmitted ? "FINDINGS FILED" : "SUBMIT FINDINGS";
 }
 
 function renderInspection() {
@@ -2654,19 +2739,62 @@ function changeDossierPage(delta) {
   renderDossierPage(c, state.dossierType);
 }
 
+function inspectionObservationMarkup(c, tool) {
+  const ledger = c.evidenceLedger || { declared: [], observed: [] };
+  const rows = [];
+  if (tool === "appointment") {
+    rows.push(["REGISTERED FIELDS", (c.record.rows || []).map(([label, value]) => `${label}: ${value}`).join(" · ")]);
+    rows.push(["PLAYER TASK", "Compare the visitor's claim with the registered window, time, and submitted papers."]);
+  }
+  if (tool === "id") {
+    rows.push(["PORTRAIT", `${c.name} / ${c.role}`]);
+    rows.push(["IDENTITY FIELDS", `Name: ${c.name} · Arrival: ${c.modeLabel} · Case: ${c.caseNumber}`]);
+    rows.push(["PLAYER TASK", "Compare the face, name, and identity fields. Record only what does not agree."]);
+  }
+  if (tool === "documents") {
+    rows.push(["DECLARED PAPERS", (ledger.declared || []).join(" · ") || "No declared papers listed."]);
+    rows.push(["PLAYER TASK", "Compare the papers in hand with the filed request. A complete-looking packet can still be wrong."]);
+  }
+  if (tool === "detector") {
+    rows.push(["OBSERVED AT GATE", (ledger.observed || []).join(" · ") || "No body profile recorded."]);
+    rows.push(["PLAYER TASK", "Read the gate result and compare the carried objects with the declared route."]);
+  }
+  if (tool === "xray") {
+    rows.push(["OBSERVED IN BAG", (ledger.observed || []).join(" · ") || "No scan contents recorded."]);
+    rows.push(["PLAYER TASK", "Compare the scan silhouette with the declared contents. Unknown mass is a finding, not a verdict."]);
+  }
+  if (tool === "question") {
+    rows.push(["QUESTION", c.question.prompt]);
+    rows.push(["ANSWER", `“${c.question.answer}”`]);
+    rows.push(["PLAYER TASK", "Compare the statement with the record and the visitor's papers."]);
+  }
+  return `<div class="observation-list">${rows.map(([label, value]) => `<div class="observation-row"><span>${escapeHtml(label)}</span><p>${escapeHtml(value)}</p></div>`).join("")}</div>`;
+}
+
+function findingControlsMarkup(tool) {
+  if (!PRIMARY_TOOLS.includes(tool)) return "";
+  const selected = state.checklistMarks[tool];
+  const button = (mark, label) => `<button class="finding-button ${selected === mark ? "is-selected" : ""}" data-action="mark-finding" data-finding="${mark}"${state.checklistSubmitted ? " disabled" : ""}>${label}</button>`;
+  return `<div class="finding-controls"><span>MARK THIS CHECK</span><div>${button("match", "MATCH")} ${button("flag", "FLAG")} ${button("review", "REVIEW")}</div></div>`;
+}
+
 function renderInspectionOverlay(tool) {
   const c = currentCase();
   const result = c && inspectionResult(c, tool);
   if (!state.started || !c || !result) return;
 
-  const status = result.status || result.consistency || "RECORDED";
-  const tone = statusClass(status);
+  const primary = PRIMARY_TOOLS.includes(tool);
+  const mark = state.checklistMarks[tool];
+  const status = primary ? (mark ? findingLabel(mark) : "UNMARKED") : (result.status || result.consistency || "RECORDED");
+  const tone = primary ? (mark || "review") : statusClass(status);
   const image = inspectionImage(c, tool);
   const title = inspectionTitle(tool);
-  const detail = result.detail || result.answer || "The statement has been recorded in the case file.";
-  const heading = tool === "question"
-    ? `<p class="inspection-question"><b>${escapeHtml(result.prompt)}</b></p><p class="inspection-quote">“${escapeHtml(result.answer)}”</p><span class="inspection-consistency">${escapeHtml(result.consistency)}</span>`
-    : `<p>${escapeHtml(detail)}</p>`;
+  const detail = result.detail || result.answer || "The response has been recorded in the case file.";
+  const heading = primary
+    ? inspectionObservationMarkup(c, tool)
+    : tool === "question"
+      ? `<p class="inspection-question"><b>${escapeHtml(result.prompt)}</b></p><p class="inspection-quote">“${escapeHtml(result.answer)}”</p>`
+      : `<p>${escapeHtml(detail)}</p>`;
 
   $("#inspectionOverlayKicker").textContent = `CASE ${c.caseNumber} / ${tool.toUpperCase()}`;
   $("#inspectionOverlayTitle").textContent = title;
@@ -2693,21 +2821,21 @@ function renderInspectionOverlay(tool) {
     visual.innerHTML = '<img class="inspection-art ' + imageClass + '" src="' + escapeHtml(image) + '" alt="' + escapeHtml(inspectionVisualAlt(c, tool)) + '" />';
   }
 
-  let metadata = "";
-  if (tool === "appointment") {
-    metadata = `<div class="inspection-meta">${c.record.rows.map(([label, value]) => metaRow(label, value)).join("")}</div>`;
-  }
-  if (tool === "id") {
-    metadata = `<div class="inspection-meta"><div><span>NAME</span><b>${escapeHtml(c.name)}</b></div><div><span>ROLE</span><b>${escapeHtml(c.role)}</b></div><div><span>ARRIVAL</span><b>${escapeHtml(c.modeLabel)}</b></div></div>`;
-  }
-
-  $("#inspectionOverlayText").innerHTML = `<div class="inspection-result-copy ${tone}"><span class="result-code">${escapeHtml(status)}</span><h3>${escapeHtml(result.title || title)}</h3>${heading}${metadata}</div>`;
+  $("#inspectionOverlayText").innerHTML = `<div class="inspection-result-copy ${tone}"><span class="result-code">${escapeHtml(status)}</span><h3>${escapeHtml(primary ? "COMPARE THE RECORD" : (result.title || title))}</h3>${heading}${findingControlsMarkup(tool)}</div>`;
   overlay.hidden = false;
-  window.requestAnimationFrame(() => $("#inspectionOverlay").classList.add("is-open"));
+  if (inspectionOpenFrame) window.cancelAnimationFrame(inspectionOpenFrame);
+  inspectionOpenFrame = window.requestAnimationFrame(() => {
+    inspectionOpenFrame = null;
+    if (!overlay.hidden) overlay.classList.add("is-open");
+  });
 }
 
 function closeInspectionOverlay() {
   const modal = $("#inspectionOverlay");
+  if (inspectionOpenFrame) {
+    window.cancelAnimationFrame(inspectionOpenFrame);
+    inspectionOpenFrame = null;
+  }
   modal.classList.remove("is-open");
   window.setTimeout(() => {
     if (!modal.classList.contains("is-open")) modal.hidden = true;
@@ -2728,11 +2856,11 @@ function inspectedCount() {
 }
 
 function renderDecision() {
-  const active = state.started && Boolean(currentCase()) && !state.resolved;
+  const active = state.started && Boolean(currentCase()) && !state.resolved && state.checklistSubmitted;
   const checks = inspectedCount();
   const checkLabel = `${checks} / ${PRIMARY_TOOLS.length}`;
   $("#evidenceProgress").textContent = `CHECKS ${checkLabel}`;
-  $("#decisionProgress").textContent = `${checkLabel} CHECKS LOGGED`;
+  $("#decisionProgress").textContent = state.checklistSubmitted ? `${checkLabel} FINDINGS FILED` : `${checkLabel} CHECKS / FILE CARD OPEN`;
   $$("[data-action='resolve'], [data-action='secondary'], [data-action='liaison']").forEach((button) => {
     button.disabled = !active;
   });
@@ -2744,10 +2872,12 @@ function renderDecision() {
     liaison.disabled = !active || state.liaisonCalled;
     liaison.querySelector("span").textContent = state.liaisonCalled ? "LIAISON CONTACTED" : "CALL LIAISON";
   });
-  $("#decisionState").textContent = !state.started ? "LOCKED" : state.resolved ? "CLOSED" : "READY";
+  $("#decisionState").textContent = !state.started ? "LOCKED" : state.resolved ? "CLOSED" : state.checklistSubmitted ? "READY" : "REVIEW";
   $("#decisionCopy").textContent = state.secondaryUsed || state.liaisonCalled
     ? `Additional authority has been recorded. ${checkLabel} primary checks logged; you still hold the final authorization.`
-    : `${checkLabel} primary checks logged. Review the evidence you consider necessary before applying the stamp.`;
+    : state.checklistSubmitted
+      ? `${checkLabel} findings filed. Use secondary inspection or the liaison before applying the stamp if the record still conflicts.`
+      : `${checkLabel} checks logged. Complete and submit the working card before making an entry decision.`;
   $("#decisionNote").textContent = state.secondaryUsed
     ? "Secondary findings are now part of the official case record."
     : state.liaisonCalled
@@ -2765,6 +2895,7 @@ function render() {
   renderCase();
   renderInspection();
   renderTools();
+  renderChecklist();
   renderDecision();
   if (!state.started) renderLobbyStats();
   $("#protocolText").textContent = state.started ? "PROTOCOL ACTIVE" : "PROTOCOL STANDBY";
@@ -2787,6 +2918,73 @@ function showToast(message, tone = "") {
   toastTimer = window.setTimeout(() => {
     toast.className = "toast";
   }, 3400);
+}
+
+let gameAudioContext = null;
+
+function playGameSound(kind = "click") {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+  try {
+    gameAudioContext ||= new AudioContext();
+    const context = gameAudioContext;
+    if (context.state === "suspended") context.resume();
+    const now = context.currentTime;
+    const sounds = {
+      click: [{ frequency: 150, duration: 0.045, type: "square", volume: 0.025 }],
+      question: [
+        { frequency: 230, duration: 0.07, type: "triangle", volume: 0.028 },
+        { frequency: 310, duration: 0.09, type: "triangle", volume: 0.022, offset: 0.07 },
+      ],
+      scan: [
+        { frequency: 120, endFrequency: 390, duration: 0.34, type: "sawtooth", volume: 0.025 },
+      ],
+      submit: [
+        { frequency: 90, duration: 0.08, type: "square", volume: 0.035 },
+        { frequency: 180, duration: 0.1, type: "square", volume: 0.026, offset: 0.08 },
+      ],
+      admit: [
+        { frequency: 110, duration: 0.08, type: "square", volume: 0.035 },
+        { frequency: 74, duration: 0.16, type: "square", volume: 0.03, offset: 0.09 },
+      ],
+      deny: [
+        { frequency: 190, duration: 0.1, type: "sawtooth", volume: 0.03 },
+        { frequency: 105, duration: 0.18, type: "sawtooth", volume: 0.026, offset: 0.11 },
+      ],
+    }[kind] || [];
+    sounds.forEach(({ frequency, endFrequency, duration, type, volume, offset = 0 }) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      const start = now + offset;
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, start);
+      if (endFrequency) oscillator.frequency.exponentialRampToValueAtTime(endFrequency, start + duration);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(volume, start + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      oscillator.connect(gain).connect(context.destination);
+      oscillator.start(start);
+      oscillator.stop(start + duration + 0.02);
+    });
+  } catch {
+    // Audio is an atmosphere layer; a browser without Web Audio must remain playable.
+  }
+}
+
+function signalArrival() {
+  const visitor = $("#visitorPortrait");
+  const card = $("#sceneCaseCard");
+  [visitor, card].forEach((element) => {
+    if (!element) return;
+    element.classList.remove("visitor-arrival", "case-card-arrival");
+    void element.offsetWidth;
+  });
+  visitor?.classList.add("visitor-arrival");
+  card?.classList.add("case-card-arrival");
+  window.setTimeout(() => {
+    visitor?.classList.remove("visitor-arrival");
+    card?.classList.remove("case-card-arrival");
+  }, 760);
 }
 
 function openOverlay({ kicker, title, body, stats, buttonText, action }) {
@@ -2818,7 +3016,31 @@ function startGame() {
   resetCampaign(true);
   closeOverlay();
   render();
-  showToast(`Shift 01 opened. Run ${String(state.seed).padStart(6, "0")}. Check the arrival mode before applying the stamp.`);
+  signalArrival();
+  showToast(`Visitor at the window. Run ${String(state.seed).padStart(6, "0")}. Check the arrival mode before applying the stamp.`);
+}
+
+function markFinding(mark) {
+  if (!state.started || state.resolved || state.checklistSubmitted || !["match", "flag", "review"].includes(mark)) return;
+  const tool = state.selectedTool;
+  if (!PRIMARY_TOOLS.includes(tool) || !state.revealed[tool]) return;
+  state.checklistMarks[tool] = mark;
+  render();
+  renderInspectionOverlay(tool);
+  showToast(`${tool.toUpperCase()} marked ${findingLabel(mark)}.`);
+}
+
+function submitChecklist() {
+  if (!state.started || state.resolved || state.checklistSubmitted) return;
+  if (checklistMarkedCount() !== PRIMARY_TOOLS.length) {
+    showToast("Complete every line on the working card before filing it.", "bad");
+    return;
+  }
+  state.checklistSubmitted = true;
+  closeInspectionOverlay();
+  render();
+  playGameSound("submit");
+  showToast("Findings filed. The authority rail is live.", "good");
 }
 
 function inspectTool(tool) {
@@ -2828,6 +3050,7 @@ function inspectTool(tool) {
   state.selectedTool = tool;
   render();
   renderInspectionOverlay(tool);
+  playGameSound(tool === "xray" ? "scan" : tool === "question" ? "question" : "click");
   if (c?.id === "mara-velen") triggerMaraBlink();
   if (tool === "xray" && c.xray.status !== "CLEAR" && c.xray.status !== "ORDINARY CONTENTS" && c.xray.status !== "PERSONAL ITEMS ONLY" && c.xray.status !== "MEDICAL CONTENTS" && c.xray.status !== "MILITARY KIT") {
     showToast("X-ray review flagged an item. Decide whether to hold the visitor.", "bad");
@@ -2837,7 +3060,7 @@ function inspectTool(tool) {
 }
 
 function useSecondary() {
-  if (!state.started || state.resolved || state.secondaryUsed) return;
+  if (!state.started || state.resolved || !state.checklistSubmitted || state.secondaryUsed) return;
   state.secondaryUsed = true;
   state.stats.secondary += 1;
   state.revealed.secondary = true;
@@ -2849,7 +3072,7 @@ function useSecondary() {
 }
 
 function callLiaison() {
-  if (!state.started || state.resolved || state.liaisonCalled) return;
+  if (!state.started || state.resolved || !state.checklistSubmitted || state.liaisonCalled) return;
   state.liaisonCalled = true;
   state.stats.liaison += 1;
   state.revealed.liaison = true;
@@ -2935,13 +3158,28 @@ function evaluateCase(c, decision) {
 
 function resolveCase(decision) {
   if (!state.started || state.resolved) return;
+  if (!state.checklistSubmitted) {
+    showToast("File the verification card before authorizing entry.", "bad");
+    return;
+  }
   const c = currentCase();
   closeInspectionOverlay();
   state.resolved = true;
   state.finalDecision = decision;
+  playGameSound(decision === "admit" ? "admit" : "deny");
   if (decision === "admit") state.stats.admitted += 1;
   if (decision === "deny") state.stats.denied += 1;
   const result = evaluateCase(c, decision);
+  const accuracy = checklistAccuracy(c);
+  if (accuracy < PRIMARY_TOOLS.length) {
+    result.effects = {
+      ...result.effects,
+      tolerance: (result.effects.tolerance || 0) - (accuracy <= 2 ? 3 : 1),
+      career: (result.effects.career || 0) - (accuracy <= 2 ? 4 : 1),
+    };
+    if (result.grade === "good") result.grade = accuracy <= 2 ? "bad" : "mixed";
+    result.text += ` The filed card recorded ${accuracy} of ${PRIMARY_TOOLS.length} findings correctly.`;
+  }
   applyEffects(result.effects);
   state.stats[result.grade] += 1;
   state.shiftLog.push({
@@ -2952,8 +3190,14 @@ function resolveCase(decision) {
   });
   render();
   const target = decision === "admit" ? $(".security-desk") : $(".visitor-stage");
-  target.classList.add(decision === "admit" ? "stamp-hit" : "alert-pulse");
-  window.setTimeout(() => target.classList.remove(decision === "admit" ? "stamp-hit" : "alert-pulse"), 720);
+  const responseClass = decision === "admit" ? "stamp-hit" : "alert-pulse";
+  const sceneResponseClass = decision === "admit" ? "case-admitted" : "case-refused";
+  target.classList.add(responseClass);
+  $(".embassy-wall")?.classList.add(sceneResponseClass);
+  window.setTimeout(() => {
+    target.classList.remove(responseClass);
+    $(".embassy-wall")?.classList.remove(sceneResponseClass);
+  }, 900);
   showToast(result.title, result.grade === "good" ? "good" : result.grade === "bad" ? "bad" : "");
 
   window.setTimeout(() => {
@@ -2977,6 +3221,8 @@ function nextCase() {
   closeOverlay();
   state.caseIndex += 1;
   state.revealed = {};
+  state.checklistMarks = {};
+  state.checklistSubmitted = false;
   state.selectedTool = null;
   state.dossierPage = 0;
   state.dossierType = null;
@@ -2986,7 +3232,8 @@ function nextCase() {
   state.resolved = false;
   state.finalDecision = null;
   render();
-  showToast(`Next visitor: ${currentCase().name}. Arrival mode: ${currentCase().modeLabel}.`);
+  signalArrival();
+  showToast(`Next visitor at the window: ${currentCase().name}. Arrival mode: ${currentCase().modeLabel}.`);
 }
 
 function shiftSummary() {
@@ -3020,6 +3267,8 @@ function startNextShift() {
   state.dailyTolerance = 100;
   state.shiftLog = [];
   state.revealed = {};
+  state.checklistMarks = {};
+  state.checklistSubmitted = false;
   state.selectedTool = null;
   state.secondaryUsed = false;
   state.liaisonCalled = false;
@@ -3028,6 +3277,7 @@ function startNextShift() {
   state.started = true;
   closeOverlay();
   render();
+  signalArrival();
   showToast(`Shift 0${state.day} opened. Daily tolerance reset to 100%.`);
 }
 
@@ -3092,6 +3342,8 @@ function handleAction(element) {
   if (action === "close-overlay") return closeOverlay();
   if (action === "close-inspection") return closeInspectionOverlay();
   if (action === "help") return showHelp();
+  if (action === "mark-finding") return markFinding(element.dataset.finding);
+  if (action === "submit-checklist") return submitChecklist();
   if (action === "inspect") return inspectTool(element.dataset.tool);
   if (action === "secondary") return useSecondary();
   if (action === "liaison") return callLiaison();

@@ -20,6 +20,408 @@
   --console-screw: #b0a391;
 }
 
+/* Verification card pass --------------------------------------------------
+ * The player needs one persistent surface that records their own reading of
+ * the evidence. This is the station's equivalent of a paper checklist, not a
+ * second dashboard panel.
+ */
+.scene-checklist {
+  position: absolute;
+  right: auto;
+  bottom: 6%;
+  left: 3%;
+  z-index: 15;
+  width: min(300px, 22vw);
+  padding: 12px 13px 11px;
+  border: 1px solid #8e775c;
+  border-top-color: #c6aa7f;
+  border-right-color: #675644;
+  background:
+    linear-gradient(135deg, rgba(255, 245, 212, 0.18), transparent 38%),
+    repeating-linear-gradient(0deg, rgba(86, 58, 38, 0.035) 0 1px, transparent 1px 4px),
+    #d7c39d;
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.62), inset 0 0 0 3px rgba(87, 58, 37, 0.08);
+  color: #3b2b24;
+  transform: rotate(-0.55deg);
+}
+
+.scene-checklist::before,
+.scene-checklist::after {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #74614f;
+  border-radius: 50%;
+  background: #c9b796;
+  box-shadow: inset 0 1px 1px rgba(255, 247, 212, 0.75), 0 1px 2px #35251d;
+  content: "";
+}
+
+.scene-checklist::before { top: 7px; left: 7px; }
+.scene-checklist::after { top: 7px; right: 7px; }
+
+.checklist-header,
+.checklist-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.checklist-header {
+  padding: 0 0 7px;
+  border-bottom: 1px solid rgba(78, 52, 37, 0.32);
+}
+
+.scene-checklist .panel-kicker {
+  margin-bottom: 2px;
+  color: #6b3028;
+  font-size: 8px;
+}
+
+.checklist-header strong {
+  display: block;
+  color: #3b2923;
+  font-family: var(--console-display);
+  font-size: 17px;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.checklist-state,
+.checklist-footer > span {
+  color: #6d5140;
+  font-family: var(--console-mono);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.checklist-state {
+  padding: 4px 5px;
+  border: 1px solid rgba(108, 61, 45, 0.4);
+}
+
+.checklist-instruction {
+  min-height: 27px;
+  margin: 8px 0 7px;
+  color: #5f483a;
+  font-family: var(--console-body);
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.checklist-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.checklist-row {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  grid-template-rows: 1fr 12px;
+  min-width: 0;
+  min-height: 43px;
+  padding: 5px 5px 4px;
+  border: 1px solid rgba(84, 56, 41, 0.34);
+  border-left: 3px solid rgba(84, 56, 41, 0.34);
+  background: rgba(255, 245, 214, 0.25);
+  color: #4a362b;
+  cursor: pointer;
+  text-align: left;
+  transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.checklist-row:hover:not(:disabled),
+.checklist-row.is-current {
+  border-color: #914036;
+  background: rgba(185, 77, 58, 0.13);
+  transform: translateY(-1px);
+}
+
+.checklist-row.is-marked {
+  border-left-color: #567a55;
+}
+
+.checklist-row.is-flagged {
+  border-left-color: #9b3b32;
+}
+
+.checklist-row.is-review {
+  border-left-color: #b0803f;
+}
+
+.checklist-row:disabled {
+  cursor: default;
+  opacity: 0.88;
+}
+
+.checklist-index {
+  grid-row: 1 / -1;
+  align-self: center;
+  color: #895844;
+  font-family: var(--console-mono);
+  font-size: 9px;
+}
+
+.checklist-label {
+  min-width: 0;
+  overflow: hidden;
+  color: #3e2d25;
+  font-family: var(--console-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checklist-mark {
+  overflow: hidden;
+  color: #8c6d53;
+  font-family: var(--console-mono);
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checklist-row.is-marked .checklist-mark { color: #3f7047; }
+.checklist-row.is-flagged .checklist-mark { color: #9b332b; }
+.checklist-row.is-review .checklist-mark { color: #9b6d29; }
+
+.checklist-footer {
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(78, 52, 37, 0.32);
+}
+
+.checklist-submit {
+  min-height: 27px;
+  padding: 5px 8px;
+  border: 1px solid #702b26;
+  background: linear-gradient(180deg, #a8483a, #6f2927);
+  box-shadow: inset 0 -2px 0 rgba(42, 15, 13, 0.32), 0 2px 3px rgba(48, 26, 18, 0.24);
+  color: #f5d8ad;
+  cursor: pointer;
+  font-family: var(--console-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+
+.checklist-submit:hover:not(:disabled) {
+  background: linear-gradient(180deg, #c45b46, #812f2b);
+  transform: translateY(-1px);
+}
+
+.checklist-submit:disabled {
+  border-color: #91775c;
+  background: #9d896b;
+  color: #ddc9a4;
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
+.observation-list {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.observation-row {
+  display: grid;
+  grid-template-columns: minmax(92px, 0.35fr) minmax(0, 1fr);
+  gap: 10px;
+  padding: 7px 8px;
+  border: 1px solid rgba(216, 188, 147, 0.18);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.observation-row span {
+  color: #c79e70;
+  font-family: var(--console-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.observation-row p {
+  margin: 0;
+  color: #d5c2aa;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.finding-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 13px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(216, 188, 147, 0.2);
+}
+
+.finding-controls > span {
+  color: #b69a78;
+  font-family: var(--console-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.finding-controls > div {
+  display: flex;
+  gap: 4px;
+}
+
+.finding-button {
+  min-width: 58px;
+  padding: 6px 7px;
+  border: 1px solid rgba(196, 159, 112, 0.42);
+  background: #1d2120;
+  color: #d9bc91;
+  cursor: pointer;
+  font-family: var(--console-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.finding-button:hover:not(:disabled),
+.finding-button.is-selected {
+  border-color: var(--console-red-hot);
+  background: #54211f;
+  color: #f4d2a3;
+}
+
+.finding-button:disabled {
+  cursor: default;
+  opacity: 0.58;
+}
+
+.inspection-result-copy.flag {
+  border-left-color: #e06b54;
+}
+
+/* Stable desktop zones: the paper card and authority plate read as parts of
+ * the same console, while the visitor remains the center of attention. */
+@media (min-width: 761px) {
+  .scene-case-card {
+    width: min(330px, 26vw);
+    padding: 15px 16px 16px;
+  }
+
+  .scene-checklist {
+    width: min(300px, 22vw);
+  }
+
+  .scene-hotspot {
+    backdrop-filter: blur(3px);
+  }
+}
+
+@media (max-width: 760px) {
+  .scene-checklist {
+    right: 10px;
+    bottom: calc(76px + var(--mobile-safe-bottom));
+    left: 10px;
+    width: auto;
+    padding: 7px 8px 6px;
+    transform: none;
+  }
+
+  .scene-checklist::before,
+  .scene-checklist::after {
+    display: none;
+  }
+
+  .checklist-header {
+    padding-bottom: 5px;
+  }
+
+  .scene-checklist .panel-kicker {
+    display: inline;
+    margin-right: 6px;
+    font-size: 7px;
+  }
+
+  .checklist-header strong {
+    display: inline;
+    font-size: 13px;
+  }
+
+  .checklist-state,
+  .checklist-footer > span {
+    font-size: 8px;
+  }
+
+  .checklist-instruction {
+    display: none;
+  }
+
+  .checklist-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .checklist-row {
+    grid-template-columns: 14px minmax(0, 1fr);
+    grid-template-rows: 1fr 10px;
+    min-height: 33px;
+    padding: 3px 3px 2px;
+  }
+
+  .checklist-index,
+  .checklist-mark,
+  .checklist-label {
+    font-size: 7px;
+  }
+
+  .checklist-footer {
+    margin-top: 5px;
+    padding-top: 5px;
+  }
+
+  .checklist-submit {
+    min-height: 23px;
+    padding: 4px 6px;
+    font-size: 8px;
+  }
+
+  /* The checklist is the mobile evidence dock; keep the old floating map
+   * area in the layout for compatibility, but remove its duplicate chrome. */
+  .scene-hotspots {
+    height: 0;
+    min-height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .observation-row {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+
+  .observation-row span,
+  .finding-controls > span,
+  .finding-button {
+    font-size: 9px;
+  }
+
+  .finding-controls {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .finding-controls > div {
+    width: 100%;
+  }
+
+  .finding-button {
+    flex: 1;
+  }
+}
+
 body {
   background:
     radial-gradient(circle at 50% 0%, rgba(145, 43, 31, 0.13), transparent 36rem),
@@ -2079,5 +2481,90 @@ h3,
 
   .footer-bar {
     display: none;
+  }
+}
+
+/* The checklist replaces the six-button mobile strip. Keep a zero-height
+ * interaction layer for older layout probes, but let the paper card own the
+ * player's evidence actions. */
+@media (max-width: 760px) {
+  .scene-hotspots {
+    height: 0 !important;
+    min-height: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .scene-checklist {
+    bottom: calc(76px + var(--mobile-safe-bottom));
+  }
+}
+
+/* The working card is the single evidence surface. The old hotspot layer is
+ * retained in the DOM for keyboard/accessibility compatibility, but its
+ * duplicate floating labels no longer compete with the physical desk. */
+.scene-hotspots {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Case beats: the station should acknowledge the visitor's arrival and the
+ * player's decision with motion in the world, not only a text notification. */
+.visitor-portrait.visitor-arrival {
+  animation: visitor-arrival 720ms cubic-bezier(0.17, 0.82, 0.26, 1) both;
+}
+
+.scene-case-card.case-card-arrival {
+  animation: case-card-arrival 620ms cubic-bezier(0.17, 0.82, 0.26, 1) both;
+}
+
+.embassy-wall.case-admitted .entry-frame::before,
+.embassy-wall.case-admitted .entry-frame::after {
+  background: #93bc8d;
+  box-shadow: 0 0 14px rgba(147, 188, 141, 0.85);
+}
+
+.embassy-wall.case-refused .entry-frame::before,
+.embassy-wall.case-refused .entry-frame::after {
+  background: var(--console-red-hot);
+  box-shadow: 0 0 16px rgba(224, 79, 61, 0.92);
+  animation: gate-deny-flash 360ms steps(2, end) 2;
+}
+
+.visitor-stage.alert-pulse .visitor-portrait {
+  animation: visitor-refusal 680ms cubic-bezier(0.2, 0.72, 0.35, 1) both;
+}
+
+@keyframes visitor-arrival {
+  0% { opacity: 0; transform: translate3d(0, 30px, 0) scale(0.96); filter: blur(2px) drop-shadow(0 10px 9px rgba(0, 0, 0, 0.55)); }
+  62% { opacity: 1; transform: translate3d(0, -4px, 0) scale(1.012); filter: blur(0) drop-shadow(0 10px 9px rgba(0, 0, 0, 0.55)); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: drop-shadow(0 10px 9px rgba(0, 0, 0, 0.55)); }
+}
+
+@keyframes case-card-arrival {
+  0% { opacity: 0; transform: translate3d(-18px, 0, 0) rotate(-0.35deg); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) rotate(-0.35deg); }
+}
+
+@keyframes visitor-refusal {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  18% { transform: translate3d(-5px, 0, 0); }
+  38% { transform: translate3d(5px, 0, 0); }
+  58% { transform: translate3d(-3px, 0, 0); }
+  78% { transform: translate3d(2px, 0, 0); }
+}
+
+@keyframes gate-deny-flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.16; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visitor-portrait.visitor-arrival,
+  .scene-case-card.case-card-arrival,
+  .visitor-stage.alert-pulse .visitor-portrait,
+  .embassy-wall.case-refused .entry-frame::before,
+  .embassy-wall.case-refused .entry-frame::after {
+    animation: none;
   }
 }
