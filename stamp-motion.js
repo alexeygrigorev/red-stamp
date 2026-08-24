@@ -15,11 +15,21 @@
   const ACTIVE_CLASS = "stamp-motion-active";
   const AUTHORITY_CLASS = "stamp-motion-authority";
   const GATE_CLASS = "stamp-motion-gate";
+  const DOCUMENT_ACTIVE_CLASS = "stamp-motion-document-active";
+  const DOCUMENT_ISSUED_CLASS = "stamp-motion-document-issued";
+  const INK_ISSUED_CLASS = "stamp-motion-ink-issued";
   const MOTION_DURATION = 820;
   const REDUCED_DURATION = 220;
   const timers = new WeakMap();
+  const documentTimers = new WeakMap();
   const responseTimers = new WeakMap();
   let observer = null;
+
+  const DOCUMENT_TYPES = [
+    { header: "VESKAR / ENTRY CONTROL", title: "ENTRY AUTHORIZATION" },
+    { header: "VESKAR / CLEARANCE OFFICE", title: "SERVICE PASS" },
+    { header: "VESKAR / RED REGISTER", title: "TEMPORARY ACCESS" },
+  ];
 
   function isElement(value) {
     return value && value.nodeType === 1;
@@ -60,6 +70,53 @@
     return ink;
   }
 
+  function makeDocumentChild(className, text) {
+    const child = document.createElement("span");
+    child.className = className;
+    if (text) child.textContent = text;
+    return child;
+  }
+
+  function ensureDocument(target) {
+    const panel = target.querySelector(".desk-panel") || target;
+    let sheet = Array.from(panel.children).find((child) => child.classList.contains("stamp-motion-document"));
+
+    if (!sheet) {
+      sheet = document.createElement("div");
+      sheet.className = "stamp-motion-document";
+      sheet.setAttribute("aria-hidden", "true");
+
+      sheet.append(
+        makeDocumentChild("stamp-motion-document-fold"),
+        makeDocumentChild("stamp-motion-document-header", "VESKAR / ENTRY CONTROL"),
+        makeDocumentChild("stamp-motion-document-title", "ENTRY AUTHORIZATION"),
+        makeDocumentChild("stamp-motion-document-lines"),
+        makeDocumentChild("stamp-motion-document-seal", "V"),
+        makeDocumentChild("stamp-motion-document-case", "CASE —"),
+        makeDocumentChild("stamp-motion-document-footer", "SECURITY DESK / 2026"),
+      );
+      panel.insertBefore(sheet, panel.firstChild || null);
+    }
+
+    return sheet;
+  }
+
+  function documentHash(value) {
+    return Array.from(value).reduce((hash, character) => ((hash * 31) + character.charCodeAt(0)) >>> 0, 7);
+  }
+
+  function updateDocument(sheet, target) {
+    const caseNumber = target.querySelector("#deskCaseNumber")?.textContent?.trim() || "CASE —";
+    const type = DOCUMENT_TYPES[documentHash(caseNumber) % DOCUMENT_TYPES.length];
+    const header = sheet.querySelector(".stamp-motion-document-header");
+    const title = sheet.querySelector(".stamp-motion-document-title");
+    const caseLabel = sheet.querySelector(".stamp-motion-document-case");
+
+    if (header) header.textContent = type.header;
+    if (title) title.textContent = type.title;
+    if (caseLabel) caseLabel.textContent = caseNumber.toUpperCase();
+  }
+
   function restartClass(element, className) {
     element.classList.remove(className);
     // Reading layout forces a new animation interval on repeated stamps.
@@ -97,7 +154,16 @@
     const previousTimer = timers.get(stampTarget);
     if (previousTimer) global.clearTimeout(previousTimer);
 
-    ensureInk(stampTarget);
+    const sheet = ensureDocument(stampTarget);
+    const ink = ensureInk(stampTarget);
+    updateDocument(sheet, stampTarget);
+
+    const previousDocumentTimer = documentTimers.get(stampTarget);
+    if (previousDocumentTimer) global.clearTimeout(previousDocumentTimer);
+
+    sheet.classList.remove(DOCUMENT_ISSUED_CLASS);
+    restartClass(sheet, DOCUMENT_ACTIVE_CLASS);
+    ink.classList.remove(INK_ISSUED_CLASS);
     restartClass(stampTarget, ACTIVE_CLASS);
 
     const duration = reducedMotion() ? REDUCED_DURATION : MOTION_DURATION;
@@ -108,6 +174,14 @@
       timers.delete(stampTarget);
     }, duration);
     timers.set(stampTarget, timer);
+
+    const documentTimer = global.setTimeout(() => {
+      sheet.classList.remove(DOCUMENT_ACTIVE_CLASS);
+      sheet.classList.add(DOCUMENT_ISSUED_CLASS);
+      ink.classList.add(INK_ISSUED_CLASS);
+      documentTimers.delete(stampTarget);
+    }, duration);
+    documentTimers.set(stampTarget, documentTimer);
 
     return true;
   }
