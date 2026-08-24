@@ -56,14 +56,8 @@ async function assertNoStretching(page) {
 
 async function startRun(page, seed) {
   await page.goto(`${baseUrl}/?seed=${seed}&debug=1`, { waitUntil: "networkidle" });
-  assert.equal(await page.locator("#overlay").evaluate((element) => element.classList.contains("is-open")), true);
-  assert.match(await page.locator("#overlayStats").textContent(), /03\s+SHIFTS/);
-  assert.match(await page.locator("#overlayStats").textContent(), /17\s+CASES/);
-  await page.locator('#overlay [data-action="start"]').click();
-  await page.waitForFunction(() => {
-    const overlay = document.querySelector("#overlay");
-    return overlay && !overlay.classList.contains("is-open") && getComputedStyle(overlay).opacity === "0";
-  });
+  await page.waitForFunction(() => window.RedStampDebug?.getState().started === true);
+  assert.equal(await page.locator("#overlay").evaluate((element) => element.classList.contains("is-open")), false, "The first visitor should be present without an idle start screen");
   await page.locator("#caseTitle").waitFor({ state: "attached" });
   assert.notEqual((await page.locator("#caseTitle").textContent()).trim(), "No active visitor");
   const activeCase = (await readCampaign(page))[0].cases[0];
@@ -287,7 +281,6 @@ async function main() {
     await inspectXrayAndShortcuts(page);
 
     await page.reload({ waitUntil: "networkidle" });
-    await page.locator('#overlay [data-action="start"]').click();
     const sameSeedCampaign = await readCampaign(page);
     assert.deepEqual(sameSeedCampaign, firstCampaign, "A supplied seed must make a run replayable");
 

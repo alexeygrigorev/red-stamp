@@ -85,14 +85,14 @@
           <div class="scene-case-card" aria-live="polite">
             <img id="sceneCasePortrait" class="scene-case-portrait" src="assets/generated/inspector-cutout.png" alt="" />
             <span class="panel-kicker">ACTIVE THRESHOLD</span>
-            <strong id="sceneCaseTitle">AWAITING VISITOR</strong>
-            <small id="sceneCaseRole">BEGIN THE SHIFT TO OPEN THE GATE</small>
+            <strong id="sceneCaseTitle">VISITOR QUEUE</strong>
+            <small id="sceneCaseRole">NEXT VISITOR INCOMING</small>
             <div class="scene-case-tags">
-              <span id="sceneArrivalBadge">STANDBY</span>
+            <span id="sceneArrivalBadge">INCOMING</span>
               <span id="sceneCaseNumber">CASE —</span>
               <span id="sceneCaseVariant">STANDARD</span>
             </div>
-            <p id="scenePurpose">The checkpoint is quiet. Click the inspector’s desk, the visitor, or the gate equipment to investigate.</p>
+            <p id="scenePurpose">The next visitor is on the way. Open the file when the checkpoint resumes.</p>
           </div>
 
           <div class="scene-hotspots" aria-label="Checkpoint controls">
@@ -225,8 +225,8 @@
                 <div class="portrait-body"></div>
               </div>
               <div class="visitor-nameplate" aria-hidden="true">
-                <span id="visitorNamePlate">AWAITING VISITOR</span>
-                <small id="visitorRolePlate">CHECKPOINT STANDBY</small>
+                <span id="visitorNamePlate">VISITOR AT WINDOW</span>
+                <small id="visitorRolePlate">CASE ACTIVE</small>
               </div>
             </div>
 
@@ -241,7 +241,7 @@
                 <div class="desk-instruction">VERIFY / INSPECT / DECIDE</div>
                 <div class="desk-status">
                   <span class="status-light"></span>
-                  <span id="deskStatus">AWAITING CASE</span>
+                <span id="deskStatus">INSPECTION ACTIVE</span>
                 </div>
               </div>
               <div class="desk-edge" aria-hidden="true"></div>
@@ -254,12 +254,12 @@
             <div class="panel-heading">
               <div>
                 <span class="panel-kicker">CASE FILE</span>
-                <h2 id="caseTitle">No active visitor</h2>
+                <h2 id="caseTitle">VISITOR AT WINDOW</h2>
               </div>
-              <span id="arrivalBadge" class="arrival-badge">STANDBY</span>
+              <span id="arrivalBadge" class="arrival-badge">INCOMING</span>
             </div>
             <div class="case-meta" id="caseMeta">
-              Start the shift to receive the first visitor.
+              A visitor is waiting at the gate.
             </div>
             <div class="case-purpose" id="casePurpose"></div>
             <div class="case-rule" id="caseRule" hidden></div>
@@ -393,7 +393,7 @@
     </div>
   </div>
 
-  <div id="overlay" class="overlay is-open" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+  <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
     <div class="overlay-card">
         <img id="overlayInspector" class="overlay-inspector" src="assets/generated/inspector-cutout.png" alt="Veskarian security inspector holding a red stamp" />
         <div class="overlay-emblem" aria-hidden="true"><span>V</span></div>

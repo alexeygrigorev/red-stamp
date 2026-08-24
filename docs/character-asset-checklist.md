@@ -38,6 +38,31 @@ being generated.
 
 ## Character generation pipeline
 
+Mara Velen is the canonical style anchor for every named visitor. Every image
+generation request must include a reference image: use the matching Mara asset
+for the asset being generated—`mara-visitor.png` for a full-body render,
+`mara-visitor-scene.png` for a checkpoint cutout, `mara-face.png` for a
+document portrait, `detector-mara-velen.png` for a detector plate, and
+`xray-mara-velen.png` for a scan plate. Include the current character asset as
+an identity/wardrobe reference as well, so style can change without losing the
+person, props, or case clue. Accepted sharpness references such as Viktor Dalen
+and Anton Ryl may be included as quality bars, but Mara remains the authority.
+A character may change face, clothing, posture, age, carried objects, and
+palette accents, but must retain the same Veskarian painterly rendering:
+controlled dark edges, hand-painted material texture, restrained red/brass rim
+light, and a low-key charcoal background. Do not use an older visitor as the
+style authority just because that visitor has similar clothing.
+
+Before registration, review a five-image character strip (scene, portrait,
+face, detector, and X-ray) beside the Mara strip. Reject the batch if one
+asset looks like a different illustration model, has a different edge/matte
+treatment, uses a different light direction, or loses identity across views.
+When a visitor fails this comparison, regenerate the complete character
+family—not only the asset where the mismatch was first noticed. Irena Sava,
+Radan Kest, Nadiya Ost, and Olya Merin have been brought through this stricter
+style-lock pass; the regenerated Mara family is now the sharpness anchor for
+future batches.
+
 Use this order for every new named visitor:
 
 1. **Style anchor:** send the approved Mara dark-background character render,

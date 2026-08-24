@@ -2478,11 +2478,11 @@ function renderEvidenceRows(c) {
 
 function renderCase() {
   const c = currentCase();
-  if (!state.started || !c) {
+  if (!c) {
     clearVisitorBlink();
     document.body.removeAttribute("data-case-id");
     $("#caseTitle").textContent = "No active visitor";
-    $("#caseMeta").textContent = "Start the shift to receive the first visitor.";
+    $("#caseMeta").textContent = "The next visitor is already in the queue.";
     $("#casePurpose").textContent = "";
     $("#caseRule").hidden = true;
     $("#caseRule").textContent = "";
@@ -2507,12 +2507,12 @@ function renderCase() {
     $("#deskStatus").textContent = "AWAITING CASE";
     $("#shiftLabel").textContent = "SHIFT STANDBY";
     $("#directiveText").textContent = "SECURITY CONTROL OFFLINE";
-    $("#sceneCaseTitle").textContent = "AWAITING VISITOR";
-    $("#sceneCaseRole").textContent = "BEGIN THE SHIFT TO OPEN THE GATE";
-    $("#sceneArrivalBadge").textContent = "STANDBY";
+    $("#sceneCaseTitle").textContent = "VISITOR QUEUE";
+    $("#sceneCaseRole").textContent = "NEXT VISITOR INCOMING";
+    $("#sceneArrivalBadge").textContent = "INCOMING";
     $("#sceneCaseNumber").textContent = "CASE —";
     $("#sceneCaseVariant").textContent = "STANDARD";
-    $("#scenePurpose").textContent = "The checkpoint is quiet. Click the inspector’s desk, the visitor, or the gate equipment to investigate.";
+    $("#scenePurpose").textContent = "The next visitor is on the way. Open the file when the checkpoint resumes.";
     $("#sceneCasePortrait").src = "assets/generated/inspector-cutout.png";
     $("#sceneVisitorSprite").src = "assets/generated/inspector-cutout.png";
     $("#sceneQuestionSprite").src = "assets/generated/inspector-cutout.png";
@@ -2603,7 +2603,7 @@ function renderChecklist() {
   $("#checklistProgress").textContent = `${marked} / ${PRIMARY_TOOLS.length} MARKED`;
   $("#checklistState").textContent = !active ? "STANDBY" : state.checklistSubmitted ? "SUBMITTED" : marked === PRIMARY_TOOLS.length ? "READY" : "OPEN";
   $("#checklistInstruction").textContent = !active
-    ? "Begin the shift to receive a visitor."
+    ? "The visitor queue is loading."
     : state.checklistSubmitted
       ? "Findings are filed. Use the authority rail to close the case."
       : marked === PRIMARY_TOOLS.length
@@ -2618,7 +2618,7 @@ function renderInspection() {
   const c = currentCase();
   if (!state.started || !c || !state.selectedTool) {
     $("#inspectionOutput").innerHTML = `<div class="empty-state"><span class="empty-mark">V</span><p>Inspection results will appear here.</p></div>`;
-    $("#inspectionLog").innerHTML = `<span class="log-marker">LOG</span><span>Awaiting first inspection.</span>`;
+    $("#inspectionLog").innerHTML = `<span class="log-marker">LOG</span><span>Visitor present. Awaiting first inspection.</span>`;
     return;
   }
 
@@ -3011,7 +3011,7 @@ function closeOverlay() {
   $("#overlay").classList.remove("is-open");
 }
 
-function resetCampaign(started = false) {
+function resetCampaign(started = true) {
   const seed = campaignSeedFromUrl() ?? newCampaignSeed();
   campaignShifts = buildCampaign(seed);
   Object.assign(state, initialState(seed), { started });
@@ -3342,10 +3342,11 @@ function handleAction(element) {
   const action = element.dataset.action;
   if (action === "start") return startGame();
   if (action === "restart") {
-    resetCampaign(false);
+    resetCampaign(true);
     closeOverlay();
     render();
-    showToast(`Campaign reset. New run ${String(state.seed).padStart(6, "0")} opens at 08:30.`);
+    signalArrival();
+    showToast(`Campaign reset. Visitor at the window. New run ${String(state.seed).padStart(6, "0")} opens at 08:30.`);
     return;
   }
   if (action === "next-case") return nextCase();
@@ -3420,4 +3421,4 @@ if (new URLSearchParams(window.location.search).has("debug")) {
   };
 }
 
-render();
+startGame();
