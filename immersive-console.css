@@ -1591,3 +1591,493 @@ h3,
     font-size: 11px;
   }
 }
+
+/* Final portrait cabinet pass.
+ *
+ * The phone is a single instrument, not a narrow desktop page. Keep a strict
+ * vertical rhythm: header, case strip, visitor aperture, evidence tray, then
+ * the decision rail. The lower controls never share the visitor's body area.
+ */
+@media (max-width: 760px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    touch-action: manipulation;
+  }
+
+  .app {
+    box-sizing: border-box;
+    grid-template-rows: 70px minmax(0, 1fr);
+    gap: 4px;
+    height: 100svh;
+    min-height: 100svh;
+    max-height: 100svh;
+    overflow: hidden;
+    padding: 4px;
+  }
+
+  .topbar {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 42px 18px;
+    gap: 2px 8px;
+    height: 70px;
+    min-height: 70px;
+    margin: 0;
+    padding: 6px 10px 4px;
+  }
+
+  .brand-lockup {
+    grid-column: 1;
+    grid-row: 1;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+  }
+
+  .brand-name {
+    overflow: hidden;
+    font-size: 16px;
+    letter-spacing: 0.105em;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .brand-subtitle {
+    overflow: hidden;
+    margin-top: 3px;
+    font-size: 7px;
+    letter-spacing: 0.045em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .header-metrics {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    gap: 7px;
+  }
+
+  .metric {
+    min-width: 56px;
+    gap: 2px;
+  }
+
+  .metric-label {
+    font-size: 8px;
+    letter-spacing: 0.08em;
+  }
+
+  .metric strong {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .meter {
+    height: 2px;
+  }
+
+  .protocol-status {
+    position: static;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    align-self: end;
+    min-width: 0;
+    gap: 6px;
+    overflow: hidden;
+    font-size: 8px;
+    letter-spacing: 0.09em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .protocol-status #runSeed {
+    overflow: hidden;
+    max-width: 42vw;
+    text-overflow: ellipsis;
+  }
+
+  main {
+    box-sizing: border-box;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .embassy-wall {
+    box-sizing: border-box;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    background-position: center 28%;
+    background-size: cover;
+  }
+
+  .checkpoint-scene {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .scene-line {
+    top: 0;
+    right: 12px;
+    left: 12px;
+    height: 25px;
+    box-sizing: border-box;
+    padding: 7px 0 5px;
+    font-size: 8px;
+    line-height: 1;
+  }
+
+  .scene-line span:last-child {
+    max-width: 52%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* One compact paper strip identifies the case without becoming a curtain. */
+  .scene-case-card {
+    top: 33px;
+    right: 10px;
+    bottom: auto;
+    left: 10px;
+    width: auto;
+    height: 78px;
+    min-height: 78px;
+    max-height: 78px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(88px, 30%);
+    grid-template-rows: 14px 27px 21px;
+    gap: 2px 10px;
+    padding: 8px 11px 7px;
+    transform: none;
+  }
+
+  .scene-case-portrait {
+    display: none;
+  }
+
+  .scene-case-card > .panel-kicker {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    align-self: center;
+    font-size: 8px;
+    line-height: 1;
+  }
+
+  .scene-case-card > strong {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: center;
+    min-width: 0;
+    overflow: hidden;
+    font-size: clamp(18px, 5.2vw, 23px);
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .scene-case-card > small {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 8px;
+    line-height: 1.15;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .scene-case-card > .scene-case-tags {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    align-self: end;
+    min-width: 0;
+    gap: 5px;
+    margin: 0;
+    overflow: hidden;
+    flex-wrap: nowrap;
+  }
+
+  .scene-case-tags span {
+    overflow: hidden;
+    padding: 3px 5px;
+    font-size: 8px;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .scene-case-card > p {
+    display: none;
+  }
+
+  /* The visitor owns the middle band. The aperture ends before the desk. */
+  .visitor-stage {
+    top: 122px;
+    right: auto;
+    bottom: 219px;
+    left: 11%;
+    width: 78%;
+    height: auto;
+    min-height: 0;
+  }
+
+  .visitor-stage::before {
+    inset: 0;
+    border-width: 7px;
+  }
+
+  .visitor-stage::after {
+    top: 8px;
+    left: 10px;
+    padding: 4px 5px;
+    font-size: 8px;
+  }
+
+  .visitor-portrait {
+    width: 100%;
+    height: 100%;
+  }
+
+  .visitor-nameplate {
+    display: none;
+  }
+
+  /* A real lower tray, separated from the visitor by the evidence dock. */
+  .security-desk {
+    top: auto;
+    right: 10px;
+    bottom: 136px;
+    left: 10px;
+    width: auto;
+    height: 72px;
+    min-height: 72px;
+    box-sizing: border-box;
+    z-index: 10;
+  }
+
+  .desk-topline {
+    height: 22px;
+    box-sizing: border-box;
+    padding: 6px 10px 4px;
+    overflow: hidden;
+    font-size: 9px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .desk-topline span:last-child {
+    overflow: hidden;
+    max-width: 46%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .desk-panel {
+    min-height: 45px;
+    height: 45px;
+    box-sizing: border-box;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 7px;
+    padding: 6px 10px;
+  }
+
+  .desk-emblem {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .desk-instruction {
+    display: block;
+    overflow: hidden;
+    font-size: 9px;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .desk-status {
+    overflow: hidden;
+    font-size: 8px;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .desk-stamp-art {
+    right: 5px;
+    bottom: 1px;
+    width: 40px;
+    height: 44px;
+  }
+
+  .scene-hotspots {
+    top: auto;
+    right: 10px;
+    bottom: calc(76px + var(--mobile-safe-bottom));
+    left: 10px;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 3px;
+    height: 54px;
+    min-height: 54px;
+    z-index: 12;
+  }
+
+  .scene-hotspot,
+  .hotspot-record,
+  .hotspot-visitor,
+  .hotspot-documents,
+  .hotspot-detector,
+  .hotspot-xray,
+  .hotspot-question {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: auto;
+    height: 54px;
+    min-width: 0;
+    min-height: 54px;
+    box-sizing: border-box;
+    padding: 3px 2px;
+    border-color: rgba(226, 187, 133, 0.42);
+    background: rgba(7, 9, 9, 0.9);
+    backdrop-filter: blur(4px);
+  }
+
+  .scene-hotspot .hotspot-sprite,
+  .hotspot-visitor .hotspot-sprite {
+    top: 2px;
+    right: 2px;
+    bottom: auto;
+    left: 2px;
+    width: auto;
+    height: 31px;
+    opacity: 0.76;
+  }
+
+  .hotspot-visitor .hotspot-sprite,
+  .hotspot-visitor .hotspot-label {
+    visibility: visible;
+    opacity: 0.76;
+  }
+
+  .hotspot-visitor .hotspot-label {
+    opacity: 1;
+  }
+
+  .scene-hotspot .hotspot-pulse {
+    top: 2px;
+    right: 2px;
+    width: 5px;
+    height: 5px;
+  }
+
+  .scene-hotspot .hotspot-label {
+    align-self: end;
+    max-width: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-size: 7px;
+    letter-spacing: 0.035em;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Four physical keys in one reachable authority rail. */
+  .scene-actions {
+    top: auto;
+    right: 10px;
+    bottom: calc(7px + var(--mobile-safe-bottom));
+    left: 10px;
+    width: auto;
+    height: 62px;
+    min-height: 62px;
+    box-sizing: border-box;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: 1fr;
+    gap: 3px;
+    padding: 4px;
+    border-width: 5px;
+    z-index: 14;
+  }
+
+  .scene-actions-label {
+    display: none;
+  }
+
+  .scene-decision {
+    display: flex;
+    min-width: 0;
+    min-height: 52px;
+    height: 52px;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    overflow: hidden;
+    padding: 3px 2px;
+    flex-direction: column;
+    font-size: 8px;
+    line-height: 1.05;
+    text-align: center;
+  }
+
+  .decision-sprite {
+    width: 21px;
+    height: 22px;
+    flex: 0 0 22px;
+  }
+
+  .scene-decision span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .toast {
+    top: 75px;
+    right: 18px;
+    bottom: auto;
+    left: 18px;
+    max-width: none;
+    max-height: 22px;
+    overflow: hidden;
+    padding: 4px 8px;
+    font-size: 10px;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .footer-bar {
+    display: none;
+  }
+}

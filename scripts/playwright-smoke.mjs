@@ -167,8 +167,32 @@ async function checkMobile(browser) {
   const overflow = await page.evaluate(() => ({
     viewport: window.innerWidth,
     documentWidth: document.documentElement.scrollWidth,
+    viewportHeight: window.innerHeight,
+    documentHeight: document.documentElement.scrollHeight,
   }));
   assert.ok(overflow.documentWidth <= overflow.viewport + 1, `Mobile layout overflows: ${JSON.stringify(overflow)}`);
+  assert.ok(overflow.documentHeight <= overflow.viewportHeight + 1, `Mobile page becomes a vertical document: ${JSON.stringify(overflow)}`);
+
+  const composition = await page.evaluate(() => {
+    const rect = (selector) => {
+      const element = document.querySelector(selector);
+      if (!element) return null;
+      const box = element.getBoundingClientRect();
+      return { top: box.top, right: box.right, bottom: box.bottom, left: box.left, width: box.width, height: box.height };
+    };
+    return {
+      caseCard: rect(".scene-case-card"),
+      visitor: rect(".visitor-stage"),
+      desk: rect(".security-desk"),
+      evidence: rect(".scene-hotspots"),
+      authority: rect(".scene-actions"),
+    };
+  });
+  assert.ok(composition.caseCard && composition.visitor && composition.desk && composition.evidence && composition.authority, "Mobile cabinet controls must be present");
+  assert.ok(composition.caseCard.bottom <= composition.visitor.top + 4, `Case strip must clear visitor aperture: ${JSON.stringify(composition)}`);
+  assert.ok(composition.desk.top >= composition.visitor.top + composition.visitor.height * 0.58, `Desk must stay below the visitor's torso: ${JSON.stringify(composition)}`);
+  assert.ok(composition.evidence.top >= composition.desk.bottom - 2, `Evidence tray must sit below the desk: ${JSON.stringify(composition)}`);
+  assert.ok(composition.authority.top >= composition.evidence.bottom - 2, `Authority rail must sit below evidence tray: ${JSON.stringify(composition)}`);
   await page.screenshot({ path: "/tmp/red-stamp-mobile.png", fullPage: true });
   await page.locator('[data-action="inspect"][data-tool="id"]').first().click();
   await page.locator("#inspectionOverlay.is-open").waitFor();
