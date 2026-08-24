@@ -629,15 +629,21 @@ palette when creating another visitor.
    \`skills/.system/imagegen/scripts/remove_chroma_key.py\`, using a soft matte,
    one-pixel edge contract, slight feathering, and despill cleanup. Validate
    transparent corners and inspect the silhouette on the dark embassy wall.
-5. Keep the original full-body PNG for inspection views. Create a trimmed
+5. Keep the original full-body PNG for detector composition and fallback
+   inspection views. Create a trimmed
    scene PNG with a small transparent margin so \`object-fit: contain\` does not
    make the visitor too small.
 6. Register both paths in \`CHARACTER_ART\` in \`app.js\`. A named case must
    never silently fall back to the generic \`civilian\`, \`soldier\`,
    \`official\`, \`worker\`, or \`anomaly\` asset once its own art exists.
-7. Check the image at phone size and desktop size. If the face becomes too
-   small, create a separate portrait crop rather than enlarging the full-body
-   scene asset.
+7. Generate a dedicated face-and-shoulders PNG for identity and dossier
+   documents. Do not use a CSS crop of the full-body source: the face needs to
+   be readable at document scale and must be generated as the same person,
+   with the same style reference, lighting, and dark-background treatment.
+8. Check the image at phone size and desktop size. If the face becomes too
+   small, regenerate the dedicated face asset rather than enlarging or
+   geometrically cropping the full-body scene asset. Use the full checklist in
+   [docs/character-asset-checklist.md](docs/character-asset-checklist.md).
 
 ### Style and quality checks
 
@@ -660,5 +666,6 @@ Before a generated image is included, run
 The check reads PNG dimensions directly, verifies dossier and X-ray ratios,
 rejects undersized character sources, checks Mara's blink frame against the
 base frame, and fails if CSS introduces `object-fit: fill`. GitHub Pages runs
-the same check before uploading the site artifact. Cropping an ID portrait is
-allowed; geometric stretching is not.
+the same check before uploading the site artifact. A generated
+face-and-shoulders portrait is required for documents; geometric stretching
+and CSS body crops are not accepted.

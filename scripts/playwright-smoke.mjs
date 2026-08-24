@@ -86,7 +86,7 @@ async function inspectIdentityAndPages(page) {
     naturalHeight: image.naturalHeight,
     objectFit: getComputedStyle(image).objectFit,
   }));
-  assert.match(faceImage.src, /assets\/generated\/.*visitor(?:-scene)?\.png/);
+  assert.match(faceImage.src, /assets\/generated\/.*-face\.png/);
   assert.ok(faceImage.naturalWidth > 0 && faceImage.naturalHeight > 0, "ID must show the visitor face");
   assert.equal(faceImage.objectFit, "cover", "ID portrait should crop into its frame, never stretch");
 
@@ -101,6 +101,18 @@ async function inspectIdentityAndPages(page) {
 async function inspectXrayAndShortcuts(page) {
   const currentCase = await page.evaluate(() => window.RedStampDebug.getState().caseIndex);
   const caseData = (await page.evaluate(() => window.RedStampDebug.getCampaign()))[0].cases[currentCase];
+  await page.locator('[data-action="inspect"][data-tool="detector"]').first().click();
+  await page.locator("#inspectionOverlay.is-open").waitFor();
+  const detectorPerson = await page.locator(".rs-detector-person").evaluate((image) => ({
+    src: image.currentSrc || image.src,
+    naturalWidth: image.naturalWidth,
+    naturalHeight: image.naturalHeight,
+  }));
+  assert.match(detectorPerson.src, /assets\/generated\/.*visitor\.png/);
+  assert.ok(detectorPerson.naturalWidth > 0 && detectorPerson.naturalHeight > 0, "Detector must load the active visitor silhouette");
+  await page.keyboard.press("Escape");
+  await page.locator("#inspectionOverlay").waitFor({ state: "hidden" });
+
   await page.locator('[data-action="inspect"][data-tool="xray"]').first().click();
   await page.locator("#inspectionOverlay.is-open").waitFor();
   const xrayImage = await page.locator("#inspectionOverlayVisual img").evaluate((image) => ({
@@ -120,6 +132,15 @@ async function inspectXrayAndShortcuts(page) {
   assert.equal((await page.evaluate(() => window.RedStampDebug.getState())).revealed.id, true);
   await page.keyboard.press("Escape");
   await page.locator("#inspectionOverlay").waitFor({ state: "hidden" });
+
+  await page.locator('[data-action="resolve"][data-decision="admit"]').first().click();
+  await page.waitForFunction(() => document.querySelector(".stamp-motion-document")?.classList.contains("stamp-motion-document-issued"));
+  const stampState = await page.locator(".security-desk").evaluate((desk) => ({
+    document: Boolean(desk.querySelector(".stamp-motion-document")),
+    ink: desk.querySelector(".stamp-motion-ink")?.classList.contains("stamp-motion-ink-issued"),
+  }));
+  assert.equal(stampState.document, true, "Admit must create a physical authorization document");
+  assert.equal(stampState.ink, true, "Admit must leave red ink on the authorization document");
 }
 
 async function checkMobile(browser) {

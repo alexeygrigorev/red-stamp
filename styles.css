@@ -15,10 +15,16 @@
   --yellow: #c9a85b;
   --danger: #dd5442;
   --line: rgba(217, 200, 180, 0.14);
+  --scrollbar-track: #0d0f10;
+  --scrollbar-track-hover: #17191a;
+  --scrollbar-thumb: #8f6d47;
+  --scrollbar-thumb-hover: #d2aa68;
+  --scrollbar-thumb-border: #191b1c;
   --shadow: 0 22px 55px rgba(0, 0, 0, 0.38);
   font-family: "Arial Narrow", "Roboto Condensed", "Inter", Arial, sans-serif;
   color: var(--ink);
   background: var(--black);
+  color-scheme: dark;
 }
 
 * {
@@ -28,6 +34,8 @@
 html {
   min-width: 320px;
   background: var(--black);
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
 }
 
 body {
@@ -39,6 +47,51 @@ body {
     linear-gradient(135deg, #0b0c0d 0%, #171717 50%, #0b0c0d 100%);
   color: var(--ink);
   letter-spacing: 0.025em;
+}
+
+/* Keep every game surface, including modal and dossier scroll containers,
+ * inside the same dark charcoal / red / brass visual language. The explicit
+ * height also covers horizontal overflow without relying on system defaults. */
+body,
+.overlay,
+.inspection-overlay,
+.inspection-modal,
+.inspection-visual,
+.inspection-visual.dossier-visual,
+.rs-dossier-view {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border: 1px solid rgba(166, 41, 36, 0.2);
+}
+
+*::-webkit-scrollbar-track:hover {
+  background: var(--scrollbar-track-hover);
+}
+
+*::-webkit-scrollbar-thumb {
+  min-height: 34px;
+  border: 3px solid var(--scrollbar-thumb-border);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--scrollbar-thumb), #6f5136);
+  box-shadow: inset 0 0 0 1px rgba(226, 195, 143, 0.28);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--scrollbar-thumb-hover), #a62924);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 180, 0.5);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
 }
 
 button {

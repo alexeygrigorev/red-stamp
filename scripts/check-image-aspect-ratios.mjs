@@ -64,6 +64,15 @@ for (const id of characterIds) {
     }
     console.log(`OK ${relativePath} ${size.width}x${size.height} (natural ratio)`);
   }
+
+  const facePath = `assets/generated/${id}-face.png`;
+  const faceSize = readPngSize(facePath);
+  if (faceSize) {
+    if (faceSize.width < 700 || faceSize.height < 900) {
+      failures.push(`${facePath}: unexpectedly small dedicated face source ${faceSize.width}x${faceSize.height}`);
+    }
+    console.log(`OK ${facePath} ${faceSize.width}x${faceSize.height} (dedicated face)`);
+  }
 }
 
 checkRatio("assets/generated/mara-visitor-blink.png", 849 / 1853);
@@ -74,7 +83,7 @@ const xrayIds = [
 ];
 for (const id of xrayIds) checkRatio(`assets/generated/xray-${id}.png`, 3 / 2);
 
-const css = ["styles.css", "dossier-viewer.css"]
+const css = ["styles.css", "dossier-viewer.css", "immersive-console.css", "detector-person.css"]
   .map((file) => fs.readFileSync(path.join(root, file), "utf8"))
   .join("\n");
 if (/object-fit\s*:\s*fill\b/.test(css)) {

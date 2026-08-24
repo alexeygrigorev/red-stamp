@@ -13,7 +13,7 @@ The first playable version includes:
   supernatural anomalies
 - Daily tolerance, persistent career standing, public pressure, command
   pressure, security breaches, delayed case outcomes, and campaign endings
-- A sparse monumental checkpoint screen built from generated Veskarian
+- A single-screen checkpoint instrument built from generated Veskarian
   environment art, character sprites, documents, X-ray panels, and animated
   inspection overlays
 - Generated sprites are also used inside the case card, checkpoint hotspots,
@@ -36,8 +36,8 @@ python3 -m http.server 4173
 Then open <http://127.0.0.1:4173>.
 
 The project also has a browser smoke suite. It launches the installed system
-Chromium through Playwright, checks the seeded campaign, dossier face crops,
-per-character X-rays, keyboard controls, and the 390px mobile layout:
+Chromium through Playwright, checks the seeded campaign, dedicated dossier face
+assets, per-character X-rays, keyboard controls, and the 390px mobile layout:
 
 ```bash
 npm install
@@ -49,8 +49,11 @@ npm run test:e2e
 
 - `index.html` — page structure and accessible controls
 - `styles.css` — the Veskarian embassy scene, responsive layout, and animation
+- `immersive-console.css` — the framed physical workstation treatment
 - `app.js` — visitor data, inspections, decisions, consequences, and campaign
 - `scripts/playwright-smoke.mjs` — repeatable desktop/mobile browser checks
 - `assets/generated/` — original visual assets used by the checkpoint and
   inspection overlays
 - `DESIGN.md` — the living game design report
+- `docs/character-asset-checklist.md` — required assets for every new visitor
+- `docs/immersion-reference.md` — research notes and the interaction grammar

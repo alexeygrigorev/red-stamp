@@ -1640,51 +1640,62 @@ const VISITOR_ART = {
 
 // Every named visitor gets an explicit art entry. New character renders use
 // Mara's corrected cutout as the shared style anchor, while each character
-// keeps a separate scene and inspection asset.
+// keeps separate scene, full-body, and document-face assets.
 const CHARACTER_ART = {
   "mara-velen": {
     scene: "assets/generated/mara-visitor-scene.png",
     portrait: "assets/generated/mara-visitor.png",
+    face: "assets/generated/mara-face.png",
   },
   "irena-sava": {
     scene: "assets/generated/irena-visitor-scene.png",
     portrait: "assets/generated/irena-visitor.png",
+    face: "assets/generated/irena-face.png",
   },
   "viktor-dalen": {
     scene: "assets/generated/viktor-visitor-scene.png",
     portrait: "assets/generated/viktor-visitor.png",
+    face: "assets/generated/viktor-face.png",
   },
   "radan-kest": {
     scene: "assets/generated/radan-visitor-scene.png",
     portrait: "assets/generated/radan-visitor.png",
+    face: "assets/generated/radan-face.png",
   },
   "olya-merin": {
     scene: "assets/generated/olya-visitor-scene.png",
     portrait: "assets/generated/olya-visitor.png",
+    face: "assets/generated/olya-face.png",
   },
   "anton-ryl": {
     scene: "assets/generated/anton-visitor-scene.png",
     portrait: "assets/generated/anton-visitor.png",
+    face: "assets/generated/anton-face.png",
   },
   "sorin-dask": {
     scene: "assets/generated/sorin-dask-visitor-scene.png",
     portrait: "assets/generated/sorin-dask-visitor.png",
+    face: "assets/generated/sorin-dask-face.png",
   },
   "director-vel": {
     scene: "assets/generated/director-vel-ordan-visitor-scene.png",
     portrait: "assets/generated/director-vel-ordan-visitor.png",
+    face: "assets/generated/director-vel-ordan-face.png",
   },
   "nadiya-ost": {
     scene: "assets/generated/nadiya-ost-visitor-scene.png",
     portrait: "assets/generated/nadiya-ost-visitor.png",
+    face: "assets/generated/nadiya-ost-face.png",
   },
   "milan-vek": {
     scene: "assets/generated/milan-vek-visitor-scene.png",
     portrait: "assets/generated/milan-vek-visitor.png",
+    face: "assets/generated/milan-vek-face.png",
   },
   "elias-rhy": {
     scene: "assets/generated/elias-rhy-visitor-scene.png",
     portrait: "assets/generated/elias-rhy-visitor.png",
+    face: "assets/generated/elias-rhy-face.png",
   },
 };
 
@@ -1709,6 +1720,11 @@ function xrayAsset(c) {
 function visitorAsset(c) {
   if (CHARACTER_ART[c?.id]?.portrait) return CHARACTER_ART[c.id].portrait;
   return VISITOR_ART[c.look] || VISITOR_ART.civilian;
+}
+
+function faceAsset(c) {
+  if (CHARACTER_ART[c?.id]?.face) return CHARACTER_ART[c.id].face;
+  return visitorAsset(c);
 }
 
 function visitorSceneAsset(c) {
@@ -1882,9 +1898,9 @@ function renderCase() {
   if ($("#visitorImage").dataset.blinking !== "true") {
     $("#visitorImage").src = visitorSceneAsset(c);
   }
-  $("#toolIdSprite").src = visitorAsset(c);
+  $("#toolIdSprite").src = faceAsset(c);
   $("#toolQuestionSprite").src = visitorSceneAsset(c);
-  $("#idShortcutSprite").src = visitorAsset(c);
+  $("#idShortcutSprite").src = faceAsset(c);
   $("#questionShortcutSprite").src = visitorSceneAsset(c);
   $("#visitorImage").alt = `${c.name}, ${c.role}`;
   $("#arrivalBadge").textContent = c.modeLabel;
@@ -1971,7 +1987,7 @@ function inspectionImage(c, tool) {
   if (tool === "appointment" || tool === "documents") return TOOL_ART[tool];
   if (tool === "detector") return TOOL_ART.detector;
   if (tool === "xray") return xrayAsset(c);
-  if (tool === "question" || tool === "id") return visitorAsset(c);
+  if (tool === "question" || tool === "id") return faceAsset(c);
   if (tool === "secondary") return c.kind === "anomaly" ? "assets/generated/xray-anomaly.png" : xrayAsset(c);
   if (tool === "liaison") return TOOL_ART.documents;
   return TOOL_ART.documents;
@@ -2003,6 +2019,20 @@ function inspectionVisualAlt(c, tool) {
   }[tool] || "Veskarian security inspection";
 }
 
+function detectorVisualMarkup(c) {
+  const personAsset = visitorAsset(c);
+  const personLabel = `${c.name}, ${c.role} body profile in the Veskarian metal detector`;
+  return [
+    '<div class="rs-detector-scan" role="img" aria-label="', escapeHtml(personLabel), '">',
+    '<img class="inspection-art rs-detector-frame" src="', escapeHtml(TOOL_ART.detector), '" alt="" aria-hidden="true" />',
+    '<div class="rs-detector-person-window" aria-hidden="true">',
+    '<img class="rs-detector-person" src="', escapeHtml(personAsset), '" alt="" />',
+    '</div>',
+    '<span class="rs-detector-readout-label" aria-hidden="true">BODY PROFILE // ', escapeHtml(c.name), '</span>',
+    '</div>',
+  ].join("");
+}
+
 function dossierTypeFor(c, tool) {
   return window.RedStampDossier?.documentTypeForCase(c, tool) || "identity";
 }
@@ -2012,7 +2042,7 @@ function renderDossierPage(c, type) {
   if (!mount || !window.RedStampDossier) return;
   const dossierCase = {
     ...c,
-    portraitAsset: visitorAsset(c),
+    portraitAsset: faceAsset(c),
     portraitAlt: `${c.name} / ${c.role}`,
   };
   mount.classList.add("dossier-visual");
@@ -2048,6 +2078,7 @@ function renderInspectionOverlay(tool) {
   const dossierTool = ["appointment", "documents", "id"].includes(tool);
   const visual = $("#inspectionOverlayVisual");
   visual.classList.toggle("dossier-visual", dossierTool);
+  visual.classList.toggle("rs-detector-visual", tool === "detector");
   if (dossierTool) {
     const type = dossierTypeFor(c, tool);
     if (state.dossierType !== type || state.dossierTool !== tool) {
@@ -2056,6 +2087,8 @@ function renderInspectionOverlay(tool) {
       state.dossierPage = 0;
     }
     renderDossierPage(c, type);
+  } else if (tool === "detector") {
+    visual.innerHTML = detectorVisualMarkup(c);
   } else {
     const imageClass = tool === "xray" ? "xray-art" : ["id", "question"].includes(tool) ? "portrait-art" : "";
     visual.innerHTML = '<img class="inspection-art ' + imageClass + '" src="' + escapeHtml(image) + '" alt="' + escapeHtml(inspectionVisualAlt(c, tool)) + '" />';
