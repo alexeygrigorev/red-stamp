@@ -56,13 +56,22 @@ async function startRun(page, baseUrl, seed) {
     "Reference heading font must come from the unpacked font bundle",
   );
 
-  // The welcome page is the iframe surface. A neutral first gesture must
-  // unlock its title theme before BEGIN SHIFT changes the music to checkpoint.
-  await frame.locator("body").click({ position: { x: 16, y: 16 } });
-  await page.waitForFunction(() => window.RedStampDebug?.getAudioState?.().currentKey === "title");
+  // The visible iframe owns an explicit audio gate. It must confirm actual
+  // title playback before BEGIN SHIFT is available behind it.
+  await frame.locator('#reference-welcome-audio [data-ref-action="enable-audio"]').click();
+  await page.waitForFunction(() => {
+    const audio = window.RedStampDebug?.getAudioState?.();
+    return audio?.currentKey === "title" && audio?.playing && audio?.readyState >= 2 && audio?.currentTime > 0;
+  });
+  await frame.locator("#reference-welcome-audio.is-active").waitFor();
+  assert.match(await frame.locator("#reference-welcome-audio").innerText(), /SOUND ACTIVE/);
 
   await frame.locator('[data-ref-action="begin"]').click();
   await page.waitForFunction(() => window.RedStampDebug?.getState().started === true);
+  await page.waitForFunction(() => {
+    const audio = window.RedStampDebug?.getAudioState?.();
+    return audio?.currentKey === "checkpoint" && audio?.playing && audio?.readyState >= 2;
+  });
   await page.waitForTimeout(350);
   frame = referenceFrame(page);
   assert.equal(await frame.locator('[data-ref-action="begin"]').count(), 0, "Welcome must close after beginning");

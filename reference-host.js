@@ -58,10 +58,20 @@
     return debug()?.actions?.unlockAudio?.() || false;
   }
 
+  function enableAudio() {
+    return debug()?.actions?.enableAudio?.() || false;
+  }
+
+  function audioState() {
+    return debug()?.getAudioState?.() || null;
+  }
+
   window.RedStampHost = {
     dispatch,
     snapshot,
     unlockAudio,
+    enableAudio,
+    audioState,
   };
 
   function sourcePath() {

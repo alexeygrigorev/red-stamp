@@ -41,6 +41,8 @@
   };
 
   let stampMotionTimer = null;
+  let welcomeAudioLoading = false;
+  let welcomeAudioStartedAt = 0;
 
   function host() {
     try {
@@ -62,6 +64,111 @@
 
   function forwardWelcomeGesture() {
     host()?.unlockAudio?.();
+  }
+
+  function audioState() {
+    return host()?.audioState?.() || null;
+  }
+
+  function ensureWelcomeAudioStyle() {
+    if (document.querySelector("#reference-welcome-audio-style")) return;
+    const style = document.createElement("style");
+    style.id = "reference-welcome-audio-style";
+    style.textContent = `
+      #reference-welcome-audio{position:fixed;inset:0;z-index:110;display:grid;place-items:center;padding:18px;background:rgba(4,3,2,.72);font-family:'IBM Plex Mono',monospace;color:#dacca4;transition:background 220ms ease}
+      #reference-welcome-audio [data-audio-card]{width:min(430px,calc(100vw - 36px));padding:22px 24px;border:1px solid #6b5a3f;background:linear-gradient(145deg,rgba(35,26,21,.98),rgba(10,7,6,.98));box-shadow:0 24px 70px rgba(0,0,0,.86),inset 0 1px 0 rgba(226,190,133,.12);text-align:center}
+      #reference-welcome-audio [data-audio-kicker]{font-size:clamp(10px,1.1vw,13px);font-weight:600;letter-spacing:.24em;color:#a8916a}
+      #reference-welcome-audio [data-audio-title]{margin-top:8px;font-family:'Staatliches',sans-serif;font-size:clamp(30px,4vw,46px);line-height:1;letter-spacing:.09em;color:#e9d9b1}
+      #reference-welcome-audio [data-audio-copy]{margin:10px auto 17px;max-width:34em;font-size:clamp(11px,1.2vw,14px);line-height:1.55;color:#b9aa8a}
+      #reference-welcome-audio button{width:100%;min-height:54px;display:flex;align-items:center;justify-content:center;gap:12px;border:2px solid #8e1f1c;background:linear-gradient(#7d1f19,#480e0b);box-shadow:inset 0 2px 0 rgba(255,190,170,.24),0 4px 0 #290a08;color:#f4dfc9;font-family:'Staatliches',sans-serif;font-size:clamp(20px,2.3vw,28px);letter-spacing:.12em;cursor:pointer}
+      #reference-welcome-audio [data-audio-spinner]{width:17px;height:17px;border:2px solid rgba(244,223,201,.26);border-top-color:#f4dfc9;border-radius:50%;animation:reference-audio-spin .8s linear infinite;animation-play-state:paused}
+      #reference-welcome-audio.is-loading [data-audio-spinner]{animation-play-state:running}
+      #reference-welcome-audio.is-active{inset:auto clamp(10px,2vw,24px) clamp(10px,2vw,22px) auto;display:block;padding:0;background:transparent;pointer-events:none}
+      #reference-welcome-audio.is-active [data-audio-card]{width:auto;min-width:210px;padding:10px 13px;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:center;text-align:left;background:rgba(10,7,6,.9);box-shadow:0 10px 28px rgba(0,0,0,.62)}
+      #reference-welcome-audio.is-active [data-audio-kicker],#reference-welcome-audio.is-active [data-audio-copy]{display:none}
+      #reference-welcome-audio.is-active [data-audio-title]{grid-column:2;margin:0;font-size:20px;color:#a8c48a}
+      #reference-welcome-audio.is-active button{grid-column:1;grid-row:1;width:28px;min-height:28px;height:28px;padding:0;border:1px solid #5f7a4e;border-radius:50%;background:#172016;box-shadow:none;font-size:0}
+      #reference-welcome-audio.is-active [data-audio-spinner]{width:9px;height:9px;border:0;background:#8fbd75;box-shadow:0 0 10px rgba(143,189,117,.72);animation:none}
+      @keyframes reference-audio-spin{to{transform:rotate(360deg)}}
+      @media (max-width:700px){#reference-welcome-audio [data-audio-card]{padding:20px 18px}#reference-welcome-audio.is-active{right:10px;bottom:132px}#reference-welcome-audio.is-active [data-audio-card]{min-width:180px;padding:8px 10px}#reference-welcome-audio.is-active [data-audio-title]{font-size:18px}}
+      @media (prefers-reduced-motion:reduce){#reference-welcome-audio [data-audio-spinner]{animation:none}#reference-welcome-audio.is-loading [data-audio-spinner]{border-color:#f4dfc9}}
+    `;
+    document.head.append(style);
+  }
+
+  function ensureWelcomeAudioControl() {
+    ensureWelcomeAudioStyle();
+    let control = document.querySelector("#reference-welcome-audio");
+    if (control) return control;
+    control = document.createElement("section");
+    control.id = "reference-welcome-audio";
+    control.setAttribute("role", "dialog");
+    control.setAttribute("aria-label", "Enable welcome music");
+    control.innerHTML = `
+      <div data-audio-card>
+        <div data-audio-kicker>WELCOME AUDIO / TITLE THEME</div>
+        <div data-audio-title>SOUND CHECK</div>
+        <div data-audio-copy aria-live="polite">Your browser needs one gesture before it can play the welcome music.</div>
+        <button data-ref-action="enable-audio" type="button"><span data-audio-spinner aria-hidden="true"></span><span data-audio-button-label>ENABLE SOUND</span></button>
+      </div>`;
+    document.body.append(control);
+    return control;
+  }
+
+  function updateWelcomeAudio(state) {
+    if (state?.started) {
+      document.querySelector("#reference-welcome-audio")?.remove();
+      welcomeAudioLoading = false;
+      return;
+    }
+    const control = ensureWelcomeAudioControl();
+    const status = audioState();
+    const active = Boolean(!status?.muted && status?.currentKey === "title" && status?.playing && status?.readyState >= 2);
+    const title = control.querySelector("[data-audio-title]");
+    const copy = control.querySelector("[data-audio-copy]");
+    const label = control.querySelector("[data-audio-button-label]");
+    if (active) {
+      control.classList.remove("is-loading");
+      control.classList.add("is-active");
+      control.removeAttribute("role");
+      title.textContent = "SOUND ACTIVE";
+      copy.textContent = "Title theme playing. Begin Shift will continue with checkpoint music.";
+      label.textContent = "SOUND ACTIVE";
+      welcomeAudioLoading = false;
+      return;
+    }
+    control.classList.remove("is-active");
+    control.classList.toggle("is-loading", welcomeAudioLoading);
+    title.textContent = welcomeAudioLoading ? "LOADING TITLE THEME" : "SOUND CHECK";
+    if (welcomeAudioLoading && Date.now() - welcomeAudioStartedAt > 4500) {
+      welcomeAudioLoading = false;
+      control.classList.remove("is-loading");
+      title.textContent = "SOUND NEEDS A RETRY";
+      copy.textContent = "The browser did not start the title theme. Press Enable Sound again.";
+      label.textContent = "ENABLE SOUND";
+    } else {
+      copy.textContent = welcomeAudioLoading
+        ? "Preloading and starting the welcome music…"
+        : status?.muted
+          ? "Sound is currently muted. Enable it to start the welcome music."
+          : "Your browser needs one gesture before it can play the welcome music.";
+      label.textContent = welcomeAudioLoading ? "STARTING SOUND…" : "ENABLE SOUND";
+    }
+  }
+
+  function enableWelcomeAudio() {
+    welcomeAudioLoading = true;
+    welcomeAudioStartedAt = Date.now();
+    const control = ensureWelcomeAudioControl();
+    control.classList.add("is-loading");
+    control.querySelector("[data-audio-title]").textContent = "LOADING TITLE THEME";
+    control.querySelector("[data-audio-copy]").textContent = "Preloading and starting the welcome music…";
+    control.querySelector("[data-audio-button-label]").textContent = "STARTING SOUND…";
+    host()?.enableAudio?.();
+    // The parent resolves HTMLAudioElement.play() asynchronously. Refresh
+    // once after that promise has had a chance to settle so the control can
+    // confirm playback without waiting for the periodic bridge sync.
+    window.setTimeout(() => sync(), 80);
   }
 
   function ensureStampMotionStyle() {
@@ -249,10 +356,13 @@
       row.dataset.refMark = mark || "open";
       row.setAttribute("aria-label", `${tool || "source"} ${status}`);
 
-      const textNodes = row.querySelectorAll("span");
-      if (textNodes.length >= 4) {
-        textNodes[2].textContent = status;
-        textNodes[2].style.color = mark ? MARK_INK[mark] : "#6e5f47";
+      // Use direct row columns. The step number contains a nested interpolation
+      // span, so indexing every descendant overwrote the meaningful row title
+      // (FACE / ID, PERSON / GATE) with OPEN or REVIEW.
+      const columns = [...row.children].filter((element) => element.tagName === "SPAN");
+      if (columns.length >= 4) {
+        columns[2].textContent = status;
+        columns[2].style.color = mark ? MARK_INK[mark] : "#6e5f47";
       }
 
       if (mark === "flag") {
@@ -320,6 +430,7 @@
   function sync(next = snapshot()) {
     if (!next?.state) return;
     const { state, caseData, assets } = next;
+    updateWelcomeAudio(state);
     if (!state.started) {
       updateOutcome(state);
       return;
@@ -367,6 +478,14 @@
       event.preventDefault();
       event.stopPropagation();
       toggleXrayHint();
+      return;
+    }
+
+    const audioControl = event.target.closest?.('[data-ref-action="enable-audio"]');
+    if (audioControl) {
+      event.preventDefault();
+      event.stopPropagation();
+      enableWelcomeAudio();
       return;
     }
 

@@ -3122,6 +3122,11 @@ function unlockAudio() {
   return true;
 }
 
+function enableAudio() {
+  if (audioMuted) setAudioMuted(false);
+  return unlockAudio();
+}
+
 function setAudioMuted(muted) {
   audioMuted = muted;
   localStorage.setItem("redstamp-audio-muted", String(muted));
@@ -3616,6 +3621,8 @@ window.RedStampDebug = {
     pendingKey: pendingMusicKey,
     playing: Boolean(currentMusicElement && !currentMusicElement.paused),
     volume: currentMusicElement?.volume ?? 0,
+    currentTime: currentMusicElement?.currentTime ?? 0,
+    readyState: currentMusicElement?.readyState ?? 0,
     source: currentMusicElement?.currentSrc || currentMusicElement?.src || "",
   }),
   actions: {
@@ -3633,6 +3640,7 @@ window.RedStampDebug = {
     liaison: () => callLiaison(),
     resolve: (decision) => resolveCase(decision),
     unlockAudio: () => unlockAudio(),
+    enableAudio: () => enableAudio(),
     returnToWindow: () => {
       state.selectedTool = null;
       closeInspectionOverlay();
