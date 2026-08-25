@@ -162,6 +162,31 @@
     document.head.append(style);
   }
 
+  function syncCurrentPeopleZoom() {
+    const current = host()?.variantFromHash?.() === "c";
+    let style = document.querySelector("#reference-current-people-zoom");
+    if (!current) {
+      style?.remove();
+      return;
+    }
+    if (style) return;
+    style = document.createElement("style");
+    style.id = "reference-current-people-zoom";
+    style.textContent = `
+      [data-ref-view="threshold"] > [data-ref-slot="visitor-scene"] {
+        transform: translate(-50%, 42px) scale(1.14) !important;
+        transform-origin: 50% 35% !important;
+      }
+      @media (max-width: 700px) {
+        [data-ref-view="threshold"] > [data-ref-slot="visitor-scene"] {
+          transform: translate(-50%, 26px) scale(1.08) !important;
+          transform-origin: 50% 35% !important;
+        }
+      }
+    `;
+    document.head.append(style);
+  }
+
   function playSceneTransition() {
     ensureSceneTransitionStyle();
     let curtain = document.querySelector("#reference-scene-transition");
@@ -645,6 +670,7 @@
       document.querySelector("[data-ref-action=begin]").click();
     }
     updateWelcomeAudio(state);
+    syncCurrentPeopleZoom();
     ensureShortcutsControl(state);
     if (!state.started) {
       updateOutcome(state);

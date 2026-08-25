@@ -47,18 +47,9 @@
   }
 
   function sync() {
-    const started = Boolean(host()?.snapshot?.()?.state?.started);
-    if (!started) {
-      document.querySelector("#reference-variant-switcher")?.remove();
-      return;
-    }
-    const variant = activeVariant();
-    const switcher = ensureSwitcher();
-    switcher.dataset.activeVariant = variant;
-    switcher.querySelector("[data-variant-label]").textContent = `UI · ${LABELS[variant]}`;
-    for (const button of switcher.querySelectorAll("[data-variant]")) {
-      button.setAttribute("aria-pressed", String(button.dataset.variant === variant));
-    }
+    // Keep the A/B experiments available through their hashes while the
+    // current game presents one focused interface without an option picker.
+    document.querySelector("#reference-variant-switcher")?.remove();
   }
 
   window.setInterval(sync, 180);
