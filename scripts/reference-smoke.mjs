@@ -79,6 +79,21 @@ async function startRun(page, baseUrl, seed) {
     true,
     "Reference face must use the current campaign visitor asset",
   );
+  assert.match(
+    await frame.locator('[data-ref-action="admit"]').first().innerText(),
+    /RED\s*STAMP/,
+    "Admit action must retain its meaningful red-stamp title",
+  );
+  assert.match(
+    await frame.locator('[data-ref-action="secondary"]').first().innerText(),
+    /SECONDARY\s*INSPECTION/,
+    "Secondary action must retain its meaningful inspection title",
+  );
+  assert.match(
+    await frame.locator('[data-ref-action="deny"]').first().innerText(),
+    /DENY\s*ENTRY/,
+    "Deny action must retain its meaningful entry title",
+  );
   return frame;
 }
 
@@ -130,7 +145,13 @@ async function exerciseDesktop(page, baseUrl) {
   await page.waitForTimeout(140);
   assert.equal(await page.evaluate(() => window.RedStampDebug.getState().liaisonCalled), true);
 
-  await frame.locator('[data-ref-action="deny"]').first().click();
+  await frame.locator('[data-ref-action="admit"]').first().click();
+  await frame.locator("#reference-stamp-motion").waitFor();
+  assert.equal(
+    await frame.locator('[data-ref-action="admit"].reference-stamp-action').count(),
+    1,
+    "Admit action must replay the visible stamp impact",
+  );
   await frame.locator("#reference-outcome").waitFor();
   assert.equal(await page.evaluate(() => window.RedStampDebug.getState().resolved), true);
   const resolvedState = await page.evaluate(() => window.RedStampDebug.getState());

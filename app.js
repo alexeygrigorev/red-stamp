@@ -2224,8 +2224,10 @@ const VISITOR_ART = {
 };
 
 // Every named visitor gets an explicit art entry. New character renders use
-// Mara's corrected cutout as the shared style anchor, while each character
-// keeps separate scene, full-body, and document-face assets.
+// the main inspector/Mara rendering as the shared style anchor, while each
+// character keeps separate scene, full-body, and document-face assets. A
+// redraw replaces that complete family together; changing only one view is
+// how a visitor slips back into a different illustration style.
 const CHARACTER_ART = {
   "mara-velen": {
     scene: "assets/generated/mara-visitor-scene.png",

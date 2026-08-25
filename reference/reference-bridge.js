@@ -40,6 +40,8 @@
     review: "#c8a25f",
   };
 
+  let stampMotionTimer = null;
+
   function host() {
     try {
       return window.parent !== window ? window.parent.RedStampHost : null;
@@ -53,7 +55,83 @@
   }
 
   function dispatch(action, value) {
-    return host()?.dispatch?.(action, value);
+    const result = host()?.dispatch?.(action, value);
+    if (action === "admit" && result !== false) triggerStampMotion();
+    return result;
+  }
+
+  function ensureStampMotionStyle() {
+    if (document.querySelector("#reference-stamp-motion-style")) return;
+    const style = document.createElement("style");
+    style.id = "reference-stamp-motion-style";
+    style.textContent = `
+      #reference-stamp-motion{position:fixed;inset:0;z-index:90;overflow:hidden;pointer-events:none}
+      #reference-stamp-motion [data-stamp-flash]{position:absolute;inset:0;background:radial-gradient(circle at var(--stamp-x) var(--stamp-y),rgba(223,66,44,.28),rgba(223,66,44,0) 23%);opacity:0}
+      #reference-stamp-motion [data-stamp-paper]{position:absolute;left:var(--stamp-x);top:var(--stamp-y);width:min(300px,44vw);height:min(132px,17vh);border:1px solid rgba(226,190,133,.8);background:linear-gradient(135deg,rgba(247,224,174,.98),rgba(166,126,83,.98));box-shadow:0 16px 32px rgba(0,0,0,.76),inset 0 0 0 4px rgba(109,44,31,.13);color:#5c2b25;opacity:0;transform:translate(-50%,-50%) rotate(-8deg) scale(.52);transform-origin:50% 50%}
+      #reference-stamp-motion [data-stamp-paper]::before{position:absolute;inset:9px;border:1px solid rgba(112,49,37,.42);content:""}
+      #reference-stamp-motion [data-stamp-paper]::after{position:absolute;right:12px;bottom:13px;width:34px;height:34px;border:2px solid rgba(142,31,28,.62);border-radius:50%;content:"V";font:700 21px/30px Georgia,serif;text-align:center;transform:rotate(-12deg)}
+      #reference-stamp-motion [data-stamp-paper-title]{position:absolute;top:18px;left:20px;font:700 12px/1 'IBM Plex Mono',monospace;letter-spacing:.16em}
+      #reference-stamp-motion [data-stamp-paper-lines]{position:absolute;top:45px;left:20px;width:54%;height:28px;background:repeating-linear-gradient(to bottom,rgba(76,47,37,.52) 0 1px,transparent 1px 7px)}
+      #reference-stamp-motion [data-stamp-art]{position:absolute;left:calc(var(--stamp-x) + min(26px,3vw));top:calc(var(--stamp-y) - min(8px,1vh));width:clamp(92px,11vw,148px);height:auto;opacity:0;filter:drop-shadow(0 12px 9px rgba(0,0,0,.74));transform:translate(-50%,-80%) rotate(11deg) scale(.68);transform-origin:50% 92%}
+      #reference-stamp-motion [data-stamp-ink]{position:absolute;left:var(--stamp-x);top:var(--stamp-y);padding:7px 12px;border:3px solid rgba(143,31,28,.78);color:rgba(143,31,28,.78);font:700 clamp(13px,1.6vw,21px)/1 'Staatliches',sans-serif;letter-spacing:.12em;opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(.25,.42);filter:blur(.2px)}
+      #reference-stamp-motion.reference-stamp-motion-active [data-stamp-flash]{animation:reference-stamp-flash 900ms ease-out both}
+      #reference-stamp-motion.reference-stamp-motion-active [data-stamp-paper]{animation:reference-stamp-paper 900ms cubic-bezier(.18,.82,.26,1) both}
+      #reference-stamp-motion.reference-stamp-motion-active [data-stamp-art]{animation:reference-stamp-slam 900ms cubic-bezier(.16,.78,.24,1) both}
+      #reference-stamp-motion.reference-stamp-motion-active [data-stamp-ink]{animation:reference-stamp-ink 900ms cubic-bezier(.19,.8,.28,1) both}
+      [data-ref-action="admit"].reference-stamp-action{animation:reference-stamp-button 900ms ease-out both}
+      @keyframes reference-stamp-flash{0%,100%{opacity:0}24%{opacity:1}58%{opacity:.16}}
+      @keyframes reference-stamp-paper{0%{opacity:0;transform:translate(-50%,18%) rotate(-12deg) scale(.52)}22%{opacity:1;transform:translate(-50%,-44%) rotate(-8deg) scale(.82)}44%,100%{opacity:.94;transform:translate(-50%,-50%) rotate(-4deg) scale(1)}}
+      @keyframes reference-stamp-slam{0%{opacity:0;transform:translate(-50%,-145%) rotate(13deg) scale(.68)}18%{opacity:1;transform:translate(-50%,-104%) rotate(9deg) scale(.76)}38%{opacity:1;transform:translate(-50%,-27%) rotate(-3deg) scale(1.02)}48%{opacity:1;transform:translate(-50%,-18%) rotate(-1deg) scale(.94)}60%{opacity:.9;transform:translate(-50%,-25%) rotate(-2deg) scale(.98)}78%{opacity:.34;transform:translate(-50%,-34%) rotate(0) scale(.92)}100%{opacity:0;transform:translate(-50%,-42%) rotate(1deg) scale(.86)}}
+      @keyframes reference-stamp-ink{0%,30%{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(.25,.42)}43%{opacity:.92;transform:translate(-50%,-50%) rotate(-4deg) scale(1.08,.76)}55%{opacity:.82;transform:translate(-50%,-50%) rotate(-5deg) scale(.98,.84)}100%{opacity:0;transform:translate(-50%,-50%) rotate(-4deg) scale(1,.7)}}
+      @keyframes reference-stamp-button{0%,100%{transform:translateY(0);filter:none}38%{transform:translateY(3px);filter:brightness(1.24)}52%{transform:translateY(0);filter:brightness(1.06)} }
+      @media (prefers-reduced-motion:reduce){#reference-stamp-motion [data-stamp-flash]{animation:none;opacity:.32}#reference-stamp-motion [data-stamp-paper]{animation:none;opacity:.94;transform:translate(-50%,-50%) rotate(-4deg) scale(1)}#reference-stamp-motion [data-stamp-art]{animation:none;opacity:.96;transform:translate(-50%,-25%) rotate(-2deg) scale(.96)}#reference-stamp-motion [data-stamp-ink]{animation:none;opacity:.78;transform:translate(-50%,-50%) rotate(-4deg) scale(1,.7)}[data-ref-action="admit"].reference-stamp-action{animation:none;transform:translateY(0);filter:brightness(1.08)}}
+    `;
+    document.head.append(style);
+  }
+
+  function triggerStampMotion() {
+    const action = document.querySelector('[data-ref-action="admit"]');
+    if (!action) return;
+    ensureStampMotionStyle();
+
+    const rect = action.getBoundingClientRect();
+    let motion = document.querySelector("#reference-stamp-motion");
+    if (!motion) {
+      motion = document.createElement("div");
+      motion.id = "reference-stamp-motion";
+      motion.setAttribute("aria-hidden", "true");
+      motion.innerHTML = `
+        <div data-stamp-flash></div>
+        <div data-stamp-paper>
+          <span data-stamp-paper-title>ENTRY AUTHORIZED</span>
+          <span data-stamp-paper-lines></span>
+        </div>
+        <img data-stamp-art alt="">
+        <div data-stamp-ink>ADMITTED</div>`;
+      document.body.append(motion);
+    }
+
+    motion.style.setProperty("--stamp-x", `${Math.round(rect.left + rect.width * 0.72)}px`);
+    motion.style.setProperty("--stamp-y", `${Math.round(rect.top + rect.height * 0.5)}px`);
+    const stampArt = motion.querySelector("[data-stamp-art]");
+    if (stampArt) {
+      stampArt.src = window.matchMedia?.("(max-width: 700px)").matches
+        ? "assets/23c7730c-fd90-4c8a-86bb-695cb8503df6.webp"
+        : "assets/779ea657-4ce2-498c-a617-9f5eaa498dc3.webp";
+    }
+
+    action.classList.remove("reference-stamp-action");
+    motion.classList.remove("reference-stamp-motion-active");
+    void action.offsetWidth;
+    void motion.offsetWidth;
+    action.classList.add("reference-stamp-action");
+    motion.classList.add("reference-stamp-motion-active");
+    if (stampMotionTimer) window.clearTimeout(stampMotionTimer);
+    stampMotionTimer = window.setTimeout(() => {
+      action.classList.remove("reference-stamp-action");
+      motion.remove();
+      stampMotionTimer = null;
+    }, 980);
   }
 
   function slots(name) {

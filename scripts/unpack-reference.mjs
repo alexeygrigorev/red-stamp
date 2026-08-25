@@ -193,6 +193,22 @@ function addReferenceHooks(template, paths) {
     '<div data-ref-action="admit" $1>STAMP</div>',
   );
 
+  // Keep the action rail semantically explicit. These labels are part of the
+  // source-of-truth mockup, so apply them here rather than patching generated
+  // desktop/mobile files by hand.
+  output = output.replace(
+    /(<div data-ref-action="admit"[^>]*>)STAMP(<\/div>)/g,
+    "$1RED<br>STAMP$2",
+  );
+  output = output.replaceAll(
+    ">SECOND<br>INSPECT</div>",
+    ">SECONDARY<br>INSPECTION</div>",
+  );
+  output = output.replaceAll(
+    ">REFUSE<br>ENTRY</div>",
+    ">DENY<br>ENTRY</div>",
+  );
+
   return output.replace("marks: { file: 'flag' }", "marks: {}");
 }
 

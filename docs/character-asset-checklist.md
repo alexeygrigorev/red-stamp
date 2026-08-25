@@ -38,7 +38,7 @@ being generated.
 
 ## Character generation pipeline
 
-Mara Velen is the canonical style anchor for every named visitor. Every image
+Mara Velen and the main inspector cutout are the canonical style anchor for every named visitor. Every image
 generation request must include a reference image: use the matching Mara asset
 for the asset being generated—`mara-visitor.png` for a full-body render,
 `mara-visitor-scene.png` for a checkpoint cutout, `mara-face.png` for a
@@ -62,6 +62,13 @@ family—not only the asset where the mismatch was first noticed. Irena Sava,
 Radan Kest, Nadiya Ost, and Olya Merin have been brought through this stricter
 style-lock pass; the regenerated Mara family is now the sharpness anchor for
 future batches.
+
+Radan Kest’s redraw is the reference implementation of that rule: his scene,
+full-body, and face assets were regenerated as one family against the main
+inspector/Mara rendering, while retaining his cropped hair, beard, stocky build,
+and security-team role. His matte charcoal field clothing replaces the older
+glossier tactical treatment. Future redraws should follow the same order and
+must not leave one old-style view registered beside two new ones.
 
 Use this order for every new named visitor:
 
