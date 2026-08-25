@@ -496,10 +496,100 @@
     }
   }
 
+  function ensureShiftEndStyle() {
+    if (document.querySelector("#reference-shift-end-style")) return;
+    const link = document.createElement("link");
+    link.id = "reference-shift-end-style";
+    link.rel = "stylesheet";
+    link.href = "shift-end.css";
+    document.head.append(link);
+  }
+
+  function shiftEndSummary(state) {
+    const entries = Array.isArray(state?.shiftLog) ? state.shiftLog : [];
+    const clean = entries.filter((entry) => entry.grade === "good").length;
+    const incidents = entries.filter((entry) => entry.grade === "bad").length;
+    return {
+      total: entries.length,
+      clean,
+      incidents,
+      career: Math.round(state?.career ?? 0),
+      breaches: Math.round(state?.securityBreaches ?? 0),
+    };
+  }
+
+  function updateShiftEnd(state) {
+    const ended = Boolean(state?.resolved && !state?.started);
+    let panel = document.querySelector("#reference-shift-end");
+    if (!ended) {
+      panel?.remove();
+      return false;
+    }
+
+    ensureShiftEndStyle();
+    const terminated = Number(state?.career) <= 0;
+    const summary = shiftEndSummary(state);
+    const day = String(Math.max(1, Number(state?.day) || 1)).padStart(2, "0");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "reference-shift-end";
+      panel.setAttribute("role", "dialog");
+      panel.setAttribute("aria-modal", "true");
+      panel.setAttribute("aria-labelledby", "reference-shift-end-title");
+      panel.setAttribute("aria-describedby", "reference-shift-end-reason");
+      panel.innerHTML = `
+        <div data-shift-end-card>
+          <div data-shift-end-rule aria-hidden="true"><span></span><b>RS-26</b><span></span></div>
+          <div data-shift-end-kicker></div>
+          <div data-shift-end-masthead>GAME OVER</div>
+          <h1 id="reference-shift-end-title" data-shift-end-title></h1>
+          <div data-shift-end-status></div>
+          <p id="reference-shift-end-reason" data-shift-end-reason></p>
+          <dl data-shift-end-summary>
+            <div><dt data-shift-end-stat-one-label></dt><dd data-shift-end-stat-one></dd></div>
+            <div><dt>CAREER STANDING</dt><dd data-shift-end-career></dd></div>
+            <div><dt>SECURITY BREACHES</dt><dd data-shift-end-breaches></dd></div>
+          </dl>
+          <button data-ref-action="restart" type="button">
+            <span>START NEW CAMPAIGN</span><b aria-hidden="true">&#8594;</b>
+          </button>
+          <div data-shift-end-footer>
+            <span>UNION OF VESKAR / EXTERNAL MISSIONS</span>
+            <span>RUN CLOSED / NEW FILE REQUIRED</span>
+          </div>
+        </div>`;
+      document.body.append(panel);
+      window.requestAnimationFrame(() => panel.querySelector("button")?.focus());
+    }
+
+    panel.dataset.endReason = terminated ? "terminated" : "complete";
+    panel.querySelector("[data-shift-end-kicker]").textContent = terminated
+      ? `SHIFT ${day} / CLEARANCE WITHDRAWN`
+      : `SHIFT ${day} / FINAL REPORT FILED`;
+    panel.querySelector("[data-shift-end-title]").textContent = terminated
+      ? "CLEARANCE TERMINATED"
+      : "SHIFT COMPLETE";
+    panel.querySelector("[data-shift-end-status]").textContent = terminated
+      ? "STATUS / CAREER STANDING 0%"
+      : `STATUS / REPORT FILED · ${summary.total} ${summary.total === 1 ? "CASE" : "CASES"} CLOSED`;
+    panel.querySelector("[data-shift-end-reason]").textContent = terminated
+      ? "Your career standing reached zero. Your clearance is suspended, the red stamp has been removed from your desk, and this campaign is over."
+      : "The final visitor has been resolved. The public entrance is closed, your decisions have been forwarded to the Directorate, and this shift is complete.";
+    panel.querySelector("[data-shift-end-stat-one-label]").textContent = terminated ? "INCIDENTS THIS SHIFT" : "CLEAN CASES";
+    panel.querySelector("[data-shift-end-stat-one]").textContent = terminated
+      ? `${summary.incidents}/${summary.total}`
+      : `${summary.clean}/${summary.total}`;
+    panel.querySelector("[data-shift-end-career]").textContent = `${summary.career}%`;
+    panel.querySelector("[data-shift-end-breaches]").textContent = String(summary.breaches);
+    return true;
+  }
+
   function updateOutcome(state) {
+    const shiftEnded = updateShiftEnd(state);
     const resolved = Boolean(state?.resolved);
     let panel = document.querySelector("#reference-outcome");
-    if (!resolved) {
+    if (!resolved || shiftEnded) {
       panel?.remove();
       return;
     }
@@ -548,6 +638,12 @@
   function sync(next = snapshot()) {
     if (!next?.state) return;
     const { state, caseData, assets } = next;
+    if (state.started && document.querySelector("[data-ref-action=begin]")) {
+      // A completed shift reloads the reference document while the engine is
+      // stopped. Restarting the campaign starts the engine in place, so bring
+      // the unpacked reference component back to its active surface as well.
+      document.querySelector("[data-ref-action=begin]").click();
+    }
     updateWelcomeAudio(state);
     ensureShortcutsControl(state);
     if (!state.started) {
@@ -586,9 +682,6 @@
   function hydrate() {
     const next = snapshot();
     if (next?.state?.started && !document.querySelector("[data-ref-action=begin]")) return;
-    if (next?.state?.started && document.querySelector("[data-ref-action=begin]")) {
-      document.querySelector("[data-ref-action=begin]").click();
-    }
     sync(next);
   }
 
@@ -641,6 +734,7 @@
     if (action === "secondary") return dispatch("secondary");
     if (action === "deny") return dispatch("deny");
     if (action === "advance") return dispatch("advance");
+    if (action === "restart") return dispatch("restart");
     if (action.startsWith("paper-")) return dispatch("inspect", "documents");
     if (action === "show-scan" || action === "open-bag") return dispatch("inspect", "xray");
   });
