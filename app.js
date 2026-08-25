@@ -3460,7 +3460,13 @@ window.RedStampDebug = {
     },
     advance: () => {
       const button = $("#overlay .primary-button");
-      if (button && ["next-case", "end-shift"].includes(button.dataset.action)) button.click();
+      if (button && ["next-case", "end-shift"].includes(button.dataset.action)) {
+        button.click();
+        return;
+      }
+      if (!state.resolved) return;
+      if (state.caseIndex === currentShift().cases.length - 1) endShift();
+      else nextCase();
     },
   },
 };

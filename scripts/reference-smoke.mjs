@@ -131,7 +131,7 @@ async function exerciseDesktop(page, baseUrl) {
   assert.equal(await page.evaluate(() => window.RedStampDebug.getState().liaisonCalled), true);
 
   await frame.locator('[data-ref-action="deny"]').first().click();
-  await page.waitForTimeout(850);
+  await frame.locator("#reference-outcome").waitFor();
   assert.equal(await page.evaluate(() => window.RedStampDebug.getState().resolved), true);
   const resolvedState = await page.evaluate(() => window.RedStampDebug.getState());
   assert.equal(
@@ -145,6 +145,12 @@ async function exerciseDesktop(page, baseUrl) {
   frame = referenceFrame(page);
   assert.equal(await page.evaluate(() => window.RedStampDebug.getState().caseIndex), 1, "Continue must advance the campaign case");
   assert.equal(await frame.locator('[data-ref-action="begin"]').count(), 0, "Next case must keep the visitor queue active");
+  const nextAssets = await page.evaluate(() => window.RedStampDebug.getAssetMap());
+  assert.equal(
+    await frame.locator('[data-ref-slot="visitor-scene"]').first().evaluate((element, asset) => element.src.endsWith(asset), nextAssets.scene),
+    true,
+    "Next visitor must replace the reference scene asset",
+  );
   await page.screenshot({ path: "/tmp/red-stamp-reference-desktop.png", fullPage: true });
 }
 
