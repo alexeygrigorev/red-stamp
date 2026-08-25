@@ -254,6 +254,8 @@
     setSlot("card-state", state.checklistSubmitted ? "CARD READY TO FILE" : "CARD NOT FILED");
     setSlot("case-id", `CASE ${caseData?.caseNumber || "—"}`);
     setSlot("case-title", (caseData?.service || "VISITOR AT WINDOW").toUpperCase());
+    setSlot("case-meta", `${String(caseData?.modeLabel || caseData?.mode || "VISITOR").toUpperCase()} · QUEUE ${caseData?.queue || "—"}`);
+    setSlot("case-log-id", `INTERVIEW LOG · ${caseData?.caseNumber || "—"}`);
     setSlot("case-purpose", `Declared: ${caseData?.claimedPurpose || caseData?.purpose || "No purpose recorded."}`);
     setSlot("visitor-name", (caseData?.name || "VISITOR").toUpperCase());
     setSlot("visitor-quote", caseData?.question?.answer ? `“${caseData.question.answer}”` : "Awaiting statement.");

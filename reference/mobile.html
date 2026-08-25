@@ -232,11 +232,11 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
     <div style="display:flex;gap:8px;text-align:right">
       <div>
         <div style="font-size:8px;letter-spacing:.2em;color:#8a7458">TOL</div>
-        <div style="font-family:'Staatliches',sans-serif;font-size:18px;color:#d9caa4;line-height:1"><span data-ref-slot="tolerance-value"><span data-ref-slot="career-value">100</span></span></div>
+        <div style="font-family:'Staatliches',sans-serif;font-size:18px;color:#d9caa4;line-height:1"><span data-ref-slot="tolerance-value">100</span></div>
       </div>
       <div>
         <div style="font-size:8px;letter-spacing:.2em;color:#8a7458">CAREER</div>
-        <div style="font-family:'Staatliches',sans-serif;font-size:18px;color:#d9caa4;line-height:1">100</div>
+        <div style="font-family:'Staatliches',sans-serif;font-size:18px;color:#d9caa4;line-height:1"><span data-ref-slot="career-value">100</span></div>
       </div>
     </div>
   </div>
@@ -247,7 +247,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
       <div style="position:absolute;inset:0;overflow:hidden">
         <img src="assets/8d338da9-194d-4083-a9e2-43fe4c9ccd31.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
         <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,4,3,.7),rgba(6,4,3,.05) 24%,rgba(4,3,2,.96))"></div>
-        <img src="assets/8c60a95b-8b62-45a1-ad4a-c411cffdef84.webp" alt="" style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);height:96%;filter:drop-shadow(0 20px 30px rgba(0,0,0,.9))">
+        <img data-ref-slot="visitor-scene" src="assets/8c60a95b-8b62-45a1-ad4a-c411cffdef84.webp" alt="" style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);height:96%;filter:drop-shadow(0 20px 30px rgba(0,0,0,.9))">
         <div style="position:absolute;left:14px;right:14px;bottom:12px">
           <div style="font-family:'Staatliches',sans-serif;font-size:40px;line-height:.92;letter-spacing:.04em;color:#e9d9b1;text-shadow:0 2px 12px #000"><span data-ref-slot="visitor-name">ANTON RYL</span></div>
           <div style="border-left:2px solid #b4342b;padding-left:10px;margin-top:8px">
@@ -273,12 +273,12 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
       <div style="position:absolute;inset:0;background:#0b0908;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;align-content:center">
         <div>
           <div style="font-size:9px;font-weight:600;letter-spacing:.2em;color:#a8916a;margin-bottom:6px">RECORD</div>
-          <img src="assets/2b08665f-e2d7-4aea-9c0b-1252493cb4f4.webp" alt="" style="width:100%;aspect-ratio:4/5;object-fit:cover;object-position:top;border:1px solid #6b5a3f;filter:grayscale(.4);display:block">
+          <img data-ref-slot="visitor-face" src="assets/2b08665f-e2d7-4aea-9c0b-1252493cb4f4.webp" alt="" style="width:100%;aspect-ratio:4/5;object-fit:cover;object-position:top;border:1px solid #6b5a3f;filter:grayscale(.4);display:block">
         </div>
         <div>
           <div style="font-size:9px;font-weight:600;letter-spacing:.2em;color:#e0705c;margin-bottom:6px">LIVE</div>
           <div style="position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;border:1px solid #6b5a3f;background:#0b0908">
-            <img src="assets/8c60a95b-8b62-45a1-ad4a-c411cffdef84.webp" alt="" style="position:absolute;left:50%;top:-10px;transform:translateX(-50%);height:800px">
+            <img data-ref-slot="visitor-scene" src="assets/8c60a95b-8b62-45a1-ad4a-c411cffdef84.webp" alt="" style="position:absolute;left:50%;top:-10px;transform:translateX(-50%);height:800px">
             <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(200,162,95,.6),transparent);animation:sweep 6s linear infinite"></div>
           </div>
         </div>
@@ -371,7 +371,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
     <sc-if value="{{ showXray }}">
       <div style="position:absolute;inset:0;background:#020404;padding:8px">
         <div style="position:relative;width:100%;height:100%;border:1px solid #2c4442;overflow:hidden">
-          <img src="assets/8589a753-9aed-485d-9be0-9ac8c218ee16.webp" alt="" style="width:100%;height:100%;object-fit:contain;filter:brightness(1.35) saturate(.45)">
+          <img data-ref-slot="xray-scan" src="assets/8589a753-9aed-485d-9be0-9ac8c218ee16.webp" alt="" style="width:100%;height:100%;object-fit:contain;filter:brightness(1.35) saturate(.45)">
           <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(140,230,215,.55),transparent);animation:sweep 5s linear infinite"></div>
           <div style="position:absolute;bottom:8px;right:8px;border:1px solid #8e1f1c;color:#e0705c;padding:4px 8px;font-size:9px;letter-spacing:.16em;background:rgba(10,6,5,.7)"><span data-ref-slot="scan-summary">3 MASSES · 1 UNRESOLVED</span> <span data-ref-action="xray-hint" title="Compare the scan silhouette with the declared contents." style="display:inline-grid;place-items:center;width:15px;height:15px;border:1px solid #6e7f7c;border-radius:50%;color:#a8ddd2;cursor:pointer;font-size:10px;letter-spacing:0">?</span></div>
         </div>
@@ -424,7 +424,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
 
   <div style="border-top:1px solid #2f251d;background:#100d0b;padding:8px 8px 9px;display:flex;gap:6px;overflow-x:auto">
     <div data-ref-action="back-window" sc-camel-on-click="{{ backToWindow }}" style="flex:0 0 auto;display:flex;align-items:center;gap:7px;border:1px solid {{ personBorder }};background:{{ personBg }};padding:6px 9px;cursor:pointer">
-      <img src="assets/2b08665f-e2d7-4aea-9c0b-1252493cb4f4.webp" alt="" style="width:30px;height:30px;object-fit:cover;object-position:top;border:1px solid #4a3a2c">
+      <img data-ref-slot="visitor-face" src="assets/2b08665f-e2d7-4aea-9c0b-1252493cb4f4.webp" alt="" style="width:30px;height:30px;object-fit:cover;object-position:top;border:1px solid #4a3a2c">
       <span style="font-family:'Staatliches',sans-serif;font-size:16px;letter-spacing:.06em;color:#e9d9b1;line-height:1">PERSON</span>
     </div>
     <sc-for list="{{ checks }}" as="row" hint-placeholder-count="6">

@@ -45,7 +45,20 @@ function decodeResource(entry) {
   return entry.compressed ? gunzipSync(bytes) : bytes;
 }
 
-function addReferenceHooks(template) {
+function wrapValueAfter(output, marker, slot) {
+  const markerIndex = output.indexOf(marker);
+  const valueIndex = output.indexOf(">100<", markerIndex);
+  if (markerIndex === -1 || valueIndex === -1) {
+    throw new Error(`Could not add ${slot} slot after ${marker}`);
+  }
+  return `${output.slice(0, valueIndex + 1)}<span data-ref-slot="${slot}">100</span>${output.slice(valueIndex + 4)}`;
+}
+
+function wrapValueAfterIfPresent(output, marker, slot) {
+  return output.includes(marker) ? wrapValueAfter(output, marker, slot) : output;
+}
+
+function addReferenceHooks(template, paths) {
   let output = template;
   const interpolationSlots = [
     ["{{ sourceLabel }}", "source-label"],
@@ -62,12 +75,15 @@ function addReferenceHooks(template) {
 
   const visitorImages = [
     ["f1d0ed4d-8409-4b5b-a090-4284a308328b", "visitor-scene"],
+    ["8c60a95b-8b62-45a1-ad4a-c411cffdef84", "visitor-scene"],
     ["daa681a6-5484-42ea-a673-73bc698fb169", "visitor-face"],
+    ["2b08665f-e2d7-4aea-9c0b-1252493cb4f4", "visitor-face"],
     ["4fa20b25-27aa-45f4-b30b-df6493003a21", "xray-scan"],
     ["8589a753-9aed-485d-9be0-9ac8c218ee16", "xray-scan"],
   ];
   for (const [uuid, name] of visitorImages) {
-    output = output.replaceAll(`src="${uuid}"`, `data-ref-slot="${name}" src="${uuid}"`);
+    const relative = paths.get(uuid) || `assets/${uuid}.webp`;
+    output = output.replaceAll(`src="${relative}"`, `data-ref-slot="${name}" src="${relative}"`);
   }
 
   output = output.replace(
@@ -77,6 +93,14 @@ function addReferenceHooks(template) {
   output = output.replace(
     ">SPECIAL CORRESPONDENCE<",
     '><span data-ref-slot="case-title">SPECIAL CORRESPONDENCE</span><',
+  );
+  output = output.replace(
+    ">SPECIAL CLEARANCE · QUEUE S-04<",
+    '><span data-ref-slot="case-meta">SPECIAL CLEARANCE · QUEUE S-04</span><',
+  );
+  output = output.replace(
+    ">INTERVIEW LOG · COR-0000-R<",
+    '><span data-ref-slot="case-log-id">INTERVIEW LOG · COR-0000-R</span><',
   );
   output = output.replace(
     ">Declared: deliver a sealed letter to the restricted correspondence office. No appointment on file.<",
@@ -90,14 +114,10 @@ function addReferenceHooks(template) {
     ">“The letter is sealed. I am not permitted to open it, and neither are you.”<",
     '><span data-ref-slot="visitor-quote">“The letter is sealed. I am not permitted to open it, and neither are you.”</span><',
   );
-  output = output.replace(
-    ">100<",
-    '><span data-ref-slot="tolerance-value">100</span><',
-  );
-  output = output.replace(
-    ">100<",
-    '><span data-ref-slot="career-value">100</span><',
-  );
+  output = wrapValueAfterIfPresent(output, "SHIFT TOLERANCE", "tolerance-value");
+  output = wrapValueAfterIfPresent(output, "CAREER STANDING", "career-value");
+  output = wrapValueAfterIfPresent(output, ">TOL<", "tolerance-value");
+  output = wrapValueAfterIfPresent(output, ">CAREER<", "career-value");
   output = output.replace(
     ">Anton Ryl<",
     '><span data-ref-slot="file-bearer">Anton Ryl</span><',
@@ -196,7 +216,7 @@ async function unpackPage(page) {
     .replaceAll("assets/web/doc-identity-page.webp", "../assets/generated/doc-identity-page.png")
     .replaceAll("assets/web/doc-clearance-page.webp", "../assets/generated/doc-clearance-page.png")
     .replaceAll("assets/web/doc-correspondence-page.webp", "../assets/generated/doc-correspondence-page.png");
-  template = addReferenceHooks(template);
+  template = addReferenceHooks(template, paths);
 
   const resourceMap = Object.fromEntries(
     extResources

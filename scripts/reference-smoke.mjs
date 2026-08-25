@@ -63,6 +63,22 @@ async function startRun(page, baseUrl, seed) {
   assert.equal(await frame.locator('[data-ref-action="begin"]').count(), 0, "Welcome must close after beginning");
   assert.notEqual((await frame.locator('[data-ref-slot="visitor-name"]').innerText()).trim(), "VISITOR");
   assert.equal(await page.evaluate(() => window.RedStampDebug.getState().started), true);
+  const initialVisualState = await page.evaluate(() => ({
+    state: window.RedStampDebug.getState(),
+    assets: window.RedStampDebug.getAssetMap(),
+  }));
+  assert.equal(await frame.locator('[data-ref-slot="tolerance-value"]').count(), 1, "Tolerance must have one independent live slot");
+  assert.equal(await frame.locator('[data-ref-slot="career-value"]').count(), 1, "Career must have one independent live slot");
+  assert.equal(
+    await frame.locator('[data-ref-slot="visitor-scene"]').first().evaluate((element, asset) => element.src.endsWith(asset), initialVisualState.assets.scene),
+    true,
+    "Reference scene must use the current campaign visitor asset",
+  );
+  assert.equal(
+    await frame.locator('[data-ref-slot="visitor-face"]').first().evaluate((element, asset) => element.src.endsWith(asset), initialVisualState.assets.face),
+    true,
+    "Reference face must use the current campaign visitor asset",
+  );
   return frame;
 }
 
@@ -94,6 +110,12 @@ async function exerciseDesktop(page, baseUrl) {
 
   await frame.locator('[data-ref-source="05"]').click();
   await page.waitForTimeout(160);
+  const xrayAsset = await page.evaluate(() => window.RedStampDebug.getAssetMap().xray);
+  assert.equal(
+    await frame.locator('[data-ref-slot="xray-scan"]').first().evaluate((element, asset) => element.src.endsWith(asset), xrayAsset),
+    true,
+    "Reference scan must use the current campaign X-ray asset",
+  );
   await frame.locator('[data-ref-action="xray-hint"]').click();
   assert.match(
     await frame.locator("#reference-xray-hint").innerText(),
@@ -111,6 +133,12 @@ async function exerciseDesktop(page, baseUrl) {
   await frame.locator('[data-ref-action="deny"]').first().click();
   await page.waitForTimeout(850);
   assert.equal(await page.evaluate(() => window.RedStampDebug.getState().resolved), true);
+  const resolvedState = await page.evaluate(() => window.RedStampDebug.getState());
+  assert.equal(
+    await frame.locator('[data-ref-slot="career-value"]').innerText(),
+    String(resolvedState.career),
+    "Career metric must follow the existing game state after a decision",
+  );
   assert.equal(await frame.locator("#reference-outcome").count(), 1, "Decision must produce a visible reference outcome");
   await frame.locator('#reference-outcome [data-ref-action="advance"]').click();
   await page.waitForTimeout(500);
