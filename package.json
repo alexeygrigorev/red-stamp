@@ -1,7 +1,8 @@
 {
   "scripts": {
+    "unpack:reference": "node scripts/unpack-reference.mjs",
     "test:images": "node scripts/check-image-aspect-ratios.mjs",
-    "test:e2e": "node scripts/playwright-smoke.mjs"
+    "test:e2e": "node scripts/reference-smoke.mjs"
   },
   "devDependencies": {
     "playwright": "^1.62.1"

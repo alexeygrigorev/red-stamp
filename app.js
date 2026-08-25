@@ -3424,11 +3424,45 @@ document.addEventListener("click", (event) => {
   handleAction(actionElement);
 });
 
-if (new URLSearchParams(window.location.search).has("debug")) {
-  window.RedStampDebug = {
-    getState: () => cloneData(state),
-    getCampaign: () => cloneData(campaignShifts),
-  };
-}
+window.RedStampDebug = {
+  getState: () => cloneData(state),
+  getCampaign: () => cloneData(campaignShifts),
+  getCurrentShift: () => cloneData(currentShift()),
+  getCurrentCase: () => cloneData(currentCase()),
+  getAssetMap: () => {
+    const c = currentCase();
+    return c ? {
+      scene: visitorSceneAsset(c),
+      portrait: visitorAsset(c),
+      face: faceAsset(c),
+      detector: detectorAsset(c),
+      xray: xrayAsset(c),
+    } : null;
+  },
+  actions: {
+    start: () => startGame(),
+    restart: () => {
+      resetCampaign(true);
+      closeOverlay();
+      render();
+      signalArrival();
+    },
+    inspect: (tool) => inspectTool(tool),
+    mark: (mark) => markFinding(mark),
+    submit: () => submitChecklist(),
+    secondary: () => useSecondary(),
+    liaison: () => callLiaison(),
+    resolve: (decision) => resolveCase(decision),
+    returnToWindow: () => {
+      state.selectedTool = null;
+      closeInspectionOverlay();
+      render();
+    },
+    advance: () => {
+      const button = $("#overlay .primary-button");
+      if (button && ["next-case", "end-shift"].includes(button.dataset.action)) button.click();
+    },
+  },
+};
 
 render();

@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html><head><script>window.__resources = {"https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js":"assets/c4cd9a29-21e3-476e-85ff-a870b670dddd.js","https://unpkg.com/react@18.3.1/umd/react.production.min.js":"assets/d09c6a94-7f99-433f-987a-ab9455355f81.js"};</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="assets/beb7db68-0ae8-463b-8bf9-cd5170f2eee7.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<style>/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/ea32f661-88ad-4d89-99ab-1181eb4aa2b2.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/b8baba41-ab1b-4cf5-b6f2-348d02d8db44.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/f447aa0c-dec1-488e-882d-ceb5246e6f68.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/b4fa3377-1ff9-46ff-9a8e-8460930b77ae.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/6428ee21-7ccc-4468-a322-909e91bef922.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/2e5a96ae-28cd-4f48-9bc0-78e040cded4f.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/d8284eac-c223-4f79-a45a-1cd38dbdb35e.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/4c58fe96-637a-4ad2-9dab-879ba694ff3c.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/7eda2dd6-3b78-4c22-9ed8-e67cb3722128.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/78c3d5a0-32aa-48a5-a6ee-f43abf6e5664.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/1c2bc8c6-8547-4ad2-9194-d3510d5e2637.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/c86ff0b9-3971-4e4f-9d44-5ad0efe22406.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/ca5dbec7-d2d4-4343-9958-69eecf9e6e53.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/702307f6-6802-467e-af0e-3b5c0f6bd75f.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/19836d64-4c26-457b-8686-c5b8965efd98.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/84aed632-5743-4945-af24-945d77ffb1ad.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/45a4d9ba-1c62-48e0-a039-240ce6e3afc1.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/d1b92fda-6071-4bc7-a43d-f5102c6150ed.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/6d34daa4-77c4-4367-a888-4b682312a76c.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/efca3f88-3fb5-4715-a904-4bc29b85e0af.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Staatliches';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/5b3f45c1-20a8-4392-800c-c52bcf0ec6f8.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Staatliches';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/dc3708fe-304a-4bb1-815f-3bdf47b30526.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+html,body{margin:0;padding:0;background:#070505;overflow:hidden}
+a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
+@keyframes lamp{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes sweep{0%{transform:translateY(-10%)}100%{transform:translateY(1000%)}}
+@keyframes flick{0%,100%{opacity:.9}47%{opacity:.82}48%{opacity:.98}}
+</style>
+</helmet>
+
+<div style="position:relative;width:100vw;height:100vh;overflow:hidden;background:#060404">
+<div data-fit="1" style="width:1920px;height:1080px;position:relative;overflow:hidden;background:#0a0807;font-family:'IBM Plex Mono',monospace;color:#c0b49b;display:grid;grid-template-columns:1fr 720px">
+
+  <div style="position:relative;display:grid;grid-template-rows:1fr 210px;min-height:0;background:#000">
+
+    <div style="position:relative;overflow:hidden">
+
+      <sc-if value="{{ showThreshold }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute;inset:0;overflow:hidden">
+          <img src="assets/5d078cea-e2df-4e90-afa3-de452306a5f5.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,4,3,.92) 0%,rgba(6,4,3,.08) 20%,rgba(6,4,3,.2) 62%,rgba(4,3,2,.96) 100%)"></div>
+          <img src="assets/f1d0ed4d-8409-4b5b-a090-4284a308328b.webp" alt="" style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);height:92%;filter:drop-shadow(0 40px 60px rgba(0,0,0,.9))">
+          <div style="position:absolute;left:52px;bottom:44px;right:52px;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:end">
+            <img src="assets/daa681a6-5484-42ea-a673-73bc698fb169.webp" alt="" style="width:126px;height:158px;object-fit:cover;object-position:top;border:1px solid #6b5a3f;box-shadow:0 14px 34px rgba(0,0,0,.85)">
+            <div>
+              <div style="font-family:'Staatliches',sans-serif;font-size:86px;line-height:.9;letter-spacing:.05em;color:#e9d9b1;text-shadow:0 3px 16px rgba(0,0,0,.95)"><span data-ref-slot="visitor-name">ANTON RYL</span></div>
+              <div style="border-left:3px solid #b4342b;padding-left:15px;margin-top:12px;max-width:660px">
+                <div style="font-size:18px;font-style:italic;color:#d8caa6;line-height:1.45;text-wrap:pretty"><span data-ref-slot="visitor-quote">“The letter is sealed. I am not permitted to open it, and neither are you.”</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showFile }}">
+        <div style="position:absolute;inset:0;background:radial-gradient(70% 70% at 50% 40%,#1b1512,#080605);display:grid;place-items:center;padding:118px 34px 30px">
+          <div style="position:relative;height:100%;width:auto;min-height:0;max-height:100%;max-width:100%;aspect-ratio:1/1.28;box-shadow:0 30px 70px rgba(0,0,0,.9);border:1px solid #4a3a2c">
+            <img src="assets/b91c0e4c-8a03-4c66-b9ea-6879ea6ca70c.webp" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
+            <div style="position:absolute;left:0;right:0;bottom:0;background:linear-gradient(rgba(6,4,3,0),rgba(6,4,3,.94));padding:44px 24px 18px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+              <div><div style="font-size:10px;font-weight:600;letter-spacing:.24em;color:#a8916a">BEARER</div><div style="font-size:16px;color:#e3d2a9"><span data-ref-slot="file-bearer">Anton Ryl</span></div></div>
+              <div><div style="font-size:10px;font-weight:600;letter-spacing:.24em;color:#a8916a">LETTER FILE</div><div style="font-size:16px;color:#e3d2a9"><span data-ref-slot="file-number">COR-0000-R</span></div></div>
+              <div><div style="font-size:10px;font-weight:600;letter-spacing:.24em;color:#a8916a">DESTINATION</div><div style="font-size:16px;color:#e3d2a9"><span data-ref-slot="file-destination">Special Corr. / 05</span></div></div>
+              <div><div style="font-size:10px;font-weight:600;letter-spacing:.24em;color:#a8916a">APPOINTMENT</div><div style="font-size:16px;color:#e0705c"><span data-ref-slot="file-appointment">NONE — restricted</span></div></div>
+            </div>
+            <div style="position:absolute;top:16px;right:16px;border:2px solid #8e1f1c;color:#e0705c;background:rgba(20,8,7,.72);padding:6px 12px;transform:rotate(-4deg);font-family:'Staatliches',sans-serif;font-size:22px;letter-spacing:.14em">UNMARKED</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showPapers }}">
+        <div style="position:absolute;inset:0;background:radial-gradient(70% 70% at 50% 40%,#1a1613,#070505);padding:118px 34px 30px;display:grid;grid-template-rows:1fr auto;gap:14px">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;min-height:0">
+            <div data-ref-action="paper-0" sc-camel-on-click="{{ openPaper0 }}" style="min-height:0;display:flex;flex-direction:column;gap:8px;cursor:pointer">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span style="font-size:11px;font-weight:600;letter-spacing:.22em;color:#dacca4">IDENTITY PAGE</span>
+                <span style="font-size:10px;letter-spacing:.18em;color:#a8c48a">IN ORDER</span>
+              </div>
+              <div style="position:relative;flex:1;min-height:0;overflow:hidden;border:1px solid #3a2c22;background:#0b0908;box-shadow:0 18px 40px rgba(0,0,0,.7)" style-hover="border-color:#c8a25f">
+                <img src="assets/51403dfe-c385-48e5-934c-3cd1340e2420.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 0%">
+                <div style="position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,0) 50%,rgba(6,4,3,.8))"></div>
+                <div style="position:absolute;left:12px;right:12px;bottom:10px;font-size:12px;letter-spacing:.06em;color:#dacca4;line-height:1.4">Name and district match the record.</div>
+              </div>
+            </div>
+            <div data-ref-action="paper-1" sc-camel-on-click="{{ openPaper1 }}" style="min-height:0;display:flex;flex-direction:column;gap:8px;cursor:pointer">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span style="font-size:11px;font-weight:600;letter-spacing:.22em;color:#dacca4">CLEARANCE SLIP</span>
+                <span style="font-size:10px;letter-spacing:.18em;color:#e0c07c">QUESTION IT</span>
+              </div>
+              <div style="position:relative;flex:1;min-height:0;overflow:hidden;border:1px solid #3a2c22;background:#0b0908;box-shadow:0 18px 40px rgba(0,0,0,.7)" style-hover="border-color:#c8a25f">
+                <img src="assets/8fbec34c-372d-47d2-a8ad-aae52ac5ca25.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 0%">
+                <div style="position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,0) 50%,rgba(6,4,3,.8))"></div>
+                <div style="position:absolute;left:12px;right:12px;bottom:10px;font-size:12px;letter-spacing:.06em;color:#dacca4;line-height:1.4">Countersignature does not hold this route.</div>
+              </div>
+            </div>
+            <div data-ref-action="paper-2" sc-camel-on-click="{{ openPaper2 }}" style="min-height:0;display:flex;flex-direction:column;gap:8px;cursor:pointer">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span style="font-size:11px;font-weight:600;letter-spacing:.22em;color:#dacca4">CORRESPONDENCE ORDER</span>
+                <span style="font-size:10px;letter-spacing:.18em;color:#e0705c">DISCREPANCY</span>
+              </div>
+              <div style="position:relative;flex:1;min-height:0;overflow:hidden;border:1px solid #3a2c22;background:#0b0908;box-shadow:0 18px 40px rgba(0,0,0,.7)" style-hover="border-color:#c8a25f">
+                <img src="assets/4c3cae5c-a073-4954-b3af-89363d7a5c36.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 0%">
+                <div style="position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,0) 50%,rgba(6,4,3,.8))"></div>
+                <div style="position:absolute;left:12px;right:12px;bottom:10px;font-size:12px;letter-spacing:.06em;color:#dacca4;line-height:1.4">No correspondence stamp on the order.</div>
+              </div>
+            </div>
+          </div>
+          <div style="font-size:12px;letter-spacing:.08em;color:#8a7458">Every sheet on this route must carry a correspondence stamp. Click a sheet to hold it up to the lamp.</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ paperOpen }}">
+        <div style="position:absolute;inset:0;background:rgba(4,3,2,.92);padding:118px 34px 30px;display:grid;grid-template-columns:1fr 400px;gap:28px;z-index:4">
+          <div style="position:relative;overflow:hidden;border:1px solid #6b5a3f;background:#0a0807;box-shadow:0 24px 60px rgba(0,0,0,.9)">
+            <sc-if value="{{ paperIs0 }}">
+              <img src="assets/51403dfe-c385-48e5-934c-3cd1340e2420.webp" alt="" style="width:100%;height:100%;object-fit:contain">
+            </sc-if>
+            <sc-if value="{{ paperIs1 }}">
+              <img src="assets/8fbec34c-372d-47d2-a8ad-aae52ac5ca25.webp" alt="" style="width:100%;height:100%;object-fit:contain">
+            </sc-if>
+            <sc-if value="{{ paperIs2 }}">
+              <img src="assets/4c3cae5c-a073-4954-b3af-89363d7a5c36.webp" alt="" style="width:100%;height:100%;object-fit:contain">
+            </sc-if>
+            <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(200,162,95,.5),transparent);animation:sweep 7s linear infinite"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">SHEET {{ paperIndex }} / 03</div>
+              <div style="font-family:'Staatliches',sans-serif;font-size:44px;letter-spacing:.05em;color:#e9d9b1;line-height:1.04">{{ paperName }}</div>
+            </div>
+            <div style="border-left:3px solid {{ paperAccent }};padding-left:14px">
+              <div style="font-size:10px;font-weight:600;letter-spacing:.26em;color:#a8916a">EXAMINATION</div>
+              <div style="font-size:16px;color:#dacca4;line-height:1.5;text-wrap:pretty">{{ paperNote }}</div>
+            </div>
+            <div style="display:grid;grid-template-columns:auto 1fr;row-gap:8px;column-gap:14px;font-size:14px;align-items:center">
+              <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">SEAL</span><span style="color:#cdbe9c">{{ paperSeal }}</span>
+              <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">STAMP</span><span style="color:#cdbe9c">{{ paperStamp }}</span>
+              <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">STATUS</span><span style="color:{{ paperAccent }};font-weight:600;letter-spacing:.14em">{{ paperStatus }}</span>
+            </div>
+            <div data-ref-action="close-paper" sc-camel-on-click="{{ closePaper }}" style="align-self:flex-start;margin-top:4px;border:1px solid #4a3a2c;padding:9px 18px;font-size:12px;letter-spacing:.2em;color:#cdbe9c;cursor:pointer" style-hover="border-color:#c8a25f">← BACK TO SHEETS</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showFace }}">
+        <div style="position:absolute;inset:0;background:radial-gradient(70% 70% at 50% 40%,#171310,#070505);display:grid;grid-template-columns:1fr 1fr;gap:34px;padding:118px 34px 30px;place-items:center">
+          <div style="width:100%;max-width:420px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+              <span style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">RECORD PORTRAIT</span>
+              <span style="font-size:10px;letter-spacing:.2em;color:#6e5f47">FILE COPY</span>
+            </div>
+            <img src="assets/daa681a6-5484-42ea-a673-73bc698fb169.webp" alt="" style="width:100%;aspect-ratio:4/5;object-fit:cover;object-position:top;border:1px solid #6b5a3f;filter:grayscale(.4) contrast(1.06);display:block">
+          </div>
+          <div style="width:100%;max-width:420px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+              <span style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#e0705c">AT THE WINDOW</span>
+              <span style="font-size:10px;letter-spacing:.2em;color:#6e5f47">CAM 02 · LIVE</span>
+            </div>
+            <div style="position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;border:1px solid #6b5a3f;background:#0b0908">
+              <img src="assets/f1d0ed4d-8409-4b5b-a090-4284a308328b.webp" alt="" style="position:absolute;left:50%;top:-24px;transform:translateX(-50%);height:2000px;filter:contrast(1.05)">
+              <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);animation:flick 4s infinite"></div>
+              <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(200,162,95,.6),transparent);animation:sweep 6s linear infinite"></div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showGate }}">
+        <div style="position:absolute;inset:0;background:#040303;display:grid;grid-template-rows:1fr 214px">
+          <div style="position:relative;overflow:hidden">
+            <img src="assets/189a960d-3f38-4a6f-9a13-f40142836da5.webp" alt="" style="position:absolute;left:0;top:0;width:100%;height:150%;object-fit:cover;object-position:50% 0%">
+            <div style="position:absolute;inset:0;background:radial-gradient(70% 70% at 50% 45%,rgba(0,0,0,0) 34%,rgba(4,3,2,.88))"></div>
+            <div style="position:absolute;left:52px;bottom:34px;display:flex;gap:12px;align-items:center;background:rgba(8,6,5,.8);border:1px solid #6d2b26;padding:11px 18px">
+              <span style="width:11px;height:11px;border-radius:50%;background:#d8523c;box-shadow:0 0 14px #d8523c;animation:lamp 1.2s infinite"></span>
+              <span style="font-family:'Staatliches',sans-serif;font-size:28px;letter-spacing:.1em;color:#e4c8ae"><span data-ref-slot="gate-status">GATE ALARM · METAL PRESENT</span></span>
+            </div>
+
+            <sc-if value="{{ itemOpen }}">
+              <div style="position:absolute;inset:0;background:rgba(4,3,2,.86);display:grid;place-items:center;padding:118px 34px 30px">
+                <div style="display:grid;grid-template-columns:640px 1fr;gap:30px;align-items:start;max-width:100%">
+                  <div style="position:relative;width:640px;height:426px;overflow:hidden;border:1px solid #6b5a3f;background:#0a0807;box-shadow:0 24px 60px rgba(0,0,0,.9)">
+                    <img src="assets/189a960d-3f38-4a6f-9a13-f40142836da5.webp" alt="" style="position:absolute;width:900%;height:900%;left:{{ itemZoomX }};top:{{ itemZoomY }};image-rendering:auto">
+                    <div style="position:absolute;inset:0;background:radial-gradient(80% 80% at 50% 50%,rgba(0,0,0,0) 45%,rgba(0,0,0,.5))"></div>
+                    <div style="position:absolute;left:14px;top:12px;font-size:10px;font-weight:600;letter-spacing:.3em;color:#c8a25f">CLOSER LOOK · TRAY LAMP</div>
+                    <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(200,162,95,.5),transparent);animation:sweep 6s linear infinite"></div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:14px;padding-top:6px">
+                    <div>
+                      <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">ITEM {{ itemIndex }} / 06</div>
+                      <div style="font-family:'Staatliches',sans-serif;font-size:52px;letter-spacing:.06em;color:#e9d9b1;line-height:1">{{ itemName }}</div>
+                    </div>
+                    <div style="border-left:3px solid {{ itemAccent }};padding-left:14px">
+                      <div style="font-size:10px;font-weight:600;letter-spacing:.26em;color:#a8916a">OBSERVATION</div>
+                      <div style="font-size:17px;color:#dacca4;line-height:1.5;text-wrap:pretty">{{ itemNote }}</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:auto 1fr;row-gap:7px;column-gap:14px;font-size:14px;align-items:center">
+                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">DECLARED</span><span style="color:#cdbe9c">{{ itemDeclared }}</span>
+                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">METAL</span><span style="color:#cdbe9c">{{ itemMetal }}</span>
+                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">STATUS</span><span style="color:{{ itemAccent }};font-weight:600;letter-spacing:.14em">{{ itemStatus }}</span>
+                    </div>
+                    <div data-ref-action="close-item" sc-camel-on-click="{{ closeItem }}" style="align-self:flex-start;margin-top:6px;border:1px solid #4a3a2c;padding:9px 18px;font-size:12px;letter-spacing:.2em;color:#cdbe9c;cursor:pointer" style-hover="border-color:#c8a25f">← BACK TO TRAY</div>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="border-top:1px solid #3a2c22;background:linear-gradient(#171310,#0b0908);padding:14px 30px 16px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#a8916a">TRAY · SURRENDERED OBJECTS</span>
+              <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">CLICK AN OBJECT TO LOOK CLOSER</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px">
+              <sc-for list="{{ trayItems }}" as="it" hint-placeholder-count="6">
+                <div sc-camel-on-click="{{ it.open }}" style="cursor:pointer;border:1px solid {{ it.border }};background:#0d0b09;padding:5px" style-hover="border-color:#c8a25f">
+                  <div style="position:relative;width:100%;aspect-ratio:3/2;overflow:hidden;background:#000">
+                    <img src="assets/189a960d-3f38-4a6f-9a13-f40142836da5.webp" alt="" style="position:absolute;width:1200%;height:1200%;left:{{ it.left }};top:{{ it.top }}">
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 2px 1px">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.14em;color:{{ it.ink }}">{{ it.name }}</span>
+                    <span style="width:7px;height:7px;border-radius:50%;background:{{ it.dot }}"></span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showXray }}">
+        <div style="position:absolute;inset:0;background:#020404;padding:118px 34px 30px;display:grid;grid-template-rows:auto 1fr;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div data-ref-action="show-scan" sc-camel-on-click="{{ showScan }}" style="border:1px solid {{ scanBorder }};background:{{ scanBg }};padding:8px 18px;font-size:11px;font-weight:600;letter-spacing:.22em;color:{{ scanInk }};cursor:pointer" style-hover="border-color:#7fbdb2">DENSITY SCAN</div>
+            <div data-ref-action="open-bag" sc-camel-on-click="{{ openBag }}" style="border:1px solid {{ bagBorder }};background:{{ bagBg }};padding:8px 18px;font-size:11px;font-weight:600;letter-spacing:.22em;color:{{ bagInk }};cursor:pointer" style-hover="border-color:#c8a25f">OPEN THE BAG</div>
+            <span style="margin-left:auto;font-size:10px;letter-spacing:.22em;color:#6e7f7c"><span data-ref-slot="scan-summary">3 MASSES · 1 UNRESOLVED</span> <span data-ref-action="xray-hint" title="Compare the scan silhouette with the declared contents." style="display:inline-grid;place-items:center;width:15px;height:15px;border:1px solid #6e7f7c;border-radius:50%;color:#a8ddd2;cursor:pointer;font-size:10px;letter-spacing:0">?</span></span>
+          </div>
+
+          <sc-if value="{{ scanMode }}" hint-placeholder-val="{{ true }}">
+            <div style="position:relative;width:100%;height:100%;min-height:0;border:1px solid #2c4442;background:#010303;overflow:hidden">
+              <img src="assets/4fa20b25-27aa-45f4-b30b-df6493003a21.webp" alt="" style="width:100%;height:100%;object-fit:contain;filter:brightness(1.35) saturate(.45)">
+              <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(120,200,190,.05) 0 1px,transparent 1px 4px)"></div>
+              <div style="position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,rgba(140,230,215,.55),transparent);animation:sweep 5s linear infinite"></div>
+              <div style="position:absolute;top:14px;left:16px;font-size:11px;font-weight:600;letter-spacing:.3em;color:#7fbdb2">40 keV · SATCHEL</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ bagMode }}">
+            <div style="position:relative;min-height:0;background:linear-gradient(#171310,#0a0807);border:1px solid #4a3a2c;padding:20px;display:grid;grid-template-rows:auto 1fr;gap:14px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#a8916a">SATCHEL EMPTIED ON THE PLATE</span>
+                <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">CLICK AN OBJECT TO LOOK CLOSER</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;min-height:0">
+                <sc-for list="{{ bagItems }}" as="b" hint-placeholder-count="4">
+                  <div sc-camel-on-click="{{ b.open }}" style="display:flex;flex-direction:column;gap:8px;min-height:0;justify-content:center;cursor:pointer">
+                    <div style="position:relative;width:100%;aspect-ratio:3/2;overflow:hidden;border:1px solid {{ b.border }};background:#000" style-hover="border-color:#c8a25f">
+                      <img src="assets/189a960d-3f38-4a6f-9a13-f40142836da5.webp" alt="" style="position:absolute;width:1000%;height:1000%;left:{{ b.left }};top:{{ b.top }}">
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#dacca4">{{ b.name }}</span>
+                      <span style="width:7px;height:7px;border-radius:50%;background:{{ b.dot }}"></span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <sc-if value="{{ bagItemOpen }}">
+                <div style="position:absolute;inset:0;background:rgba(4,3,2,.94);padding:24px;display:grid;grid-template-columns:1fr 380px;gap:26px">
+                  <div style="position:relative;overflow:hidden;border:1px solid #6b5a3f;background:#0a0807">
+                    <img src="assets/189a960d-3f38-4a6f-9a13-f40142836da5.webp" alt="" style="position:absolute;width:900%;height:900%;left:{{ bagZoomX }};top:{{ bagZoomY }}">
+                    <div style="position:absolute;left:14px;top:12px;font-size:10px;font-weight:600;letter-spacing:.3em;color:#c8a25f">CLOSER LOOK · DESK LAMP</div>
+                    <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(200,162,95,.5),transparent);animation:sweep 6s linear infinite"></div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:14px">
+                    <div>
+                      <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">IN THE BAG</div>
+                      <div style="font-family:'Staatliches',sans-serif;font-size:46px;letter-spacing:.05em;color:#e9d9b1;line-height:1.02">{{ bagName }}</div>
+                    </div>
+                    <div style="border-left:3px solid {{ bagAccent }};padding-left:14px">
+                      <div style="font-size:10px;font-weight:600;letter-spacing:.26em;color:#a8916a">OBSERVATION</div>
+                      <div style="font-size:16px;color:#dacca4;line-height:1.5;text-wrap:pretty">{{ bagNote }}</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:auto 1fr;row-gap:8px;column-gap:14px;font-size:14px;align-items:center">
+                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">DECLARED</span><span style="color:#cdbe9c">{{ bagDeclared }}</span>
+                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">ON SCAN</span><span style="color:#cdbe9c">{{ bagOnScan }}</span>
+                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">STATUS</span><span style="color:{{ bagAccent }};font-weight:600;letter-spacing:.14em">{{ bagStatus }}</span>
+                    </div>
+                    <div data-ref-action="close-bag-item" sc-camel-on-click="{{ closeBagItem }}" style="align-self:flex-start;margin-top:4px;border:1px solid #4a3a2c;padding:9px 18px;font-size:12px;letter-spacing:.2em;color:#cdbe9c;cursor:pointer" style-hover="border-color:#c8a25f">← BACK TO THE PLATE</div>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showAsk }}">
+        <div style="position:absolute;inset:0;overflow:hidden;background:#000">
+          <img src="assets/5d078cea-e2df-4e90-afa3-de452306a5f5.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.4) blur(2px)">
+          <img src="assets/f1d0ed4d-8409-4b5b-a090-4284a308328b.webp" alt="" style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);height:92%;filter:brightness(.75) drop-shadow(0 40px 60px #000)">
+          <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,3,2,.92) 0%,rgba(4,3,2,.35) 55%,rgba(4,3,2,.9) 100%)"></div>
+          <div style="position:absolute;left:34px;right:300px;top:118px;bottom:30px;display:grid;grid-template-rows:auto 1fr auto;background:rgba(9,7,6,.9);border:1px solid #4a3a2c;box-shadow:0 24px 60px rgba(0,0,0,.85)">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 18px;background:linear-gradient(#241c16,#151110);border-bottom:1px solid #3a2c22">
+              <span style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#c8a25f">INTERVIEW LOG · COR-0000-R</span>
+              <span style="font-size:10px;letter-spacing:.22em;color:#8a7458"><span data-ref-slot="asked-label">{{ askedLabel }}</span></span>
+            </div>
+            <div data-log="1" style="overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px">
+              <sc-for list="{{ transcript }}" as="line" hint-placeholder-count="2">
+                <div style="display:flex;flex-direction:column;gap:4px;align-items:{{ line.align }}">
+                  <span style="font-size:9px;font-weight:600;letter-spacing:.26em;color:{{ line.who }}">{{ line.speaker }}</span>
+                  <div style="max-width:82%;padding:11px 14px;border:1px solid {{ line.border }};background:{{ line.bg }};font-size:{{ line.size }};line-height:1.45;color:{{ line.ink }};font-style:{{ line.italic }};text-wrap:pretty">{{ line.text }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="border-top:1px solid #3a2c22;background:#100d0b;padding:14px 18px;display:flex;flex-direction:column;gap:8px">
+              <div style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#a8916a">PUT A QUESTION</div>
+              <sc-for list="{{ questions }}" as="q" hint-placeholder-count="3">
+                <div sc-camel-on-click="{{ q.ask }}" style="border:1px solid #4a3a2c;padding:11px 14px;font-size:15px;color:#cdbe9c;cursor:pointer" style-hover="border-color:#c8a25f;background:#1a1512;color:#e9d9b1">{{ q.text }}</div>
+              </sc-for>
+              <sc-if value="{{ noQuestions }}">
+                <div style="font-size:13px;color:#8a7458;letter-spacing:.06em">He has nothing further to add. Mark the statement.</div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <div style="position:absolute;inset:0;box-shadow:inset 0 0 0 20px #171310,inset 0 0 0 22px #4a3a2c,inset 0 0 110px 26px rgba(0,0,0,.72);pointer-events:none"></div>
+
+      <sc-if value="{{ overprint }}">
+        <div style="position:absolute;right:52px;bottom:44px;transform:rotate(-7deg);border:3px solid {{ overprintInk }};color:{{ overprintInk }};padding:8px 20px;font-family:'Staatliches',sans-serif;font-size:38px;letter-spacing:.14em;opacity:.85;background:rgba(6,4,3,.35);pointer-events:none">{{ overprintText }}</div>
+      </sc-if>
+
+      <div style="position:absolute;top:42px;left:42px;display:flex;align-items:center;gap:14px">
+        <img src="assets/6bb2b75d-9644-43b9-be9d-7c94be41dff5.webp" alt="" style="width:54px;height:54px;object-fit:contain">
+        <div>
+          <div style="font-family:'Staatliches',sans-serif;font-size:42px;line-height:.9;letter-spacing:.14em;color:#e7d7ae;text-shadow:0 2px 10px #000">RED STAMP</div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#b39a72">VESKAR EMBASSY / SECURITY CONTROL</div>
+        </div>
+      </div>
+
+      <div style="position:absolute;top:46px;right:42px;text-align:right">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.26em;color:#b39a72">SHIFT 01 · MORNING INTAKE</div>
+        <div style="font-family:'Staatliches',sans-serif;font-size:30px;letter-spacing:.2em;color:#d9caa4;line-height:1.1">08:30</div>
+        <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;font-size:11px;letter-spacing:.24em;color:#8ea86e"><span style="width:8px;height:8px;border-radius:50%;background:#7fae6a;box-shadow:0 0 10px #7fae6a;animation:lamp 2.4s infinite"></span>PROTOCOL ACTIVE</div>
+      </div>
+
+      </div>
+
+    <div style="border-top:3px solid #4a3a2c;background:linear-gradient(#211a15,#100c0a);display:grid;grid-template-columns:1fr;box-shadow:inset 0 2px 0 #5c4938">
+      <div style="padding:18px 30px 20px;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center">
+        <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="font-family:'Staatliches',sans-serif;font-size:22px;letter-spacing:.1em;color:#c8a25f"><span data-ref-slot="source-label">{{ sourceLabel }}</span></span>
+            <span style="flex:1;height:1px;background:#3a2c22"></span>
+            <span style="font-size:10px;font-weight:600;letter-spacing:.24em;color:{{ markInk }}"><span data-ref-slot="mark-label">{{ markLabel }}</span></span>
+          </div>
+          <div style="font-size:18px;color:#dacca4;line-height:1.4;text-wrap:pretty"><span data-ref-slot="observed">{{ observed }}</span></div>
+          <div style="font-size:11px;letter-spacing:.14em;color:#6e5f47">KEYS 1–6 OPEN A SOURCE · W RETURNS TO THE WINDOW · M / F / R MARKS IT</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div data-ref-action="mark-match" sc-camel-on-click="{{ markMatch }}" style="border:1px solid {{ matchBorder }};background:{{ matchBg }};padding:14px 26px;text-align:center;cursor:pointer" style-hover="border-color:#8ea86e">
+            <div style="font-family:'Staatliches',sans-serif;font-size:22px;letter-spacing:.1em;color:#c8d8b0;line-height:1">MATCH</div>
+            <div style="font-size:9px;letter-spacing:.22em;color:#6e7f5c">M</div>
+          </div>
+          <div data-ref-action="mark-flag" sc-camel-on-click="{{ markFlag }}" style="border:1px solid {{ flagBorder }};background:{{ flagBg }};padding:14px 26px;text-align:center;cursor:pointer" style-hover="border-color:#d8523c">
+            <div style="font-family:'Staatliches',sans-serif;font-size:22px;letter-spacing:.1em;color:#eda08c;line-height:1">FLAG</div>
+            <div style="font-size:9px;letter-spacing:.22em;color:#a06254">F</div>
+          </div>
+          <div data-ref-action="mark-review" sc-camel-on-click="{{ markReview }}" style="border:1px solid {{ reviewBorder }};background:{{ reviewBg }};padding:14px 26px;text-align:center;cursor:pointer" style-hover="border-color:#c8a25f">
+            <div style="font-family:'Staatliches',sans-serif;font-size:22px;letter-spacing:.1em;color:#e0c894;line-height:1">REVIEW</div>
+            <div style="font-size:9px;letter-spacing:.22em;color:#8a7458">R</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(#1a1411,#0d0a09);border-left:4px solid #3a2c22;box-shadow:inset 4px 0 0 #4a3a2c;display:grid;grid-template-rows:96px 128px 1fr 182px;min-height:0">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #2f251d">
+      <div style="padding:18px 24px;border-right:1px solid #2f251d">
+        <div style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#a8916a">SHIFT TOLERANCE</div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Staatliches',sans-serif;font-size:40px;color:#d9caa4;line-height:1.05"><span data-ref-slot="tolerance-value"><span data-ref-slot="career-value">100</span></span></span><span style="font-size:13px;color:#8a7458">%</span></div>
+        <div style="height:4px;background:#241c16"><div style="height:4px;width:100%;background:linear-gradient(90deg,#8ea86e,#5f7a4e)"></div></div>
+      </div>
+      <div style="padding:18px 24px">
+        <div style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#a8916a">CAREER STANDING</div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Staatliches',sans-serif;font-size:40px;color:#d9caa4;line-height:1.05">100</span><span style="font-size:13px;color:#8a7458">%</span></div>
+        <div style="height:4px;background:#241c16"><div style="height:4px;width:100%;background:linear-gradient(90deg,#c05a3e,#8e1f1c)"></div></div>
+      </div>
+    </div>
+
+    <div style="padding:18px 24px;border-bottom:1px solid #2f251d;background:rgba(142,31,28,.06);display:flex;flex-direction:column;gap:7px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <span style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#d8523c"><span data-ref-slot="case-id">CASE COR-0000-R</span></span>
+        <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">SPECIAL CLEARANCE · QUEUE S-04</span>
+      </div>
+      <div style="font-family:'Staatliches',sans-serif;font-size:32px;letter-spacing:.06em;color:#e3d2a9;line-height:1"><span data-ref-slot="case-title">SPECIAL CORRESPONDENCE</span></div>
+      <div style="font-size:13px;color:#a89578;line-height:1.5;text-wrap:pretty"><span data-ref-slot="case-purpose">Declared: deliver a sealed letter to the restricted correspondence office. No appointment on file.</span></div>
+    </div>
+
+    <div style="padding:18px 24px;display:flex;flex-direction:column;gap:12px;min-height:0">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #2f251d;padding-bottom:9px">
+        <span style="font-family:'Staatliches',sans-serif;font-size:28px;letter-spacing:.1em;color:#d9caa4">VERIFICATION CARD</span>
+        <span style="font-size:11px;font-weight:600;letter-spacing:.22em;color:#d8523c"><span data-ref-slot="marked-label">{{ markedLabel }}</span></span>
+      </div>
+      <div data-ref-action="back-window" sc-camel-on-click="{{ backToWindow }}" style="display:flex;align-items:center;gap:12px;border:1px solid {{ personBorder }};background:{{ personBg }};padding:9px 14px;cursor:pointer;box-shadow:inset 0 1px 0 #5c4938,0 3px 0 #0a0806" style-hover="border-color:#c8a25f">
+        <img src="assets/daa681a6-5484-42ea-a673-73bc698fb169.webp" alt="" style="width:34px;height:34px;object-fit:cover;object-position:top;border:1px solid #4a3a2c">
+        <span style="flex:1;font-family:'Staatliches',sans-serif;font-size:24px;letter-spacing:.1em;color:#e9d9b1">VIEW THE PERSON</span>
+        <span style="font-size:10px;font-weight:600;letter-spacing:.2em;color:#8a7458">{{ personHint }}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ checks }}" as="row" hint-placeholder-count="6">
+          <div data-ref-source="{{ row.n }}" sc-camel-on-click="{{ row.open }}" style="display:grid;grid-template-columns:36px 1fr auto 12px;align-items:center;gap:14px;padding:12px 15px;border:1px solid {{ row.border }};background:{{ row.bg }};cursor:pointer" style-hover="border-color:#8a7458">
+            <span style="font-size:11px;letter-spacing:.2em;color:#7a6748">{{ row.n }}</span>
+            <span style="font-family:'Staatliches',sans-serif;font-size:26px;letter-spacing:.1em;color:{{ row.ink }}">{{ row.label }}</span>
+            <span style="font-size:11px;font-weight:600;letter-spacing:.2em;color:{{ row.statusInk }}">{{ row.status }}</span>
+            <span style="width:9px;height:9px;border-radius:50%;background:{{ row.dot }}"></span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="border-top:4px solid #3a2c22;background:linear-gradient(#241a16,#0c0807);padding:16px 24px 20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:10px;font-weight:600;letter-spacing:.34em;color:#d8523c">ACTION</span>
+        <span style="font-size:10px;letter-spacing:.22em;color:#8a7458"><span data-ref-slot="card-state">{{ cardState }}</span></span>
+      </div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;height:104px">
+        <div data-ref-action="admit" style="position:relative;overflow:hidden;border:2px solid #8e1f1c;background:linear-gradient(#7d1f19,#480e0b);display:grid;place-items:center;box-shadow:inset 0 2px 0 rgba(255,190,170,.3),0 5px 0 #290a08;cursor:pointer" style-hover="background:linear-gradient(#9c2620,#5c1512)" style-active="transform:translateY(4px);box-shadow:inset 0 2px 0 rgba(255,190,170,.2),0 1px 0 #290a08">
+          <img src="assets/779ea657-4ce2-498c-a617-9f5eaa498dc3.webp" alt="" style="position:absolute;right:-18px;bottom:-22px;height:140%;opacity:.3">
+          <div style="position:relative;text-align:center">
+            <div data-ref-action="admit" style="font-family:'Staatliches',sans-serif;font-size:42px;letter-spacing:.1em;color:#f4dfc9;line-height:.95">STAMP</div>
+            <div style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#e0b8a6">ADMIT ENTRY</div>
+          </div>
+        </div>
+        <div data-ref-action="secondary" style="border:1px solid #4a3a2c;background:linear-gradient(#241c16,#100c0a);display:grid;place-items:center;text-align:center;box-shadow:inset 0 1px 0 #5c4938,0 5px 0 #0a0806;cursor:pointer" style-hover="border-color:#8a7458">
+          <div><div data-ref-action="secondary" style="font-family:'Staatliches',sans-serif;font-size:24px;letter-spacing:.08em;color:#d2c3a0;line-height:1">SECOND<br>INSPECT</div><div style="font-size:10px;letter-spacing:.22em;color:#8a7458;margin-top:5px">HOLD</div></div>
+        </div>
+        <div data-ref-action="deny" style="border:1px solid #4a3a2c;background:linear-gradient(#241c16,#100c0a);display:grid;place-items:center;text-align:center;box-shadow:inset 0 1px 0 #5c4938,0 5px 0 #0a0806;cursor:pointer" style-hover="border-color:#8a7458">
+          <div><div data-ref-action="deny" style="font-family:'Staatliches',sans-serif;font-size:24px;letter-spacing:.08em;color:#d2c3a0;line-height:1">REFUSE<br>ENTRY</div><div style="font-size:10px;letter-spacing:.22em;color:#8a7458;margin-top:5px">TURN BACK</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ notStarted }}">
+    <div style="position:absolute;inset:0;z-index:30;overflow:hidden;background:#050403">
+      <img src="assets/5d078cea-e2df-4e90-afa3-de452306a5f5.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.42) saturate(.9)">
+      <div style="position:absolute;inset:0;background:radial-gradient(60% 70% at 34% 45%,rgba(0,0,0,.15),rgba(4,3,2,.94) 75%)"></div>
+      <img src="assets/ac82a22a-6528-4f24-b09c-330ca951c29d.webp" alt="" style="position:absolute;right:-40px;bottom:-30px;height:104%;filter:drop-shadow(-30px 20px 60px rgba(0,0,0,.9))">
+      <div style="position:absolute;left:0;right:0;bottom:0;height:280px;background:linear-gradient(rgba(4,3,2,0),rgba(4,3,2,.96))"></div>
+
+      <div style="position:absolute;left:120px;top:150px;width:900px;display:flex;flex-direction:column;gap:26px">
+        <div style="display:flex;align-items:center;gap:18px">
+          <img src="assets/6bb2b75d-9644-43b9-be9d-7c94be41dff5.webp" alt="" style="width:76px;height:76px;object-fit:contain">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="font-size:12px;font-weight:600;letter-spacing:.4em;color:#b39a72">UNION OF VESKAR</span>
+            <span style="font-size:12px;font-weight:600;letter-spacing:.28em;color:#8a7458">EXTERNAL MISSIONS DIRECTORATE</span>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-family:'Staatliches',sans-serif;font-size:196px;line-height:.82;letter-spacing:.03em;color:#e9d9b1;text-shadow:0 6px 40px rgba(0,0,0,.95)">RED<br>STAMP</div>
+          <div style="height:3px;background:linear-gradient(90deg,#8e1f1c,#8e1f1c 220px,#4a3a2c 220px,rgba(74,58,44,0));margin-top:18px"></div>
+        </div>
+
+        <div style="font-size:21px;line-height:1.6;color:#cdbe9c;max-width:640px;text-wrap:pretty">The public entrance opens at 08:30. Verify identity, inspect what is carried, and decide who may cross the gate.</div>
+
+        <div style="display:flex;align-items:center;gap:22px;margin-top:6px">
+          <div data-ref-action="begin" sc-camel-on-click="{{ begin }}" style="position:relative;overflow:hidden;border:2px solid #8e1f1c;background:linear-gradient(#7d1f19,#480e0b);padding:22px 54px;cursor:pointer;box-shadow:inset 0 2px 0 rgba(255,190,170,.28),0 6px 0 #290a08" style-hover="background:linear-gradient(#9c2620,#5c1512)" style-active="transform:translateY(5px);box-shadow:inset 0 2px 0 rgba(255,190,170,.2),0 1px 0 #290a08">
+            <img src="assets/b94f1b8b-d95a-4710-9ad9-6aa4f310448a.webp" alt="" style="position:absolute;right:-30px;top:-40px;height:220%;opacity:.22">
+            <span style="position:relative;font-family:'Staatliches',sans-serif;font-size:40px;letter-spacing:.16em;color:#f4dfc9">BEGIN SHIFT</span>
+          </div>
+          
+        </div>
+      </div>
+
+      <div style="position:absolute;left:120px;bottom:44px;right:120px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.26em;color:#6e5f47;border-top:1px solid #2a211a;padding-top:14px">
+        <span>FORM RS-26 / SECURITY CONTROL</span>
+        <span>VESKARIAN EMBASSY · PUBLIC ENTRY</span>
+        <span>NO ENTRY WITHOUT THE RED STAMP</span>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080}}">
+const VIEWS = [
+  { key: 'file', n: '01', label: 'ROUTE / FILE', tool: 'FILE', view: 'APPOINTMENT RECORD',
+    observed: 'Registered file COR-0000-R · no appointment on file · restricted channel',
+    task: 'Compare the registered fields with the visitor and the papers at the window.' },
+  { key: 'face', n: '02', label: 'FACE / ID', tool: 'FACE', view: 'IDENTITY COMPARISON',
+    observed: 'Record portrait and live capture agree on bone structure and hairline.',
+    task: 'Compare the record portrait with the person at the window.' },
+  { key: 'papers', n: '03', label: 'PAPERS', tool: 'PAPERS', view: 'PHYSICAL DOCUMENTS',
+    observed: 'Clearance slip signed · seal intact · correspondence stamp missing',
+    task: 'Check every stamp, signature and date against the declared route.' },
+  { key: 'gate', n: '04', label: 'PERSON / GATE', tool: 'GATE', view: 'METAL DETECTOR',
+    observed: 'flat sealed letter · small key · unresolved shadow geometry',
+    task: 'Read the gate result and compare the carried objects with the declared route.' },
+  { key: 'xray', n: '05', label: 'BAG / SCAN', tool: 'X-RAY', view: 'BAG X-RAY',
+    observed: 'flat sealed letter · small key · unresolved shadow geometry',
+    task: 'Compare the scan silhouette with the declared contents. Unknown mass is a finding, not a verdict.' },
+  { key: 'ask', n: '06', label: 'STATEMENT', tool: 'ASK', view: 'QUESTIONING',
+    observed: 'Answers consistent, but he will not name the recipient of the letter.',
+    task: 'Press the account and watch what he refuses to say.' }
+];
+
+const ITEMS = [
+  { name: 'SEALED LETTER', fx: 0.164, note: 'Wax seal unbroken, Veskarian correspondence mark pressed twice. The paper is heavier than one sheet.', declared: 'Yes — the stated errand', metal: 'None', status: 'CONSISTENT', accent: '#a8c48a' },
+  { name: 'PEN CASE', fx: 0.258, note: 'Flat leather case. Two pens, no nib, no blade. Nothing that would trip the gate.', declared: 'Not declared, permitted', metal: 'Trace', status: 'CONSISTENT', accent: '#a8c48a' },
+  { name: 'KEY RING', fx: 0.342, note: 'Three keys and one blank tag. The long key is a state-issue drawer key, not a residence key.', declared: 'No', metal: 'Strong', status: 'QUESTION IT', accent: '#e0c07c' },
+  { name: 'HANDSET', fx: 0.423, note: 'Battery cover removed. No card inside. Screen scratched in the pattern of a device kept face down.', declared: 'No', metal: 'Strong', status: 'QUESTION IT', accent: '#e0c07c' },
+  { name: 'WALLET', fx: 0.521, note: 'Identity slip, tram tokens, no currency. The slip is issued by a district that closed last winter.', declared: 'Not declared, permitted', metal: 'Trace', status: 'QUESTION IT', accent: '#e0c07c' },
+  { name: 'FOLDED POUCH', fx: 0.645, note: 'Something dense and rectangular is folded inside the leather. It does not read as paper, and he did not surrender it willingly.', declared: 'No', metal: 'Unresolved', status: 'DISCREPANCY', accent: '#e0705c' }
+];
+const FY = 0.84;
+
+const BAG = [
+  { name: 'SEALED LETTER', fx: 0.164, declared: 'Yes', onScan: 'Flat, uniform', status: 'CONSISTENT', accent: '#a8c48a',
+    note: 'One envelope, wax seal unbroken. Held to the lamp it reads as two folded sheets, not one — heavier than the declared single letter.' },
+  { name: 'SMALL KEY', fx: 0.342, declared: 'No', onScan: 'Dense, short', status: 'QUESTION IT', accent: '#e0c07c',
+    note: 'A state-issue drawer key on a blank tag. He offered it before you asked, which is its own kind of answer.' },
+  { name: 'WALLET', fx: 0.521, declared: 'Not declared, permitted', onScan: 'Layered, soft', status: 'QUESTION IT', accent: '#e0c07c',
+    note: 'Identity slip and tram tokens. The slip was issued by a district office that closed last winter.' },
+  { name: 'UNRESOLVED MASS', fx: 0.645, declared: 'No', onScan: 'Shadow geometry', status: 'DISCREPANCY', accent: '#e0705c',
+    note: 'A dense rectangle folded into leather. It absorbs the beam like plate, not paper, and the fold was pressed shut recently.' }
+];
+
+const PAPERS = [
+  { name: 'IDENTITY PAGE', src: '../assets/generated/doc-identity-page.png', status: 'IN ORDER', accent: '#a8c48a',
+    note: 'Photograph, name and district agree with the record. The lamination lifts at one corner, as it does on every page of this age.',
+    seal: 'Present, district office', stamp: 'Present · 4 of 4', hint: 'Name and district match the record.' },
+  { name: 'CLEARANCE SLIP', src: '../assets/generated/doc-clearance-page.png', status: 'QUESTION IT', accent: '#e0c07c',
+    note: 'Special clearance is signed, but the countersignature belongs to an officer who does not hold this route. The date was written over.',
+    seal: 'Present', stamp: 'Countersignature disputed', hint: 'Countersignature does not hold this route.' },
+  { name: 'CORRESPONDENCE ORDER', src: '../assets/generated/doc-correspondence-page.png', status: 'DISCREPANCY', accent: '#e0705c',
+    note: 'The order names the office but carries no correspondence stamp. Without that stamp the sealed letter may not cross this threshold.',
+    seal: 'Present', stamp: 'MISSING', hint: 'No correspondence stamp on the order.' }
+];
+
+const QUESTIONS = [
+  { q: 'Who receives the letter?', a: '“The correspondence office. The name on the seal is not for me to read, and not for you either.”' },
+  { q: 'Why is there no appointment on file?', a: '“I was told the channel was standing. If your book is empty, that is your book, not my errand.”' },
+  { q: 'What is the second object in your satchel?', a: '“A key. It opens a drawer that is not in this building.”' },
+  { q: 'Who instructed you to come this morning?', a: '“A voice on a telephone I did not dial. It used my name correctly, which is more than most do.”' },
+  { q: 'Have you been inside the embassy before?', a: '“Twice. Neither time is written down. You may take that as candour or as a warning.”' }
+];
+
+class Component extends DCLogic {
+  state = { started: false, active: 'threshold', marks: {}, item: null, paper: null, log: [], asked: [], bag: false, bagItem: null };
+
+  componentDidMount() {
+    this.fit = () => {
+      const el = document.querySelector('[data-fit]');
+      if (!el) return;
+      const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      el.style.position = 'absolute';
+      el.style.left = '50%';
+      el.style.top = '50%';
+      el.style.transformOrigin = 'center center';
+      el.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+    };
+    this.fit();
+    window.addEventListener('resize', this.fit);
+    this._t = setInterval(this.fit, 500);
+    this.onKey = e => {
+      if (!this.state.started) { if (e.key === 'Enter' || e.key === ' ') this.setState({ started: true }); return; }
+      const n = parseInt(e.key, 10);
+      if (n >= 1 && n <= 6) this.setState({ active: VIEWS[n - 1].key });
+      else if (e.key === 'w' || e.key === 'W' || e.key === 'Escape') this.setState({ active: 'threshold', item: null, paper: null, bagItem: null });
+      else if (e.key === 'm' || e.key === 'M') this.mark('match');
+      else if (e.key === 'f' || e.key === 'F') this.mark('flag');
+      else if (e.key === 'r' || e.key === 'R') this.mark('review');
+    };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.fit); window.removeEventListener('keydown', this.onKey); clearInterval(this._t); }
+
+  componentDidUpdate() {
+    const log = document.querySelector('[data-log]');
+    if (log) log.scrollTop = log.scrollHeight;
+  }
+
+  ask(i) {
+    const q = QUESTIONS[i];
+    this.setState(s => ({
+      asked: s.asked.concat([i]),
+      log: s.log.concat([{ who: 'EXAMINER', text: q.q }, { who: 'RYL', text: q.a }])
+    }));
+  }
+
+  mark(kind) {
+    const a = this.state.active;
+    if (a === 'threshold') return;
+    this.setState(s => ({ marks: Object.assign({}, s.marks, { [a]: kind }) }));
+  }
+
+  renderVals() {
+    const active = this.state.active;
+    const marks = this.state.marks;
+    const cur = VIEWS.find(v => v.key === active);
+    const statusOf = m => (m === 'flag' ? 'FLAGGED' : m === 'match' ? 'CLEARED' : m === 'review' ? 'REVIEW' : 'OPEN');
+    const inkOf = m => (m === 'flag' ? '#e0705c' : m === 'match' ? '#a8c48a' : m === 'review' ? '#e0c07c' : '#6e5f47');
+    const dotOf = m => (m === 'flag' ? '#d8523c' : m === 'match' ? '#7fae6a' : m === 'review' ? '#c8a25f' : '#332b21');
+    const markedCount = VIEWS.filter(v => marks[v.key]).length;
+    const flagged = VIEWS.filter(v => marks[v.key] === 'flag').length;
+
+    return {
+      showThreshold: active === 'threshold',
+      showFile: active === 'file',
+      showFace: active === 'face',
+      showGate: active === 'gate',
+      showPapers: active === 'papers',
+      showXray: active === 'xray',
+      showAsk: active === 'ask',
+      viewLabel: cur ? cur.view : 'THRESHOLD / LIVE',
+      observed: cur ? cur.observed : 'Visitor at the window. Special clearance, no appointment on file.',
+      task: cur ? cur.task : 'Open every source, mark what you found, then file the card.',
+      discrepancies: String(flagged).padStart(2, '0'),
+      markedLabel: markedCount + ' / 6 MARKED',
+      cardState: markedCount === 6 ? 'CARD READY TO FILE' : 'CARD NOT FILED',
+      checks: VIEWS.map(v => {
+        const m = marks[v.key];
+        const on = active === v.key;
+        return {
+          n: v.n, label: v.label, status: statusOf(m), statusInk: inkOf(m), dot: dotOf(m),
+          border: on ? '#c8a25f' : m === 'flag' ? '#8e1f1c' : '#2f251d',
+          bg: on ? 'linear-gradient(#2a211a,#1a1512)' : m === 'flag' ? 'linear-gradient(#2e1815,#1b100e)' : 'transparent',
+          ink: on || m ? '#e3d2a9' : '#b6a988',
+          open: () => this.setState({ active: v.key })
+        };
+      }),
+      tools: VIEWS.map(v => ({
+        label: v.tool,
+        border: active === v.key ? '#c8a25f' : '#4a3a2c',
+        bg: active === v.key ? 'linear-gradient(#3a2e22,#1e1712)' : 'linear-gradient(#2a211a,#181310)',
+        ink: active === v.key ? '#f0e0ba' : '#d2c3a0',
+        open: () => this.setState({ active: v.key })
+      })),
+      backToWindow: () => this.setState({ active: 'threshold' }),
+      trayItems: ITEMS.map((it, i) => ({
+        name: it.name,
+        left: 'calc(50% - ' + (it.fx * 1200) + '%)',
+        top: 'calc(50% - ' + (FY * 1200) + '%)',
+        border: this.state.item === i ? '#c8a25f' : '#3a2c22',
+        ink: this.state.item === i ? '#e9d9b1' : '#b6a988',
+        dot: it.accent === '#e0705c' ? '#d8523c' : it.accent === '#e0c07c' ? '#c8a25f' : '#5f7a4e',
+        open: () => this.setState({ item: i })
+      })),
+      itemOpen: this.state.item !== null,
+      itemIndex: this.state.item === null ? '' : String(this.state.item + 1).padStart(2, '0'),
+      itemName: this.state.item === null ? '' : ITEMS[this.state.item].name,
+      itemNote: this.state.item === null ? '' : ITEMS[this.state.item].note,
+      itemDeclared: this.state.item === null ? '' : ITEMS[this.state.item].declared,
+      itemMetal: this.state.item === null ? '' : ITEMS[this.state.item].metal,
+      itemStatus: this.state.item === null ? '' : ITEMS[this.state.item].status,
+      itemAccent: this.state.item === null ? '#4a3a2c' : ITEMS[this.state.item].accent,
+      itemZoomX: this.state.item === null ? '0%' : 'calc(50% - ' + (ITEMS[this.state.item].fx * 900) + '%)',
+      itemZoomY: 'calc(50% - ' + (FY * 900) + '%)',
+      closeItem: () => this.setState({ item: null }),
+
+      papers: PAPERS.map((p, i) => ({
+        name: p.name, src: p.src, status: p.status, accent: p.accent, note: p.hint,
+        border: this.state.paper === i ? '#c8a25f' : '#3a2c22',
+        open: () => this.setState({ paper: i })
+      })),
+      openPaper0: () => this.setState({ paper: 0 }),
+      openPaper1: () => this.setState({ paper: 1 }),
+      openPaper2: () => this.setState({ paper: 2 }),
+      paperIs0: this.state.paper === 0,
+      paperIs1: this.state.paper === 1,
+      paperIs2: this.state.paper === 2,
+      paperOpen: active === 'papers' && this.state.paper !== null,
+      paperIndex: this.state.paper === null ? '' : String(this.state.paper + 1).padStart(2, '0'),
+      paperName: this.state.paper === null ? '' : PAPERS[this.state.paper].name,
+      paperNote: this.state.paper === null ? '' : PAPERS[this.state.paper].note,
+      paperSrc: this.state.paper === null ? PAPERS[0].src : PAPERS[this.state.paper].src,
+      paperSeal: this.state.paper === null ? '' : PAPERS[this.state.paper].seal,
+      paperStamp: this.state.paper === null ? '' : PAPERS[this.state.paper].stamp,
+      paperStatus: this.state.paper === null ? '' : PAPERS[this.state.paper].status,
+      paperAccent: this.state.paper === null ? '#4a3a2c' : PAPERS[this.state.paper].accent,
+      closePaper: () => this.setState({ paper: null }),
+
+      transcript: (this.state.log.length ? this.state.log : [{ who: 'EXAMINER', text: 'State your business at this threshold.' }, { who: 'RYL', text: '“Delivery. One sealed letter, restricted correspondence.”' }]).map(l => ({
+        speaker: l.who,
+        text: l.text,
+        align: l.who === 'RYL' ? 'flex-start' : 'flex-end',
+        who: l.who === 'RYL' ? '#b0705c' : '#8a7458',
+        border: l.who === 'RYL' ? '#6d2b26' : '#3a2c22',
+        bg: l.who === 'RYL' ? 'rgba(142,31,28,.12)' : 'rgba(200,162,95,.06)',
+        ink: l.who === 'RYL' ? '#e3d2a9' : '#cdbe9c',
+        size: l.who === 'RYL' ? '18px' : '15px',
+        italic: l.who === 'RYL' ? 'italic' : 'normal'
+      })),
+      questions: QUESTIONS.map((q, i) => ({ text: q.q, ask: () => this.ask(i) })).filter((q, i) => this.state.asked.indexOf(i) === -1).slice(0, 3),
+      noQuestions: this.state.asked.length >= QUESTIONS.length,
+      askedLabel: this.state.asked.length + ' / ' + QUESTIONS.length + ' QUESTIONS PUT',
+
+      sourceLabel: cur ? cur.n + ' · ' + cur.label : 'AT THE WINDOW',
+      markLabel: cur ? (marks[active] === 'flag' ? 'FLAGGED' : marks[active] === 'match' ? 'CLEARED' : marks[active] === 'review' ? 'HELD FOR REVIEW' : 'NOT YET MARKED') : 'NOTHING TO MARK HERE',
+      markInk: cur ? inkOf(marks[active]) : '#6e5f47',
+      matchBorder: marks[active] === 'match' ? '#8ea86e' : '#4a3a2c',
+      matchBg: marks[active] === 'match' ? 'rgba(120,160,100,.16)' : 'linear-gradient(#241c16,#141110)',
+      flagBorder: marks[active] === 'flag' ? '#d8523c' : '#6d2b26',
+      flagBg: marks[active] === 'flag' ? 'rgba(142,31,28,.28)' : 'rgba(142,31,28,.08)',
+      reviewBorder: marks[active] === 'review' ? '#c8a25f' : '#4a3a2c',
+      reviewBg: marks[active] === 'review' ? 'rgba(200,162,95,.14)' : 'linear-gradient(#241c16,#141110)',
+      overprint: !!(cur && marks[active]),
+      overprintText: marks[active] === 'flag' ? 'FLAGGED' : marks[active] === 'match' ? 'CLEARED' : 'HELD',
+      overprintInk: marks[active] === 'flag' ? '#d8523c' : marks[active] === 'match' ? '#8ea86e' : '#c8a25f',
+      personBorder: active === 'threshold' ? '#c8a25f' : '#6b5a3f',
+      personBg: active === 'threshold' ? 'linear-gradient(#3a2e22,#1e1712)' : 'linear-gradient(#2a211a,#181310)',
+      personHint: active === 'threshold' ? 'LIVE' : 'RETURN',
+      scanMode: !this.state.bag,
+      bagMode: this.state.bag,
+      showScan: () => this.setState({ bag: false, bagItem: null }),
+      openBag: () => this.setState({ bag: true }),
+      scanBorder: this.state.bag ? '#2c4442' : '#7fbdb2',
+      scanBg: this.state.bag ? 'transparent' : 'rgba(127,189,178,.1)',
+      scanInk: this.state.bag ? '#6e7f7c' : '#a8ddd2',
+      bagBorder: this.state.bag ? '#c8a25f' : '#4a3a2c',
+      bagBg: this.state.bag ? 'linear-gradient(#3a2e22,#1e1712)' : 'transparent',
+      bagInk: this.state.bag ? '#e9d9b1' : '#8a7458',
+      bagItems: BAG.map((b, i) => ({
+        name: b.name,
+        left: 'calc(50% - ' + (b.fx * 1000) + '%)',
+        top: 'calc(50% - ' + (FY * 1000) + '%)',
+        border: this.state.bagItem === i ? '#c8a25f' : '#3a2c22',
+        dot: b.accent === '#e0705c' ? '#d8523c' : b.accent === '#e0c07c' ? '#c8a25f' : '#5f7a4e',
+        open: () => this.setState({ bagItem: i })
+      })),
+      bagItemOpen: this.state.bagItem !== null,
+      bagName: this.state.bagItem === null ? '' : BAG[this.state.bagItem].name,
+      bagNote: this.state.bagItem === null ? '' : BAG[this.state.bagItem].note,
+      bagDeclared: this.state.bagItem === null ? '' : BAG[this.state.bagItem].declared,
+      bagOnScan: this.state.bagItem === null ? '' : BAG[this.state.bagItem].onScan,
+      bagStatus: this.state.bagItem === null ? '' : BAG[this.state.bagItem].status,
+      bagAccent: this.state.bagItem === null ? '#4a3a2c' : BAG[this.state.bagItem].accent,
+      bagZoomX: this.state.bagItem === null ? '0%' : 'calc(50% - ' + (BAG[this.state.bagItem].fx * 900) + '%)',
+      bagZoomY: 'calc(50% - ' + (FY * 900) + '%)',
+      closeBagItem: () => this.setState({ bagItem: null }),
+      notStarted: !this.state.started,
+      begin: () => this.setState({ started: true }),
+      markMatch: () => this.mark('match'),
+      markFlag: () => this.mark('flag'),
+      markReview: () => this.mark('review')
+    };
+  }
+}
+</script>
+
+
+<script src="reference-bridge.js"></script>
+</body></html>
