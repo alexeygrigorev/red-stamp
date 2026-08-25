@@ -112,11 +112,11 @@ function addReferenceHooks(template, paths) {
   );
   output = output.replaceAll(
     "assets/5d078cea-e2df-4e90-afa3-de452306a5f5.webp",
-    "assets/checkpoint-background-v2.png",
+    "assets/checkpoint-background-v3.png",
   );
   output = output.replaceAll(
     "assets/8d338da9-194d-4083-a9e2-43fe4c9ccd31.webp",
-    "assets/checkpoint-background-v2.png",
+    "assets/checkpoint-background-v3.png",
   );
   output = output.replaceAll(
     "cur ? cur.n + ' · ' + cur.label : 'AT THE WINDOW'",
@@ -261,6 +261,7 @@ function addReferenceHooks(template, paths) {
 
 function variantTemplate(template, variant) {
   return template
+    .replaceAll("assets/checkpoint-background-v3.png", "assets/checkpoint-background-v2.png")
     .replace("</head>", `<link rel="stylesheet" href="variant-${variant}.css">\n</head>`)
     .replace("</body>", `<script src="variant-${variant}.js"></script>\n</body>`);
 }

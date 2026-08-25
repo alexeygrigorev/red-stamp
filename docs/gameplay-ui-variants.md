@@ -2,7 +2,7 @@
 
 These options change the actual checkpoint gameplay surface only. They do not redesign the welcome screen or create a second game engine.
 
-- Current (`#c` or no hash): the source-of-truth checkpoint layout, using `reference/assets/checkpoint-background-v2.png`.
+- Current (`#c` or no hash): the source-of-truth checkpoint layout, using `reference/assets/checkpoint-background-v3.png`.
 - Option A (`#a`): a guided-review treatment. Steps 02 and 04 gain a large finding band and a three-part check sequence while retaining the existing scene/card/action composition.
 - Option B (`#b`): an evidence-desk treatment. Steps 02 and 04 gain a persistent summary column that keeps the source return, explanation, and decision prompt together.
 
