@@ -2923,6 +2923,7 @@ function render() {
   } else {
     $("#clockText").textContent = "08:30";
   }
+  updateMusicForState();
 }
 
 function showToast(message, tone = "") {
@@ -2935,55 +2936,163 @@ function showToast(message, tone = "") {
   }, 3400);
 }
 
-let gameAudioContext = null;
+const AUDIO_BASE = "assets/audio";
+
+const SFX_FILES = {
+  click: "sfx/click.mp3",
+  question: "sfx/question.mp3",
+  submit: "sfx/paper-handling.mp3",
+  scan: "sfx/xray-scan.mp3",
+  "detector-clear": "sfx/scan.mp3",
+  "detector-alarm": "sfx/detector-alarm.mp3",
+  stamp: "sfx/stamp.mp3",
+  admit: "sfx/admit.mp3",
+  deny: "sfx/deny.mp3",
+  "case-transition": "sfx/case-transition.mp3",
+  "tension-sting": "sfx/tension-sting.mp3",
+  debrief: "music/debrief-sting.mp3",
+};
+
+const SFX_VOLUME = {
+  click: 0.45,
+  question: 0.6,
+  submit: 0.55,
+  scan: 0.6,
+  "detector-clear": 0.55,
+  "detector-alarm": 0.7,
+  stamp: 0.8,
+  admit: 0.75,
+  deny: 0.7,
+  "case-transition": 0.5,
+  "tension-sting": 0.65,
+  debrief: 0.6,
+};
+
+const MUSIC_FILES = {
+  title: "music/title-theme.mp3",
+  checkpoint: "music/checkpoint-loop.mp3",
+  tension: "music/high-tension.mp3",
+};
+
+const sfxCache = new Map();
+let audioMuted = localStorage.getItem("redstamp-audio-muted") === "true";
+
+function getSfxElement(kind) {
+  const file = SFX_FILES[kind];
+  if (!file) return null;
+  let base = sfxCache.get(kind);
+  if (!base) {
+    base = new Audio(`${AUDIO_BASE}/${file}`);
+    base.preload = "auto";
+    sfxCache.set(kind, base);
+  }
+  return base;
+}
 
 function playGameSound(kind = "click") {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContext) return;
+  if (audioMuted) return;
   try {
-    gameAudioContext ||= new AudioContext();
-    const context = gameAudioContext;
-    if (context.state === "suspended") context.resume();
-    const now = context.currentTime;
-    const sounds = {
-      click: [{ frequency: 150, duration: 0.045, type: "square", volume: 0.025 }],
-      question: [
-        { frequency: 230, duration: 0.07, type: "triangle", volume: 0.028 },
-        { frequency: 310, duration: 0.09, type: "triangle", volume: 0.022, offset: 0.07 },
-      ],
-      scan: [
-        { frequency: 120, endFrequency: 390, duration: 0.34, type: "sawtooth", volume: 0.025 },
-      ],
-      submit: [
-        { frequency: 90, duration: 0.08, type: "square", volume: 0.035 },
-        { frequency: 180, duration: 0.1, type: "square", volume: 0.026, offset: 0.08 },
-      ],
-      admit: [
-        { frequency: 110, duration: 0.08, type: "square", volume: 0.035 },
-        { frequency: 74, duration: 0.16, type: "square", volume: 0.03, offset: 0.09 },
-      ],
-      deny: [
-        { frequency: 190, duration: 0.1, type: "sawtooth", volume: 0.03 },
-        { frequency: 105, duration: 0.18, type: "sawtooth", volume: 0.026, offset: 0.11 },
-      ],
-    }[kind] || [];
-    sounds.forEach(({ frequency, endFrequency, duration, type, volume, offset = 0 }) => {
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      const start = now + offset;
-      oscillator.type = type;
-      oscillator.frequency.setValueAtTime(frequency, start);
-      if (endFrequency) oscillator.frequency.exponentialRampToValueAtTime(endFrequency, start + duration);
-      gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.exponentialRampToValueAtTime(volume, start + 0.008);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-      oscillator.connect(gain).connect(context.destination);
-      oscillator.start(start);
-      oscillator.stop(start + duration + 0.02);
-    });
+    const base = getSfxElement(kind);
+    if (!base) return;
+    const instance = base.cloneNode(true);
+    instance.volume = SFX_VOLUME[kind] ?? 0.6;
+    instance.play().catch(() => {});
   } catch {
-    // Audio is an atmosphere layer; a browser without Web Audio must remain playable.
+    // Audio is an atmosphere layer; playback failure must not break the game.
   }
+}
+
+let musicTrackA = null;
+let musicTrackB = null;
+let activeMusicTrack = null;
+let currentMusicKey = null;
+
+function ensureMusicElements() {
+  if (musicTrackA) return;
+  musicTrackA = new Audio();
+  musicTrackB = new Audio();
+  [musicTrackA, musicTrackB].forEach((element) => {
+    element.loop = true;
+    element.volume = 0;
+    element.preload = "auto";
+    element.muted = audioMuted;
+  });
+}
+
+function clamp01(value) {
+  return Math.min(1, Math.max(0, value));
+}
+
+function fadeAudio(element, from, to, duration, onComplete) {
+  if (!element) return;
+  const steps = 24;
+  const stepTime = Math.max(16, duration / steps);
+  element.volume = clamp01(from);
+  let step = 0;
+  const timer = window.setInterval(() => {
+    step += 1;
+    element.volume = clamp01(from + (to - from) * (step / steps));
+    if (step >= steps) {
+      window.clearInterval(timer);
+      if (onComplete) onComplete();
+    }
+  }, stepTime);
+}
+
+function playMusic(key, { volume = 0.32, fade = 1400 } = {}) {
+  if (currentMusicKey === key) return;
+  const file = MUSIC_FILES[key];
+  if (!file) return;
+  try {
+    ensureMusicElements();
+    const incoming = activeMusicTrack === musicTrackA ? musicTrackB : musicTrackA;
+    const outgoing = activeMusicTrack;
+    incoming.muted = audioMuted;
+    incoming.src = `${AUDIO_BASE}/${file}`;
+    incoming.currentTime = 0;
+    incoming.volume = 0;
+    const attempt = incoming.play();
+    if (!attempt?.then) return;
+    attempt
+      .then(() => {
+        currentMusicKey = key;
+        activeMusicTrack = incoming;
+        fadeAudio(incoming, 0, volume, fade);
+        if (outgoing) fadeAudio(outgoing, outgoing.volume, 0, fade, () => outgoing.pause());
+      })
+      .catch(() => {
+        document.addEventListener("pointerdown", () => playMusic(key, { volume, fade }), { once: true });
+      });
+  } catch {
+    // Autoplay can be blocked by the browser until the first user gesture.
+  }
+}
+
+function updateMusicForState() {
+  if (!state.started) {
+    playMusic("title", { volume: 0.28 });
+    return;
+  }
+  const danger = state.career <= 35 || state.dailyTolerance <= 20;
+  playMusic(danger ? "tension" : "checkpoint", { volume: danger ? 0.4 : 0.3 });
+}
+
+function setAudioMuted(muted) {
+  audioMuted = muted;
+  localStorage.setItem("redstamp-audio-muted", String(muted));
+  [musicTrackA, musicTrackB].forEach((element) => {
+    if (element) element.muted = muted;
+  });
+  const button = $("#audioToggle");
+  if (button) {
+    button.textContent = muted ? "SOUND OFF" : "SOUND ON";
+    button.setAttribute("aria-pressed", String(muted));
+  }
+}
+
+function toggleAudio() {
+  setAudioMuted(!audioMuted);
+  playGameSound("click");
 }
 
 function signalArrival() {
@@ -3069,6 +3178,13 @@ function submitChecklist() {
   showToast("Findings filed. The authority rail is live.", "good");
 }
 
+function toolSound(tool, c) {
+  if (tool === "xray") return "scan";
+  if (tool === "detector") return c.detector.status.includes("ALARM") ? "detector-alarm" : "detector-clear";
+  if (tool === "question") return "question";
+  return "click";
+}
+
 function inspectTool(tool) {
   if (!state.started || state.resolved) return;
   const c = currentCase();
@@ -3076,7 +3192,7 @@ function inspectTool(tool) {
   state.selectedTool = tool;
   render();
   renderInspectionOverlay(tool);
-  playGameSound(tool === "xray" ? "scan" : tool === "question" ? "question" : "click");
+  playGameSound(toolSound(tool, c));
   if (c?.id === "mara-velen") triggerMaraBlink();
   if (tool === "xray" && c.xray.status !== "CLEAR" && c.xray.status !== "ORDINARY CONTENTS" && c.xray.status !== "PERSONAL ITEMS ONLY" && c.xray.status !== "MEDICAL CONTENTS" && c.xray.status !== "MILITARY KIT") {
     showToast("X-ray review flagged an item. Decide whether to hold the visitor.", "bad");
@@ -3188,10 +3304,16 @@ function resolveCase(decision) {
   closeInspectionOverlay();
   state.resolved = true;
   state.finalDecision = decision;
-  playGameSound(decision === "admit" ? "admit" : "deny");
+  if (decision === "admit") {
+    playGameSound("stamp");
+    window.setTimeout(() => playGameSound("admit"), 180);
+  } else {
+    playGameSound("deny");
+  }
   if (decision === "admit") state.stats.admitted += 1;
   if (decision === "deny") state.stats.denied += 1;
   const result = evaluateCase(c, decision);
+  if (result.kind === "critical") window.setTimeout(() => playGameSound("tension-sting"), 400);
   const accuracy = state.checklistSubmitted ? checklistAccuracy(c) : null;
   if (accuracy !== null && accuracy < PRIMARY_TOOLS.length) {
     result.effects = {
@@ -3240,6 +3362,7 @@ function resolveCase(decision) {
 }
 
 function nextCase() {
+  playGameSound("case-transition");
   closeOverlay();
   state.caseIndex += 1;
   state.revealed = {};
@@ -3269,6 +3392,7 @@ function endShift() {
   state.started = false;
   const summary = shiftSummary();
   render();
+  playGameSound("debrief");
   if (state.day < campaignShifts.length) {
     openOverlay({
       kicker: `SHIFT 0${state.day} / REPORT FILED`,
@@ -3297,6 +3421,7 @@ function startNextShift() {
   state.resolved = false;
   state.finalDecision = null;
   state.started = true;
+  playGameSound("case-transition");
   closeOverlay();
   render();
   signalArrival();
@@ -3372,6 +3497,7 @@ function handleAction(element) {
   if (action === "secondary") return useSecondary();
   if (action === "liaison") return callLiaison();
   if (action === "resolve") return resolveCase(element.dataset.decision);
+  if (action === "toggle-audio") return toggleAudio();
 }
 
 document.addEventListener("keydown", (event) => {
@@ -3471,4 +3597,5 @@ window.RedStampDebug = {
   },
 };
 
+setAudioMuted(audioMuted);
 render();

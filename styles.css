@@ -235,6 +235,28 @@ button:focus-visible {
   background: var(--line);
 }
 
+.audio-toggle {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  padding: 3px 8px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.audio-toggle:hover {
+  border-color: var(--red-bright);
+  color: var(--red-bright);
+}
+
+.audio-toggle[aria-pressed="true"] {
+  color: var(--red-bright);
+  border-color: var(--red-bright);
+}
+
 .header-metrics {
   gap: 18px;
 }
