@@ -60,6 +60,12 @@ function wrapValueAfterIfPresent(output, marker, slot) {
 
 function addReferenceHooks(template, paths) {
   let output = template;
+  // The source footer only needs the height of its evidence/actions. A fixed
+  // desktop footer leaves a large dead band when the source row is hidden.
+  output = output.replaceAll(
+    "grid-template-rows:1fr 210px",
+    "grid-template-rows:minmax(0,1fr) auto",
+  );
   const interpolationSlots = [
     ["{{ sourceLabel }}", "source-label"],
     ["{{ markLabel }}", "mark-label"],
