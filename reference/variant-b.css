@@ -1,0 +1,235 @@
+/* Option B — evidence desk. Same shell, persistent finding column. */
+
+[data-ref-view="identity"] {
+  box-sizing: border-box !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(310px, 0.78fr) !important;
+  gap: clamp(18px, 1.8vw, 28px) !important;
+  align-items: center !important;
+  padding-right: clamp(28px, 2.4vw, 38px) !important;
+}
+
+[data-ref-view="identity"] > div:not(.variant-evidence-column) {
+  max-width: 390px !important;
+}
+
+.variant-evidence-column {
+  position: relative;
+  z-index: 5;
+  align-self: stretch;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(12px, 1.4vw, 20px);
+  padding: clamp(20px, 2vw, 30px);
+  border: 1px solid #6b5a3f;
+  border-top: 4px solid #c8a25f;
+  background: linear-gradient(160deg, rgba(37, 28, 23, 0.98), rgba(9, 7, 6, 0.98));
+  box-shadow: 0 20px 46px rgba(0, 0, 0, 0.76), inset 0 1px 0 rgba(226, 190, 133, 0.1);
+  color: #dacca4;
+}
+
+.variant-evidence-column[data-tone="clear"] {
+  border-top-color: #8ea86e;
+}
+
+.variant-evidence-column[data-tone="alert"] {
+  border-top-color: #d8523c;
+}
+
+.variant-evidence-kicker,
+.variant-evidence-status,
+.variant-evidence-mark,
+.variant-evidence-prompt strong {
+  font: 600 clamp(14px, 1.05vw, 18px)/1.35 "IBM Plex Mono", monospace;
+  letter-spacing: 0.16em;
+}
+
+.variant-evidence-kicker {
+  color: #c8a25f;
+}
+
+.variant-evidence-status {
+  color: #e0c07c;
+}
+
+.variant-evidence-column[data-tone="clear"] .variant-evidence-status {
+  color: #a8c48a;
+}
+
+.variant-evidence-column[data-tone="alert"] .variant-evidence-status {
+  color: #e0705c;
+}
+
+.variant-evidence-title {
+  font: 400 clamp(36px, 2.9vw, 50px)/0.98 "Staatliches", sans-serif;
+  letter-spacing: 0.06em;
+  color: #f0dfb6;
+  text-wrap: balance;
+}
+
+.variant-evidence-detail {
+  margin: 0;
+  font: 400 clamp(20px, 1.5vw, 24px)/1.5 "IBM Plex Mono", monospace;
+  color: #d8caa6;
+  text-wrap: pretty;
+}
+
+.variant-evidence-prompt {
+  display: grid;
+  gap: 6px;
+  padding: 13px 15px;
+  border: 1px solid #4a3a2c;
+  background: rgba(200, 162, 95, 0.06);
+  font: 400 clamp(17px, 1.25vw, 21px)/1.45 "IBM Plex Mono", monospace;
+  color: #b9aa8a;
+}
+
+.variant-evidence-prompt strong {
+  color: #e6c883;
+}
+
+.variant-evidence-mark {
+  color: #d8523c;
+}
+
+[data-ref-view="detector"] {
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 0.42fr) !important;
+  grid-template-rows: 1fr !important;
+}
+
+[data-ref-view="detector"] > div:first-child {
+  min-width: 0;
+}
+
+[data-ref-view="detector"] > div:first-child > img:first-child {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+[data-ref-view="detector"] > div:nth-child(2):not(.variant-evidence-column) {
+  display: none !important;
+}
+
+[data-ref-view="detector"] > .variant-evidence-column {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: stretch;
+  border-width: 0 0 0 1px;
+  border-left-color: #6b5a3f;
+  border-top: 0;
+  box-shadow: -16px 0 38px rgba(0, 0, 0, 0.62);
+}
+
+[data-ref-slot="observed"],
+[data-ref-slot="task"] {
+  font-size: clamp(19px, 1.5vw, 23px) !important;
+  line-height: 1.52 !important;
+}
+
+[data-ref-source] > span:nth-child(2) {
+  font-size: clamp(28px, 1.9vw, 32px) !important;
+  line-height: 1.04 !important;
+}
+
+[data-ref-source] > span:nth-child(3) {
+  font-size: clamp(12px, 0.85vw, 14px) !important;
+}
+
+[data-ref-action="secondary"] [data-ref-action="secondary"],
+[data-ref-action="deny"] [data-ref-action="deny"] {
+  font-size: clamp(26px, 1.85vw, 31px) !important;
+}
+
+@media (max-width: 700px) {
+  [data-ref-view="identity"] {
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: auto auto !important;
+    gap: 9px !important;
+    padding: 46px 10px 8px !important;
+    align-content: start !important;
+  }
+
+  [data-ref-view="identity"] > div:not(.variant-evidence-column) {
+    max-width: none !important;
+  }
+
+  .variant-evidence-column {
+    grid-column: 1 / -1;
+    align-self: auto;
+    gap: 6px;
+    padding: 10px 12px;
+  }
+
+  .variant-evidence-kicker,
+  .variant-evidence-status,
+  .variant-evidence-mark,
+  .variant-evidence-prompt strong {
+    font-size: 10px;
+    line-height: 1.3;
+    letter-spacing: 0.12em;
+  }
+
+  .variant-evidence-title {
+    font-size: 22px;
+  }
+
+  .variant-evidence-detail {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .variant-evidence-prompt {
+    display: none;
+  }
+
+  [data-ref-view="detector"] {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: minmax(0, 1fr) auto !important;
+  }
+
+  [data-ref-view="detector"] > .variant-evidence-column {
+    grid-column: 1;
+    grid-row: 2;
+    border-width: 1px 0 0;
+    border-top-color: #6b5a3f;
+    box-shadow: 0 -12px 28px rgba(0, 0, 0, 0.65);
+  }
+
+  [data-ref-view="detector"] > .variant-evidence-column .variant-evidence-title {
+    font-size: 20px;
+  }
+
+  [data-ref-slot="observed"],
+  [data-ref-slot="task"] {
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+  }
+
+  [data-ref-source] {
+    min-width: 72px !important;
+    padding: 7px 10px !important;
+  }
+
+  [data-ref-source] > span:nth-child(2) {
+    font-size: 18px !important;
+  }
+
+  [data-ref-action="mark-match"],
+  [data-ref-action="mark-flag"],
+  [data-ref-action="mark-review"] {
+    min-height: 42px;
+    display: grid;
+    place-items: center;
+    font-size: 12px !important;
+  }
+
+  [data-ref-action="secondary"],
+  [data-ref-action="deny"] {
+    font-size: 16px !important;
+  }
+}

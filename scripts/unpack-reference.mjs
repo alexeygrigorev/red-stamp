@@ -86,9 +86,39 @@ function addReferenceHooks(template, paths) {
     output = output.replaceAll(`src="${relative}"`, `data-ref-slot="${name}" src="${relative}"`);
   }
 
+  for (const [condition, name] of [
+    ["showThreshold", "threshold"],
+    ["showFace", "identity"],
+    ["showGate", "detector"],
+  ]) {
+    const viewPattern = new RegExp(`(<sc-if value="\\{\\{ ${condition} \\}\\}"[^>]*>\\s*<div)( style=)`, "g");
+    output = output.replace(viewPattern, `$1 data-ref-view="${name}"$2`);
+  }
+
   output = output.replace(
     ">CASE COR-0000-R<",
     '><span data-ref-slot="case-id">CASE COR-0000-R</span><',
+  );
+
+  output = output.replaceAll(
+    ">AT THE WINDOW<",
+    "><",
+  );
+  output = output.replaceAll(
+    "assets/5d078cea-e2df-4e90-afa3-de452306a5f5.webp",
+    "assets/checkpoint-background-v2.png",
+  );
+  output = output.replaceAll(
+    "assets/8d338da9-194d-4083-a9e2-43fe4c9ccd31.webp",
+    "assets/checkpoint-background-v2.png",
+  );
+  output = output.replaceAll(
+    "cur ? cur.n + ' · ' + cur.label : 'AT THE WINDOW'",
+    "cur ? cur.n + ' · ' + cur.label : ''",
+  );
+  output = output.replaceAll(
+    ": 'NOTHING TO MARK HERE'",
+    ": ''",
   );
   output = output.replace(
     ">SPECIAL CORRESPONDENCE<",
@@ -209,7 +239,24 @@ function addReferenceHooks(template, paths) {
     ">DENY<br>ENTRY</div>",
   );
 
+  // Mobile's secondary/deny hooks originally lived only on the inner label,
+  // leaving most of each visible button inert. Mark the full button surface.
+  output = output.replace(
+    /<div (style="[^"]*0 3px 0 #0a0806;cursor:pointer")>\s*<div data-ref-action="secondary"/,
+    '<div data-ref-action="secondary" $1>\n      <div data-ref-action="secondary"',
+  );
+  output = output.replace(
+    /<div (style="[^"]*0 3px 0 #0a0806;cursor:pointer")>\s*<div data-ref-action="deny"/,
+    '<div data-ref-action="deny" $1>\n      <div data-ref-action="deny"',
+  );
+
   return output.replace("marks: { file: 'flag' }", "marks: {}");
+}
+
+function variantTemplate(template, variant) {
+  return template
+    .replace("</head>", `<link rel="stylesheet" href="variant-${variant}.css">\n</head>`)
+    .replace("</body>", `<script src="variant-${variant}.js"></script>\n</body>`);
 }
 
 async function unpackPage(page) {
@@ -244,15 +291,21 @@ async function unpackPage(page) {
   if (!head) throw new Error(`Missing head in ${page.source}`);
   const headEnd = head.index + head[0].length;
   template = `${template.slice(0, headEnd)}${resourceScript}${template.slice(headEnd)}`;
-  template = template.replace("</body>", '<script src="reference-bridge.js"></script>\n</body>');
+  template = template.replace("</head>", '<link rel="stylesheet" href="variant-switcher.css">\n</head>');
+  template = template.replace("</body>", '<script src="reference-bridge.js"></script>\n<script src="variant-switcher.js"></script>\n</body>');
+  template = template.replace(/[ \t]+$/gm, "");
 
   await writeFile(join(outputRoot, page.output), template);
+  const base = page.output.replace(/\.html$/, "");
+  await writeFile(join(outputRoot, `${base}-a.html`), variantTemplate(template, "a"));
+  await writeFile(join(outputRoot, `${base}-b.html`), variantTemplate(template, "b"));
   return {
     source: page.source,
     output: page.output,
     templateBytes: Buffer.byteLength(template),
     resources: Object.keys(manifest).length,
     digest: createHash("sha256").update(template).digest("hex").slice(0, 12),
+    variants: [`${base}-a.html`, `${base}-b.html`],
   };
 }
 

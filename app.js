@@ -3011,6 +3011,7 @@ let currentMusicKey = null;
 let pendingMusicKey = null;
 let musicRequestSeq = 0;
 let musicRetryHandler = null;
+const musicFadeTimers = new Map();
 
 function ensureMusicElements() {
   if (musicTrackA) return;
@@ -3030,6 +3031,8 @@ function clamp01(value) {
 
 function fadeAudio(element, from, to, duration, onComplete) {
   if (!element) return;
+  const previousTimer = musicFadeTimers.get(element);
+  if (previousTimer) window.clearInterval(previousTimer);
   const steps = 24;
   const stepTime = Math.max(16, duration / steps);
   element.volume = clamp01(from);
@@ -3039,9 +3042,11 @@ function fadeAudio(element, from, to, duration, onComplete) {
     element.volume = clamp01(from + (to - from) * (step / steps));
     if (step >= steps) {
       window.clearInterval(timer);
+      if (musicFadeTimers.get(element) === timer) musicFadeTimers.delete(element);
       if (onComplete) onComplete();
     }
   }, stepTime);
+  musicFadeTimers.set(element, timer);
 }
 
 function clearMusicRetry() {
@@ -3050,7 +3055,7 @@ function clearMusicRetry() {
   musicRetryHandler = null;
 }
 
-function playMusic(key, { volume = 0.32, fade = 1400, force = false } = {}) {
+function playMusic(key, { volume = 0.32, fade = 2200, force = false } = {}) {
   if (!force && pendingMusicKey === key) return;
   const file = MUSIC_FILES[key];
   if (!file) return;
@@ -3069,6 +3074,9 @@ function playMusic(key, { volume = 0.32, fade = 1400, force = false } = {}) {
     const outgoing = currentMusicElement;
     const incoming = outgoing === musicTrackA ? musicTrackB : musicTrackA;
     currentMusicElement = incoming;
+    const incomingFadeTimer = musicFadeTimers.get(incoming);
+    if (incomingFadeTimer) window.clearInterval(incomingFadeTimer);
+    musicFadeTimers.delete(incoming);
     incoming.muted = audioMuted;
     incoming.pause();
     incoming.src = `${AUDIO_BASE}/${file}`;
@@ -3112,7 +3120,7 @@ function musicState() {
 
 function updateMusicForState() {
   const { key, volume } = musicState();
-  playMusic(key, { volume });
+  playMusic(key, { volume, fade: state.started ? 2800 : 1800 });
 }
 
 function unlockAudio() {

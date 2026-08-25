@@ -26,6 +26,13 @@ The first playable version includes:
 - Every run has a visible seed. Supplying `?seed=424242` replays the same case
   order and scenario variants; a new campaign gets a fresh seed
 
+## Gameplay UI options
+
+The current gameplay surface is `#c` (or no hash). Use `#a` for the guided
+review layout or `#b` for the evidence-desk layout. Once a shift begins, the
+small UI switcher at the top lets you move between CURRENT, A, and B without
+losing the case state.
+
 ## Run locally
 
 No build step or dependencies are required. Open `index.html` directly, or
@@ -37,9 +44,9 @@ python3 -m http.server 4173
 
 Then open <http://127.0.0.1:4173>.
 
-The project also has a browser smoke suite. It launches the installed system
-Chromium through Playwright, checks the seeded campaign, dedicated dossier face
-assets, per-character X-rays, keyboard controls, and the 390px mobile layout:
+The project also has a browser smoke suite. It launches Playwright Chromium,
+checks the seeded campaign, dedicated dossier face assets, per-character
+X-rays, keyboard controls, and the 390px mobile layout:
 
 ```bash
 npm install

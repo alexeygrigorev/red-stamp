@@ -1,0 +1,80 @@
+#reference-variant-switcher {
+  position: fixed;
+  top: clamp(8px, 1.4vh, 14px);
+  left: 50%;
+  z-index: 76;
+  display: flex;
+  align-items: center;
+  gap: clamp(5px, 0.7vw, 8px);
+  padding: clamp(5px, 0.55vw, 7px);
+  border: 1px solid rgba(107, 90, 63, 0.86);
+  background: rgba(9, 7, 6, 0.9);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.66);
+  color: #a8916a;
+  font: 600 clamp(9px, 0.72vw, 12px)/1 "IBM Plex Mono", monospace;
+  letter-spacing: 0.14em;
+  transform: translateX(-50%);
+  backdrop-filter: blur(5px);
+}
+
+#reference-variant-switcher [data-variant-label] {
+  padding-inline: 5px 3px;
+  color: #d2c3a0;
+  white-space: nowrap;
+}
+
+#reference-variant-switcher button {
+  min-width: clamp(30px, 2.7vw, 42px);
+  min-height: clamp(28px, 2.6vw, 38px);
+  padding: 5px clamp(7px, 0.8vw, 11px);
+  border: 1px solid #4a3a2c;
+  background: linear-gradient(#241c16, #100c0a);
+  color: #b7a989;
+  font: 600 inherit;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+#reference-variant-switcher button:hover,
+#reference-variant-switcher button:focus-visible {
+  border-color: #c8a25f;
+  color: #f0dfb6;
+  outline: none;
+}
+
+#reference-variant-switcher button[aria-pressed="true"] {
+  border-color: #b4342b;
+  background: linear-gradient(#702019, #32100d);
+  color: #f4dfc9;
+  box-shadow: inset 0 1px 0 rgba(255, 190, 170, 0.2);
+}
+
+@media (max-width: 700px) {
+  #reference-variant-switcher {
+    top: 58px;
+    right: 8px;
+    left: auto;
+    gap: 4px;
+    padding: 4px;
+    font-size: 9px;
+    transform: none;
+  }
+
+  #reference-variant-switcher [data-variant-label] {
+    width: 18px;
+    padding: 0 2px;
+    overflow: hidden;
+    font-size: 0;
+  }
+
+  #reference-variant-switcher [data-variant-label]::after {
+    content: "UI";
+    font-size: 9px;
+  }
+
+  #reference-variant-switcher button {
+    min-width: 30px;
+    min-height: 30px;
+    padding: 4px 6px;
+  }
+}

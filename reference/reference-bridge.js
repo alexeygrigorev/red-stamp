@@ -43,6 +43,7 @@
   let stampMotionTimer = null;
   let welcomeAudioLoading = false;
   let welcomeAudioStartedAt = 0;
+  let sceneTransitionTimer = null;
 
   function host() {
     try {
@@ -75,22 +76,17 @@
     const style = document.createElement("style");
     style.id = "reference-welcome-audio-style";
     style.textContent = `
-      #reference-welcome-audio{position:fixed;inset:0;z-index:110;display:grid;place-items:center;padding:18px;background:rgba(4,3,2,.72);font-family:'IBM Plex Mono',monospace;color:#dacca4;transition:background 220ms ease}
-      #reference-welcome-audio [data-audio-card]{width:min(430px,calc(100vw - 36px));padding:22px 24px;border:1px solid #6b5a3f;background:linear-gradient(145deg,rgba(35,26,21,.98),rgba(10,7,6,.98));box-shadow:0 24px 70px rgba(0,0,0,.86),inset 0 1px 0 rgba(226,190,133,.12);text-align:center}
-      #reference-welcome-audio [data-audio-kicker]{font-size:clamp(10px,1.1vw,13px);font-weight:600;letter-spacing:.24em;color:#a8916a}
-      #reference-welcome-audio [data-audio-title]{margin-top:8px;font-family:'Staatliches',sans-serif;font-size:clamp(30px,4vw,46px);line-height:1;letter-spacing:.09em;color:#e9d9b1}
-      #reference-welcome-audio [data-audio-copy]{margin:10px auto 17px;max-width:34em;font-size:clamp(11px,1.2vw,14px);line-height:1.55;color:#b9aa8a}
-      #reference-welcome-audio button{width:100%;min-height:54px;display:flex;align-items:center;justify-content:center;gap:12px;border:2px solid #8e1f1c;background:linear-gradient(#7d1f19,#480e0b);box-shadow:inset 0 2px 0 rgba(255,190,170,.24),0 4px 0 #290a08;color:#f4dfc9;font-family:'Staatliches',sans-serif;font-size:clamp(20px,2.3vw,28px);letter-spacing:.12em;cursor:pointer}
-      #reference-welcome-audio [data-audio-spinner]{width:17px;height:17px;border:2px solid rgba(244,223,201,.26);border-top-color:#f4dfc9;border-radius:50%;animation:reference-audio-spin .8s linear infinite;animation-play-state:paused}
-      #reference-welcome-audio.is-loading [data-audio-spinner]{animation-play-state:running}
-      #reference-welcome-audio.is-active{inset:auto clamp(10px,2vw,24px) clamp(10px,2vw,22px) auto;display:block;padding:0;background:transparent;pointer-events:none}
-      #reference-welcome-audio.is-active [data-audio-card]{width:auto;min-width:210px;padding:10px 13px;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:center;text-align:left;background:rgba(10,7,6,.9);box-shadow:0 10px 28px rgba(0,0,0,.62)}
-      #reference-welcome-audio.is-active [data-audio-kicker],#reference-welcome-audio.is-active [data-audio-copy]{display:none}
-      #reference-welcome-audio.is-active [data-audio-title]{grid-column:2;margin:0;font-size:20px;color:#a8c48a}
-      #reference-welcome-audio.is-active button{grid-column:1;grid-row:1;width:28px;min-height:28px;height:28px;padding:0;border:1px solid #5f7a4e;border-radius:50%;background:#172016;box-shadow:none;font-size:0}
-      #reference-welcome-audio.is-active [data-audio-spinner]{width:9px;height:9px;border:0;background:#8fbd75;box-shadow:0 0 10px rgba(143,189,117,.72);animation:none}
+      #reference-welcome-audio{position:fixed;right:clamp(12px,2vw,24px);bottom:clamp(12px,2vw,22px);z-index:110;font-family:'IBM Plex Mono',monospace}
+      #reference-welcome-audio button{width:42px;height:42px;display:grid;place-items:center;padding:0;border:1px solid rgba(200,162,95,.72);border-radius:50%;background:rgba(10,7,6,.78);box-shadow:0 8px 22px rgba(0,0,0,.5),inset 0 1px 0 rgba(226,190,133,.14);color:#dacca4;cursor:pointer;transition:background 160ms ease,border-color 160ms ease,transform 160ms ease}
+      #reference-welcome-audio button:hover{background:rgba(47,29,24,.94);border-color:#e1b86d;transform:translateY(-1px)}
+      #reference-welcome-audio button:focus-visible{outline:2px solid #e1b86d;outline-offset:3px}
+      #reference-welcome-audio [data-audio-icon]{display:grid;place-items:center}
+      #reference-welcome-audio [data-audio-icon] svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.7}
+      #reference-welcome-audio [data-audio-spinner]{display:none;width:15px;height:15px;border:2px solid rgba(220,202,164,.24);border-top-color:#e1b86d;border-radius:50%;animation:reference-audio-spin .8s linear infinite}
+      #reference-welcome-audio.is-loading [data-audio-icon]{display:none}
+      #reference-welcome-audio.is-loading [data-audio-spinner]{display:block}
       @keyframes reference-audio-spin{to{transform:rotate(360deg)}}
-      @media (max-width:700px){#reference-welcome-audio [data-audio-card]{padding:20px 18px}#reference-welcome-audio.is-active{right:10px;bottom:132px}#reference-welcome-audio.is-active [data-audio-card]{min-width:180px;padding:8px 10px}#reference-welcome-audio.is-active [data-audio-title]{font-size:18px}}
+      @media (max-width:700px){#reference-welcome-audio{top:14px;right:12px;bottom:auto}#reference-welcome-audio button{width:38px;height:38px}}
       @media (prefers-reduced-motion:reduce){#reference-welcome-audio [data-audio-spinner]{animation:none}#reference-welcome-audio.is-loading [data-audio-spinner]{border-color:#f4dfc9}}
     `;
     document.head.append(style);
@@ -102,15 +98,11 @@
     if (control) return control;
     control = document.createElement("section");
     control.id = "reference-welcome-audio";
-    control.setAttribute("role", "dialog");
-    control.setAttribute("aria-label", "Enable welcome music");
     control.innerHTML = `
-      <div data-audio-card>
-        <div data-audio-kicker>WELCOME AUDIO / TITLE THEME</div>
-        <div data-audio-title>SOUND CHECK</div>
-        <div data-audio-copy aria-live="polite">Your browser needs one gesture before it can play the welcome music.</div>
-        <button data-ref-action="enable-audio" type="button"><span data-audio-spinner aria-hidden="true"></span><span data-audio-button-label>ENABLE SOUND</span></button>
-      </div>`;
+      <button data-ref-action="enable-audio" type="button" aria-label="Enable music" title="Enable music">
+        <span data-audio-icon aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M17 9.5a4 4 0 0 1 0 5"/><path d="M19.5 7a7.5 7.5 0 0 1 0 10"/></svg></span>
+        <span data-audio-spinner aria-hidden="true"></span>
+      </button>`;
     document.body.append(control);
     return control;
   }
@@ -121,39 +113,24 @@
       welcomeAudioLoading = false;
       return;
     }
-    const control = ensureWelcomeAudioControl();
     const status = audioState();
     const active = Boolean(!status?.muted && status?.currentKey === "title" && status?.playing && status?.readyState >= 2);
-    const title = control.querySelector("[data-audio-title]");
-    const copy = control.querySelector("[data-audio-copy]");
-    const label = control.querySelector("[data-audio-button-label]");
     if (active) {
-      control.classList.remove("is-loading");
-      control.classList.add("is-active");
-      control.removeAttribute("role");
-      title.textContent = "SOUND ACTIVE";
-      copy.textContent = "Title theme playing. Begin Shift will continue with checkpoint music.";
-      label.textContent = "SOUND ACTIVE";
+      document.querySelector("#reference-welcome-audio")?.remove();
       welcomeAudioLoading = false;
       return;
     }
-    control.classList.remove("is-active");
+    const control = ensureWelcomeAudioControl();
+    const button = control.querySelector("button");
     control.classList.toggle("is-loading", welcomeAudioLoading);
-    title.textContent = welcomeAudioLoading ? "LOADING TITLE THEME" : "SOUND CHECK";
     if (welcomeAudioLoading && Date.now() - welcomeAudioStartedAt > 4500) {
       welcomeAudioLoading = false;
       control.classList.remove("is-loading");
-      title.textContent = "SOUND NEEDS A RETRY";
-      copy.textContent = "The browser did not start the title theme. Press Enable Sound again.";
-      label.textContent = "ENABLE SOUND";
-    } else {
-      copy.textContent = welcomeAudioLoading
-        ? "Preloading and starting the welcome music…"
-        : status?.muted
-          ? "Sound is currently muted. Enable it to start the welcome music."
-          : "Your browser needs one gesture before it can play the welcome music.";
-      label.textContent = welcomeAudioLoading ? "STARTING SOUND…" : "ENABLE SOUND";
     }
+    const label = welcomeAudioLoading ? "Starting music" : "Enable music";
+    button.setAttribute("aria-label", label);
+    button.setAttribute("title", label);
+    button.toggleAttribute("aria-busy", welcomeAudioLoading);
   }
 
   function enableWelcomeAudio() {
@@ -161,14 +138,44 @@
     welcomeAudioStartedAt = Date.now();
     const control = ensureWelcomeAudioControl();
     control.classList.add("is-loading");
-    control.querySelector("[data-audio-title]").textContent = "LOADING TITLE THEME";
-    control.querySelector("[data-audio-copy]").textContent = "Preloading and starting the welcome music…";
-    control.querySelector("[data-audio-button-label]").textContent = "STARTING SOUND…";
+    const button = control.querySelector("button");
+    button.setAttribute("aria-label", "Starting music");
+    button.setAttribute("title", "Starting music");
+    button.setAttribute("aria-busy", "true");
     host()?.enableAudio?.();
     // The parent resolves HTMLAudioElement.play() asynchronously. Refresh
     // once after that promise has had a chance to settle so the control can
     // confirm playback without waiting for the periodic bridge sync.
     window.setTimeout(() => sync(), 80);
+  }
+
+  function ensureSceneTransitionStyle() {
+    if (document.querySelector("#reference-scene-transition-style")) return;
+    const style = document.createElement("style");
+    style.id = "reference-scene-transition-style";
+    style.textContent = `
+      #reference-scene-transition{position:fixed;inset:0;z-index:105;background:#050403;opacity:0;pointer-events:none}
+      #reference-scene-transition.is-running{animation:reference-scene-crossfade 1100ms cubic-bezier(.22,.61,.36,1) both}
+      @keyframes reference-scene-crossfade{0%{opacity:0}26%{opacity:.94}100%{opacity:0}}
+      @media (prefers-reduced-motion:reduce){#reference-scene-transition.is-running{animation-duration:320ms}}
+    `;
+    document.head.append(style);
+  }
+
+  function playSceneTransition() {
+    ensureSceneTransitionStyle();
+    let curtain = document.querySelector("#reference-scene-transition");
+    if (!curtain) {
+      curtain = document.createElement("div");
+      curtain.id = "reference-scene-transition";
+      curtain.setAttribute("aria-hidden", "true");
+      document.body.append(curtain);
+    }
+    window.clearTimeout(sceneTransitionTimer);
+    curtain.classList.remove("is-running");
+    void curtain.offsetWidth;
+    curtain.classList.add("is-running");
+    sceneTransitionTimer = window.setTimeout(() => curtain.remove(), 1200);
   }
 
   function ensureStampMotionStyle() {
@@ -251,6 +258,12 @@
 
   function setSlot(name, value) {
     for (const element of slots(name)) element.textContent = value == null ? "" : String(value);
+  }
+
+  function updateActionHeader(tool) {
+    const source = slots("source-label")[0];
+    const row = source?.parentElement?.parentElement;
+    row?.toggleAttribute("hidden", !tool);
   }
 
   function referenceAsset(asset) {
@@ -439,8 +452,9 @@
     const tool = state.selectedTool;
     const result = resultFor(caseData, tool);
     const mark = tool ? state.checklistMarks?.[tool] : null;
-    setSlot("source-label", tool ? TOOL_LABEL[tool] : "AT THE WINDOW");
-    setSlot("mark-label", mark ? MARK_LABEL[mark] : tool ? "NOT YET MARKED" : "NOTHING TO MARK HERE");
+    setSlot("source-label", tool ? TOOL_LABEL[tool] : "");
+    setSlot("mark-label", mark ? MARK_LABEL[mark] : tool ? "NOT YET MARKED" : "");
+    updateActionHeader(tool);
     setSlot("observed", currentObservation(caseData, state));
     setSlot("task", result?.detail || "Open every source, mark what you found, then file the card.");
     setSlot("marked-label", `${Object.keys(state.checklistMarks || {}).length} / 6 MARKED`);
@@ -499,7 +513,10 @@
       return;
     }
     const action = actionElement.dataset.refAction;
-    if (action === "begin") return dispatch("begin");
+    if (action === "begin") {
+      playSceneTransition();
+      return dispatch("begin");
+    }
     if (action === "mark-match") return dispatch("mark", "match");
     if (action === "mark-flag") return dispatch("mark", "flag");
     if (action === "mark-review") return dispatch("mark", "review");

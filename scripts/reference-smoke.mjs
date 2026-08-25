@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
 import { spawn } from "node:child_process";
 import net from "node:net";
 import path from "node:path";
@@ -63,8 +62,7 @@ async function startRun(page, baseUrl, seed) {
     const audio = window.RedStampDebug?.getAudioState?.();
     return audio?.currentKey === "title" && audio?.playing && audio?.readyState >= 2 && audio?.currentTime > 0;
   });
-  await frame.locator("#reference-welcome-audio.is-active").waitFor();
-  assert.match(await frame.locator("#reference-welcome-audio").innerText(), /SOUND ACTIVE/);
+  await frame.locator("#reference-welcome-audio").waitFor({ state: "detached" });
 
   await frame.locator('[data-ref-action="begin"]').click();
   await page.waitForFunction(() => window.RedStampDebug?.getState().started === true);
@@ -222,7 +220,7 @@ async function main() {
     await waitForServer(`${baseUrl}/index.html`);
     browser = await chromium.launch({
       headless: true,
-      ...(existsSync("/usr/bin/chromium-browser") ? { executablePath: "/usr/bin/chromium-browser" } : {}),
+      ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}),
       args: ["--no-sandbox"],
     });
     const desktop = await browser.newPage({ viewport: { width: 1200, height: 800 }, deviceScaleFactor: 1 });

@@ -75,7 +75,9 @@
   };
 
   function sourcePath() {
-    return media.matches ? "reference/mobile.html" : "reference/desktop.html";
+    const hash = window.location.hash.toLowerCase();
+    const variant = hash === "#a" ? "-a" : hash === "#b" ? "-b" : "";
+    return `reference/${media.matches ? "mobile" : "desktop"}${variant}.html`;
   }
 
   function mountReference() {
@@ -88,6 +90,7 @@
     window.setTimeout(() => frame.contentWindow?.ReferenceBridge?.hydrate(), 80);
   });
   media.addEventListener?.("change", mountReference);
+  window.addEventListener("hashchange", mountReference);
   window.addEventListener("resize", mountReference, { passive: true });
   mountReference();
 
@@ -96,4 +99,8 @@
   }, 180);
 
   window.RedStampHost.toolBySource = toolBySource;
+  window.RedStampHost.variantFromHash = () => {
+    const hash = window.location.hash.toLowerCase();
+    return hash === "#a" ? "a" : hash === "#b" ? "b" : "c";
+  };
 })();
