@@ -266,6 +266,111 @@
     row?.toggleAttribute("hidden", !tool);
   }
 
+  function ensureShortcutsStyle() {
+    if (document.querySelector("#reference-shortcuts-style")) return;
+    const style = document.createElement("style");
+    style.id = "reference-shortcuts-style";
+    style.textContent = `
+      [data-reference-inline-shortcuts],[data-reference-mark-key]{display:none!important}
+      #reference-shortcuts-control{position:relative;z-index:45;flex:0 0 auto;align-self:center;font-family:'IBM Plex Mono',monospace}
+      #reference-shortcuts-control[hidden],#reference-shortcuts-popover[hidden]{display:none!important}
+      #reference-shortcuts-toggle{width:34px;height:34px;display:grid;place-items:center;padding:0;border:1px solid #4a3a2c;background:linear-gradient(#241c16,#100c0a);box-shadow:inset 0 1px 0 #5c4938,0 2px 0 #0a0806;color:#9f8c6d;cursor:pointer}
+      #reference-shortcuts-toggle:hover,#reference-shortcuts-toggle[aria-expanded="true"]{border-color:#8a7458;color:#e0c894;background:linear-gradient(#30241b,#17110d)}
+      #reference-shortcuts-toggle:focus-visible{outline:2px solid #c8a25f;outline-offset:2px}
+      #reference-shortcuts-toggle svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5}
+      #reference-shortcuts-popover{position:absolute;right:0;bottom:calc(100% + 10px);width:min(282px,calc(100vw - 24px));padding:12px 13px 13px;border:1px solid #6b5a3f;background:linear-gradient(145deg,rgba(35,27,21,.98),rgba(12,9,8,.99));box-shadow:0 16px 34px rgba(0,0,0,.78),inset 0 1px 0 rgba(226,190,133,.1);color:#cdbd9a;text-align:left}
+      #reference-shortcuts-popover::after{position:absolute;right:10px;bottom:-6px;width:10px;height:10px;border-right:1px solid #6b5a3f;border-bottom:1px solid #6b5a3f;background:#0f0b09;content:"";transform:rotate(45deg)}
+      #reference-shortcuts-popover [data-shortcuts-title]{margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid #3a2c22;font-size:10px;font-weight:600;letter-spacing:.22em;color:#c8a25f}
+      #reference-shortcuts-popover [data-shortcuts-grid]{display:grid;grid-template-columns:auto 1fr;gap:7px 11px;align-items:center;font-size:11px;line-height:1.3}
+      #reference-shortcuts-popover kbd{min-width:34px;padding:3px 6px;border:1px solid #5b4937;background:#17110e;box-shadow:inset 0 -1px 0 #080605;color:#e4d3aa;font:600 10px/1.2 'IBM Plex Mono',monospace;letter-spacing:.08em;text-align:center}
+      #reference-shortcuts-popover [data-shortcut-description]{color:#b7a889}
+      @media (max-width:700px){#reference-shortcuts-toggle{width:32px;height:36px}#reference-shortcuts-popover{right:0;bottom:calc(100% + 8px);width:min(264px,calc(100vw - 20px));padding:11px 12px 12px}#reference-shortcuts-popover [data-shortcuts-grid]{font-size:10px}}
+    `;
+    document.head.append(style);
+  }
+
+  function removeInlineShortcutHints() {
+    if (document.body.dataset.referenceShortcutHintsRemoved === "true") return;
+    for (const element of document.querySelectorAll("div")) {
+      const text = element.textContent?.replace(/\s+/g, " ").trim();
+      if (text?.startsWith("KEYS 1–6 OPEN A SOURCE") && text.includes("M / F / R MARKS IT")) {
+        element.dataset.referenceInlineShortcuts = "";
+        element.setAttribute("aria-hidden", "true");
+      }
+    }
+
+    const markKeys = {
+      "mark-match": "M",
+      "mark-flag": "F",
+      "mark-review": "R",
+    };
+    for (const [action, key] of Object.entries(markKeys)) {
+      for (const button of document.querySelectorAll(`[data-ref-action="${action}"]`)) {
+        button.setAttribute("aria-keyshortcuts", key);
+        for (const child of button.children) {
+          if (!child.children.length && child.textContent?.trim() === key) {
+            child.dataset.referenceMarkKey = "";
+            child.setAttribute("aria-hidden", "true");
+          }
+        }
+      }
+    }
+    document.body.dataset.referenceShortcutHintsRemoved = "true";
+  }
+
+  function closeShortcuts() {
+    const control = document.querySelector("#reference-shortcuts-control");
+    const toggle = control?.querySelector("#reference-shortcuts-toggle");
+    const popover = control?.querySelector("#reference-shortcuts-popover");
+    if (!toggle || !popover) return;
+    toggle.setAttribute("aria-expanded", "false");
+    popover.hidden = true;
+  }
+
+  function ensureShortcutsControl(state) {
+    ensureShortcutsStyle();
+    removeInlineShortcutHints();
+
+    let control = document.querySelector("#reference-shortcuts-control");
+    const markReview = document.querySelector('[data-ref-action="mark-review"]');
+    const actionFooter = markReview?.parentElement;
+    if (!control && actionFooter) {
+      control = document.createElement("div");
+      control.id = "reference-shortcuts-control";
+      control.innerHTML = `
+        <button id="reference-shortcuts-toggle" data-reference-shortcuts-toggle type="button" aria-label="Keyboard shortcuts" title="Keyboard shortcuts" aria-haspopup="dialog" aria-controls="reference-shortcuts-popover" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M6.5 9h.01M10 9h.01M13.5 9h.01M17 9h.01M6.5 12.5h.01M10 12.5h.01M13.5 12.5h.01M17 12.5h.01M8 16h8"/></svg>
+        </button>
+        <div id="reference-shortcuts-popover" role="dialog" aria-label="Keyboard shortcuts" hidden>
+          <div data-shortcuts-title>KEYBOARD SHORTCUTS</div>
+          <div data-shortcuts-grid>
+            <kbd>1–6</kbd><span data-shortcut-description>Open inspection sources</span>
+            <kbd>W</kbd><span data-shortcut-description>Return to the window</span>
+            <kbd>M</kbd><span data-shortcut-description>Mark as match</span>
+            <kbd>F</kbd><span data-shortcut-description>Flag a finding</span>
+            <kbd>R</kbd><span data-shortcut-description>Hold for review</span>
+          </div>
+        </div>`;
+      actionFooter.append(control);
+    }
+
+    if (control) {
+      control.hidden = !state?.started;
+      if (control.hidden) closeShortcuts();
+    }
+    return control;
+  }
+
+  function toggleShortcuts() {
+    const control = ensureShortcutsControl(snapshot()?.state);
+    const toggle = control?.querySelector("#reference-shortcuts-toggle");
+    const popover = control?.querySelector("#reference-shortcuts-popover");
+    if (!toggle || !popover) return;
+    const open = popover.hidden;
+    popover.hidden = !open;
+    toggle.setAttribute("aria-expanded", String(open));
+  }
+
   function referenceAsset(asset) {
     if (!asset) return null;
     return new URL(`../${asset}`, document.baseURI).href;
@@ -444,6 +549,7 @@
     if (!next?.state) return;
     const { state, caseData, assets } = next;
     updateWelcomeAudio(state);
+    ensureShortcutsControl(state);
     if (!state.started) {
       updateOutcome(state);
       return;
@@ -487,6 +593,16 @@
   }
 
   document.addEventListener("click", (event) => {
+    const shortcutsToggle = event.target.closest?.("[data-reference-shortcuts-toggle]");
+    if (shortcutsToggle) {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleShortcuts();
+      return;
+    }
+
+    if (!event.target.closest?.("#reference-shortcuts-control")) closeShortcuts();
+
     const hint = event.target.closest?.("[data-ref-action=xray-hint]");
     if (hint) {
       event.preventDefault();
@@ -539,6 +655,7 @@
   window.addEventListener("keydown", (event) => {
     if (!event.isTrusted) return;
     const key = event.key.toLowerCase();
+    if (event.key === "Escape") closeShortcuts();
     if (key === "a") dispatch("admit");
     if (key === "d") dispatch("deny");
     if (key === "s") dispatch("secondary");
