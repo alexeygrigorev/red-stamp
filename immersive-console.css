@@ -3718,3 +3718,1615 @@ h3,
     font-size: 18px;
   }
 }
+
+/* Final Issue #1 parity pass ----------------------------------------------
+ * The reference is a fixed instrument surface: on desktop the visitor
+ * aperture and its observation plate occupy the left 62.5%, while the
+ * verification and authority rail occupies the right 37.5%. On mobile the
+ * same surfaces become a strict vertical sequence. Keep this block last so
+ * the earlier responsive experiments cannot change that composition.
+ */
+.visitor-portrait {
+  animation: none;
+  transform: none;
+}
+
+.toast {
+  display: none !important;
+}
+
+@media (min-width: 761px) {
+  .app {
+    position: relative;
+    display: block;
+    width: min(100vw, calc(100vh * 1.7777778));
+    height: min(100vh, calc(100vw * 0.5625));
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #0a0807;
+  }
+
+  .topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 30;
+    width: 62.5%;
+    height: 60px;
+    min-height: 60px;
+    padding: 7px 20px;
+    overflow: visible;
+    border: 0;
+    border-bottom: 1px solid rgba(74, 58, 44, 0.68);
+    background: linear-gradient(180deg, rgba(33, 26, 21, 0.94), rgba(15, 12, 10, 0.86));
+    box-shadow: inset 0 -1px 0 rgba(200, 162, 95, 0.12);
+  }
+
+  .topbar::before {
+    inset: 7px;
+    border-color: rgba(210, 193, 162, 0.12);
+  }
+
+  .brand-lockup {
+    min-width: 0;
+    gap: 10px;
+  }
+
+  .brand-mark {
+    width: 38px;
+    height: 38px;
+  }
+
+  .brand-name {
+    font-family: var(--console-display);
+    font-size: 24px;
+    letter-spacing: 0.08em;
+  }
+
+  .brand-subtitle {
+    font-size: 8px;
+    letter-spacing: 0.12em;
+  }
+
+  .protocol-status {
+    position: absolute;
+    top: 19px;
+    right: 19px;
+    gap: 7px;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+  }
+
+  .protocol-status #runSeed {
+    display: none;
+  }
+
+  .header-metrics {
+    position: absolute;
+    top: 0;
+    right: -60%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    width: 60%;
+    height: 60px;
+    padding: 0;
+    border-left: 4px solid #3a2c22;
+    background: linear-gradient(180deg, #1a1411, #0d0a09);
+    box-shadow: inset 4px 0 0 #4a3a2c;
+  }
+
+  .metric {
+    min-width: 0;
+    padding: 10px 16px 8px;
+    gap: 1px;
+    border-bottom: 1px solid #2f251d;
+  }
+
+  .metric + .metric {
+    border-left: 1px solid #2f251d;
+  }
+
+  .metric-label {
+    color: #a8916a;
+    font-size: 7px;
+    letter-spacing: 0.23em;
+  }
+
+  .metric strong {
+    color: #ead8b5;
+    font-family: var(--console-display);
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  .meter {
+    height: 2px;
+    margin-top: 3px;
+    border: 0;
+    background: #2f251d;
+  }
+
+  main {
+    position: absolute;
+    inset: 0;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+  }
+
+  .embassy-wall {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    border: 0;
+    background:
+      linear-gradient(90deg, rgba(5, 7, 8, 0.24) 0 62.5%, rgba(5, 4, 4, 0.96) 62.5% 100%),
+      linear-gradient(180deg, rgba(5, 7, 8, 0.04), rgba(5, 7, 8, 0.24)),
+      url("assets/generated/embassy-background.png") center / cover no-repeat;
+    box-shadow: none;
+  }
+
+  .embassy-wall::before {
+    inset: 12px;
+    border-color: rgba(213, 187, 148, 0.14);
+  }
+
+  .embassy-wall::after {
+    display: none;
+  }
+
+  .checkpoint-scene {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+  }
+
+  .scene-line {
+    top: 0;
+    right: 39%;
+    left: 2.5%;
+    z-index: 12;
+    height: 60px;
+    padding: 10px 18px 8px;
+    border-bottom: 1px solid rgba(74, 58, 44, 0.42);
+    align-items: flex-start;
+    font-size: 8px;
+  }
+
+  .scene-line span:first-child {
+    position: absolute;
+    top: 13px;
+    right: 0;
+  }
+
+  .scene-line span:last-child {
+    display: none;
+  }
+
+  .scene-floor {
+    position: absolute;
+    inset: 0;
+  }
+
+  .visitor-stage {
+    top: 0;
+    right: 37.5%;
+    bottom: 19.45%;
+    left: 0;
+    width: auto;
+    height: auto;
+  }
+
+  .visitor-stage::before {
+    inset: 12px 14px 12px;
+    border: 2px solid rgba(210, 181, 139, 0.28);
+    background: linear-gradient(180deg, rgba(5, 7, 7, 0.02), rgba(5, 6, 6, 0.28));
+    box-shadow: inset 0 0 0 4px rgba(0, 0, 0, 0.28), 0 15px 28px rgba(0, 0, 0, 0.42);
+  }
+
+  .visitor-stage::after {
+    top: 17px;
+    left: 20px;
+    font-size: 7px;
+  }
+
+  .visitor-image {
+    width: 29.4%;
+    height: 92%;
+    object-fit: cover;
+    object-position: center bottom;
+    filter: saturate(0.94) brightness(1.04) contrast(1.04);
+  }
+
+  .visitor-nameplate {
+    display: grid;
+    grid-template-columns: 80px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    right: auto;
+    bottom: 4.9%;
+    left: 32px;
+    width: min(560px, 72%);
+    min-width: 0;
+    min-height: 100px;
+    padding: 0;
+    border: 0;
+    border-left: 3px solid var(--console-red-hot);
+    background: linear-gradient(90deg, rgba(5, 6, 6, 0.88), rgba(5, 6, 6, 0.08));
+    box-shadow: none;
+    text-align: left;
+  }
+
+  .visitor-nameplate img {
+    display: block;
+    grid-row: 1 / -1;
+    width: 80px;
+    height: 100px;
+    margin-left: 0;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #4a3a2c;
+    filter: saturate(0.88) contrast(1.08);
+  }
+
+  .visitor-nameplate span {
+    align-self: start;
+    padding: 12px 0 0 16px;
+    font-size: clamp(19px, 2.3vw, 30px);
+    letter-spacing: 0.08em;
+  }
+
+  .visitor-nameplate small {
+    align-self: start;
+    padding: 4px 0 0 16px;
+    font-size: 11px;
+    font-style: italic;
+    line-height: 1.3;
+    text-transform: none;
+  }
+
+  .scene-observation {
+    position: absolute;
+    right: 37.5%;
+    bottom: 0;
+    left: 0;
+    z-index: 18;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 20px;
+    height: 19.45%;
+    min-height: 118px;
+    padding: 17px 20px 18px;
+    border-top: 3px solid #4a3a2c;
+    background: linear-gradient(#211a15, #100c0a);
+    box-shadow: inset 0 2px 0 rgba(92, 73, 56, 0.58), 0 -10px 22px rgba(0, 0, 0, 0.34);
+  }
+
+  .observation-copy {
+    min-width: 0;
+  }
+
+  .observation-copy .panel-kicker {
+    display: block;
+    margin-bottom: 7px;
+    color: #c8a25f;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+  }
+
+  .observation-copy p {
+    max-width: 430px;
+    margin: 0;
+    color: #ead8b5;
+    font-family: var(--console-mono);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .observation-copy small {
+    display: block;
+    margin-top: 8px;
+    color: #6e5f47;
+    font-family: var(--console-mono);
+    font-size: 7px;
+    letter-spacing: 0.14em;
+  }
+
+  .finding-controls {
+    display: flex;
+    align-items: end;
+    gap: 8px;
+    margin: 0;
+  }
+
+  .finding-button {
+    min-width: 72px;
+    height: 36px;
+    padding: 8px 12px;
+    border: 1px solid #4a3a2c;
+    background: transparent;
+    color: #c8bb9c;
+    font-family: var(--console-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+  }
+
+  .finding-button.is-flag,
+  .finding-button[data-finding="flag"] {
+    border-color: #8e1f1c;
+    color: #e0705c;
+    background: rgba(142, 31, 28, 0.08);
+  }
+
+  .finding-button small {
+    display: block;
+    margin-top: 2px;
+    color: inherit;
+    font-size: 7px;
+  }
+
+  .scene-case-card {
+    right: 0;
+    bottom: auto;
+    left: auto;
+    width: 37.5%;
+    top: 60px;
+    height: 80px;
+    min-height: 80px;
+    max-height: 80px;
+    padding: 18px 24px 12px;
+    border: 0;
+    border-left: 1px solid #3a2c22;
+    border-bottom: 1px solid #2f251d;
+    background: linear-gradient(180deg, rgba(26, 20, 17, 0.98), rgba(13, 10, 9, 0.98));
+    box-shadow: inset 0 4px 0 #4a3a2c;
+    transform: none;
+  }
+
+  .scene-case-card::before,
+  .scene-case-card::after {
+    display: none;
+  }
+
+  .scene-case-portrait,
+  .scene-case-card > .panel-kicker {
+    display: none;
+  }
+
+  .scene-case-card > strong {
+    display: block;
+    font-size: clamp(17px, 1.65vw, 25px);
+    line-height: 1;
+  }
+
+  .scene-case-card > small {
+    position: absolute;
+    top: 39px;
+    left: 24px;
+    display: none;
+  }
+
+  .scene-case-card > .scene-case-tags {
+    position: absolute;
+    top: 14px;
+    right: 24px;
+    left: 24px;
+    gap: 8px;
+    margin: 0;
+  }
+
+  .scene-case-tags span {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: 7px;
+  }
+
+  .scene-case-card > p {
+    display: block;
+    width: auto;
+    max-width: none;
+    max-height: 2.5em;
+    margin: 6px 0 0;
+    overflow: hidden;
+    font-size: 9px;
+    line-height: 1.3;
+    font-style: normal;
+  }
+
+  .scene-checklist {
+    top: 140px;
+    right: 0;
+    bottom: 16.9%;
+    left: auto;
+    width: 37.5%;
+    height: auto;
+    min-height: 0;
+    padding: 12px 24px 16px;
+    border: 0;
+    border-left: 1px solid #3a2c22;
+    border-radius: 0;
+    background: linear-gradient(180deg, #1a1411, #0d0a09 14%);
+    box-shadow: inset 4px 0 0 #4a3a2c;
+    transform: none;
+  }
+
+  .scene-checklist::before,
+  .scene-checklist::after,
+  .checklist-instruction,
+  .checklist-footer {
+    display: none;
+  }
+
+  .checklist-header {
+    min-height: 23px;
+    padding: 0 0 9px;
+    border-bottom: 1px solid #2f251d;
+  }
+
+  .scene-checklist .panel-kicker {
+    display: block;
+    color: #ead8b5;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+  }
+
+  .checklist-person span {
+    font-size: 0;
+  }
+
+  .checklist-person span::after {
+    content: "VIEW THE PERSON";
+    font-size: 15px;
+  }
+
+  .checklist-header strong {
+    display: none;
+  }
+
+  .checklist-state {
+    padding: 0;
+    border: 0;
+    color: #e0705c;
+    font-size: 8px;
+  }
+
+  .checklist-strip {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    gap: 10px;
+    height: calc(100% - 26px);
+    padding-top: 8px;
+  }
+
+  .checklist-person {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    min-height: 36px;
+    padding: 5px 10px;
+    border: 1px solid #c8a25f;
+    background: linear-gradient(#3a2e22, #1e1712);
+    color: #ead8b5;
+    font-family: var(--console-display);
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-align: left;
+  }
+
+  .checklist-person img {
+    width: 26px;
+    height: 26px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #4a3a2c;
+  }
+
+  .checklist-person strong {
+    color: #9a886c;
+    font-family: var(--console-mono);
+    font-size: 7px;
+    letter-spacing: 0.1em;
+  }
+
+  .checklist-list {
+    display: grid;
+    flex: 0 0 238px;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, minmax(0, 1fr));
+    gap: 0;
+    min-height: 0;
+    height: 238px;
+  }
+
+  .checklist-row {
+    grid-template-columns: 31px minmax(0, 1fr) auto;
+    grid-template-rows: 1fr;
+    min-height: 0;
+    padding: 0 8px;
+    border: 0;
+    border-bottom: 1px solid #2f251d;
+    border-left: 0;
+    background: transparent;
+    color: #d8c7a5;
+  }
+
+  .checklist-row:hover:not(:disabled),
+  .checklist-row.is-current {
+    border-color: #8e1f1c;
+    background: rgba(142, 31, 28, 0.12);
+    transform: none;
+  }
+
+  .checklist-index {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 7px;
+  }
+
+  .checklist-label {
+    grid-column: 2;
+    grid-row: 1;
+    color: #ead8b5;
+    font-family: var(--console-display);
+    font-size: 16px;
+    letter-spacing: 0.08em;
+  }
+
+  .checklist-mark {
+    grid-column: 3;
+    grid-row: 1;
+    font-size: 7px;
+  }
+
+  .scene-actions {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    width: 37.5%;
+    height: 16.9%;
+    min-height: 114px;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    grid-template-rows: 14px 1fr;
+    gap: 0 8px;
+    padding: 12px 16px 20px;
+    border: 0;
+    border-top: 4px solid #3a2c22;
+    background: linear-gradient(#241a16, #0c0807);
+    box-shadow: none;
+  }
+
+  .scene-actions::before,
+  .scene-actions::after {
+    display: none;
+  }
+
+  .scene-actions-heading {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .scene-actions-label,
+  .scene-actions-state {
+    padding: 0;
+    color: #a8916a;
+    font-family: var(--console-mono);
+    font-size: 8px;
+    letter-spacing: 0.22em;
+  }
+
+  .scene-actions-state {
+    color: #6e5f47;
+  }
+
+  .scene-decision {
+    display: grid;
+    min-width: 0;
+    min-height: 0;
+    height: auto;
+    grid-template-columns: 26px minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    align-items: center;
+    justify-items: center;
+    gap: 0 5px;
+    padding: 5px 8px;
+    border: 1px solid #4a3a2c;
+    background: linear-gradient(#241c16, #100c0a);
+    font-size: 11px;
+    line-height: 1.05;
+    text-align: left;
+  }
+
+  .scene-decision.admit {
+    border: 2px solid #8e1f1c;
+    background: linear-gradient(#7d1f19, #480e0b);
+  }
+
+  .scene-decision.call {
+    display: none;
+  }
+
+  .scene-decision .decision-sprite {
+    grid-row: 1 / -1;
+    width: 24px;
+    height: 26px;
+  }
+
+  .scene-decision span {
+    align-self: end;
+    max-width: 100%;
+    overflow: visible;
+    font-family: var(--console-display);
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-overflow: clip;
+    white-space: normal;
+  }
+
+  .scene-decision small {
+    align-self: start;
+    color: #a8916a;
+    font-family: var(--console-mono);
+    font-size: 7px;
+    letter-spacing: 0.08em;
+  }
+
+  .scene-decision.deny {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .scene-decision.deny .decision-sprite {
+    display: none;
+  }
+}
+
+/* Welcome canvas parity ----------------------------------------------------
+ * The reference opening is a fixed 1920x1080 desktop canvas and a fixed
+ * 390x844 mobile canvas, scaled as one instrument surface. Keep the opening
+ * on the same coordinate system as the active checkpoint so its type, figure
+ * and controls do not drift when the viewport is letterboxed.
+ */
+.welcome-screen {
+  padding: 0;
+  background: #060404;
+}
+
+.welcome-screen .overlay-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1920px;
+  height: 1080px;
+  min-height: 0;
+  max-width: none;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background:
+    linear-gradient(180deg, rgba(6, 4, 3, 0.12), rgba(4, 3, 2, 0.72)),
+    radial-gradient(60% 70% at 34% 45%, rgba(0, 0, 0, 0.15), rgba(4, 3, 2, 0.94) 75%),
+    url("assets/generated/embassy-background.png") center / cover no-repeat;
+  box-shadow: none;
+  transform-origin: center center;
+  transform: translate(-50%, -50%) scale(min(calc(100vw / 1920px), calc(100vh / 1080px)));
+}
+
+.overlay.is-open.welcome-screen .overlay-card {
+  transform: translate(-50%, -50%) scale(min(calc(100vw / 1920px), calc(100vh / 1080px)));
+}
+
+.welcome-screen .overlay-card::before,
+.welcome-screen .overlay-card::after {
+  z-index: 4;
+  box-sizing: border-box;
+}
+
+.welcome-screen .overlay-card::before {
+  top: auto;
+  right: 120px;
+  bottom: 70px;
+  left: 120px;
+  width: auto;
+  height: 1px;
+  border: 0;
+  border-radius: 0;
+  background: #2a211a;
+  box-shadow: none;
+}
+
+.welcome-screen .overlay-card::after {
+  top: auto;
+  right: 120px;
+  bottom: 44px;
+  left: 120px;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #6e5f47;
+  content: "FORM RS-26 / SECURITY CONTROL       VESKARIAN EMBASSY · PUBLIC ENTRY       NO ENTRY WITHOUT THE RED STAMP";
+  font-family: var(--console-mono);
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  line-height: 1;
+  white-space: pre;
+}
+
+.welcome-screen .overlay-inspector {
+  position: absolute;
+  z-index: 1;
+  top: auto;
+  right: -40px;
+  bottom: -30px;
+  left: auto;
+  width: auto;
+  height: 104%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(-30px 20px 60px rgba(0, 0, 0, 0.9));
+}
+
+.welcome-screen .overlay-emblem,
+.welcome-screen .panel-kicker,
+.welcome-screen .overlay-card h1,
+.welcome-screen .overlay-card p,
+.welcome-screen .primary-button {
+  position: absolute;
+  z-index: 2;
+}
+
+.welcome-screen .overlay-emblem {
+  top: 150px;
+  left: 120px;
+  width: 76px;
+  height: 76px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: url("assets/generated/red-stamp-emblem.png") center / contain no-repeat;
+  border-width: 1px;
+  box-shadow: none;
+}
+
+.welcome-screen .overlay-emblem span {
+  display: none;
+}
+
+.welcome-screen .panel-kicker {
+  top: 169px;
+  left: 214px;
+  display: block;
+  width: 660px;
+  max-width: none;
+  color: #b39a72;
+  font-family: var(--console-mono);
+  font-size: 0;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  line-height: 1.55;
+  white-space: nowrap;
+}
+
+.welcome-screen .panel-kicker::before,
+.welcome-screen .panel-kicker::after {
+  display: block;
+  font-size: 12px;
+}
+
+.welcome-screen .panel-kicker::before {
+  content: "UNION OF VESKAR";
+}
+
+.welcome-screen .panel-kicker::after {
+  color: #8a7458;
+  content: "EXTERNAL MISSIONS DIRECTORATE";
+}
+
+.welcome-screen .overlay-card h1 {
+  top: 253px;
+  left: 120px;
+  width: 620px;
+  max-width: 620px;
+  margin: 0;
+  color: #e9d9b1;
+  font-family: var(--console-display);
+  font-size: 196px;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  line-height: 0.82;
+  text-shadow: 0 6px 40px rgba(0, 0, 0, 0.95);
+  transform: translateY(16px) scaleX(0.8);
+  transform-origin: left top;
+}
+
+.welcome-screen .overlay-card h1::after {
+  display: block;
+  width: 220px;
+  height: 3px;
+  margin-top: 2px;
+  background: linear-gradient(90deg, #8e1f1c, #8e1f1c 100%, #4a3a2c 100%);
+  content: "";
+  transform: scaleX(1.25);
+  transform-origin: left center;
+}
+
+.welcome-screen .overlay-card p {
+  top: 621px;
+  left: 120px;
+  width: 640px;
+  max-width: 640px;
+  margin: 0;
+  color: #cdbe9c;
+  font-family: var(--console-mono);
+  font-size: 21px;
+  line-height: 1.6;
+}
+
+.welcome-screen .briefing-strip {
+  display: none;
+}
+
+.welcome-screen .primary-button {
+  top: 755px;
+  right: auto;
+  bottom: auto;
+  left: 120px;
+  width: 346px;
+  height: 101px;
+  min-height: 0;
+  margin: 0;
+  border: 2px solid #8e1f1c;
+  background:
+    linear-gradient(90deg, rgba(255, 226, 178, 0.08), transparent 30% 70%, rgba(255, 226, 178, 0.08)),
+    linear-gradient(#7d1f19, #480e0b);
+  color: #f4dfc9;
+  font-family: var(--console-display);
+  font-size: 40px;
+  letter-spacing: 0.08em;
+  box-shadow: inset 0 2px 0 rgba(255, 190, 170, 0.28), 0 6px 0 #290a08;
+}
+
+.welcome-screen .primary-button span {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .welcome-screen .overlay-card {
+    width: 390px;
+    height: 844px;
+    transform: translate(-50%, -50%) scale(min(calc(100vw / 390px), calc(100vh / 844px)));
+  }
+
+  .overlay.is-open.welcome-screen .overlay-card {
+    transform: translate(-50%, -50%) scale(min(calc(100vw / 390px), calc(100vh / 844px)));
+  }
+
+  .welcome-screen .overlay-card::before,
+  .welcome-screen .overlay-card::after {
+    display: none;
+  }
+
+  .welcome-screen .overlay-inspector {
+    right: auto;
+    bottom: 94px;
+    left: 50%;
+    width: auto;
+    height: 50.2%;
+    transform: translateX(-50%) scaleX(0.94);
+    filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.9));
+  }
+
+  .welcome-screen .overlay-emblem {
+    top: 44px;
+    left: 24px;
+    width: 38px;
+    height: 38px;
+    box-shadow: none;
+  }
+
+  .welcome-screen .overlay-emblem span {
+    display: none;
+  }
+
+  .welcome-screen .panel-kicker {
+    top: 51px;
+    left: 73px;
+    width: 290px;
+    font-size: 0;
+    letter-spacing: 0.3em;
+    line-height: 1.45;
+    white-space: normal;
+  }
+
+  .welcome-screen .panel-kicker::before {
+    font-size: 9px;
+    content: "UNION OF VESKAR";
+  }
+
+  .welcome-screen .panel-kicker::after {
+    font-size: 9px;
+    content: "EXTERNAL MISSIONS";
+    letter-spacing: 0.2em;
+  }
+
+  .welcome-screen .overlay-card h1 {
+    top: 98px;
+    left: 24px;
+    width: 260px;
+    max-width: 260px;
+    font-size: 72px;
+    line-height: 0.84;
+    letter-spacing: 0.03em;
+    transform: translateY(7px);
+  }
+
+  .welcome-screen .overlay-card h1::after {
+    width: 90px;
+    height: 2px;
+    margin-top: 3px;
+    transform: none;
+  }
+
+  .welcome-screen .overlay-card p {
+    top: 249px;
+    left: 24px;
+    width: 340px;
+    max-width: 340px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .welcome-screen .primary-button {
+    top: auto;
+    right: 24px;
+    bottom: 34px;
+    left: 24px;
+    width: 342px;
+    height: 72px;
+    min-height: 0;
+    font-size: 28px;
+    letter-spacing: 0.08em;
+  }
+}
+
+@media (max-width: 760px) {
+  .app {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100svh;
+    min-height: 100svh;
+    max-height: 100svh;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .topbar {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    width: 100%;
+    height: 52px;
+    min-height: 52px;
+    padding: 0 12px;
+    overflow: hidden;
+    border: 0;
+    border-bottom: 1px solid #2f251d;
+    background: linear-gradient(#211a15, #0f0c0a);
+    box-shadow: inset 0 -1px 0 rgba(200, 162, 95, 0.12);
+  }
+
+  .topbar::before {
+    display: none;
+  }
+
+  .brand-lockup {
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+  }
+
+  .brand-name {
+    font-family: var(--console-display);
+    font-size: 19px;
+    letter-spacing: 0.08em;
+  }
+
+  .brand-subtitle {
+    display: block;
+    max-width: 246px;
+    overflow: hidden;
+    color: #a8916a;
+    font-size: 0;
+    letter-spacing: 0.18em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .brand-subtitle::after {
+    content: "SECURITY CONTROL · 08:30";
+    font-size: 7px;
+  }
+
+  .protocol-status {
+    position: absolute;
+    top: 34px;
+    left: 52px;
+    gap: 5px;
+    font-size: 0;
+    align-self: start;
+    bottom: auto;
+    display: none;
+  }
+
+  .protocol-status .status-light,
+  .protocol-status #protocolText,
+  .protocol-status .status-divider,
+  .protocol-status #runSeed {
+    display: none;
+  }
+
+  .protocol-status #clockText {
+    display: inline;
+    color: #a8916a;
+    font-family: var(--console-mono);
+    font-size: 7px;
+    letter-spacing: 0.16em;
+  }
+
+  .protocol-status #clockText::before {
+    content: "SECURITY CONTROL · ";
+  }
+
+  .header-metrics {
+    position: static;
+    display: flex;
+    width: auto;
+    height: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .metric {
+    width: 31px;
+    min-width: 0;
+    padding: 0;
+    gap: 0;
+    border: 0;
+    text-align: right;
+  }
+
+  .metric + .metric {
+    margin-left: 8px;
+    border: 0;
+  }
+
+  .metric-label {
+    display: block;
+    overflow: hidden;
+    width: 28px;
+    color: #a8916a;
+    font-size: 6px;
+    letter-spacing: 0.12em;
+    text-overflow: clip;
+    white-space: nowrap;
+  }
+
+  .metric-tolerance .metric-label {
+    font-size: 0;
+  }
+
+  .metric-tolerance .metric-label::after {
+    content: "TOL";
+    font-size: 6px;
+  }
+
+  .metric-career .metric-label {
+    font-size: 0;
+  }
+
+  .metric-career .metric-label::after {
+    content: "CAREER";
+    font-size: 6px;
+  }
+
+  .metric strong {
+    color: #ead8b5;
+    font-family: var(--console-display);
+    font-size: 17px;
+    line-height: 1;
+  }
+
+  .meter {
+    display: none;
+  }
+
+  main {
+    position: absolute;
+    inset: 0;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0;
+  }
+
+  .embassy-wall {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    border: 0;
+    background-position: center 28%;
+    box-shadow: none;
+  }
+
+  .embassy-wall::before,
+  .embassy-wall::after {
+    display: none;
+  }
+
+  .checkpoint-scene {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+  }
+
+  .scene-line,
+  .security-desk {
+    display: none;
+  }
+
+  .visitor-stage {
+    top: 52px;
+    right: 0;
+    bottom: 31.4%;
+    left: 0;
+    width: auto;
+    height: auto;
+    border-bottom: 1px solid #3a2c22;
+  }
+
+  .visitor-stage::before {
+    inset: 0;
+    border: 0;
+    background: linear-gradient(180deg, rgba(4, 3, 3, 0.12), transparent 45%, rgba(4, 3, 3, 0.88));
+    box-shadow: none;
+  }
+
+  .visitor-stage::after {
+    display: none;
+  }
+
+  .visitor-image {
+    width: 57.2%;
+    height: 96%;
+    object-fit: cover;
+    object-position: center bottom;
+    filter: saturate(0.96) brightness(1.04) contrast(1.04);
+  }
+
+  .visitor-nameplate {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 92px;
+    min-height: 92px;
+    max-height: 92px;
+    padding: 2px 12px 8px;
+    border: 0;
+    border-left: 3px solid var(--console-red-hot);
+    background: linear-gradient(90deg, rgba(5, 4, 3, 0.92), rgba(5, 4, 3, 0.2));
+    text-align: left;
+  }
+
+  .visitor-nameplate img {
+    display: none;
+    object-fit: cover;
+  }
+
+  .visitor-nameplate span {
+    align-self: start;
+    padding: 0;
+    font-size: clamp(28px, 8.2vw, 35px);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  .visitor-nameplate small {
+    align-self: start;
+    padding: 6px 0 0;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.2;
+    text-transform: none;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .scene-observation {
+    position: absolute;
+    top: auto;
+    right: 0;
+    bottom: 16.8%;
+    left: 0;
+    display: flex;
+    height: 5.45%;
+    min-height: 46px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 12px 10px;
+    border-top: 0;
+    border-bottom: 0;
+    background: #100d0b;
+    box-shadow: none;
+  }
+
+  .observation-copy .panel-kicker {
+    margin-bottom: 5px;
+    color: #a8916a;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+  }
+
+  .scene-observation .observation-copy {
+    display: none;
+  }
+
+  .scene-observation {
+    padding: 0 12px 10px;
+  }
+
+  .observation-copy p {
+    max-width: none;
+    overflow: hidden;
+    color: #ead8b5;
+    font-size: 12px;
+    line-height: 1.32;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .observation-copy small {
+    display: none;
+  }
+
+  .finding-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 7px;
+    margin: 0;
+    height: 36px;
+    min-height: 36px;
+  }
+
+  .finding-button {
+    flex: 1;
+    min-width: 0;
+    height: 36px;
+    padding: 9px 0;
+    font-size: 11px;
+  }
+
+  .finding-button small {
+    display: none;
+  }
+
+  .scene-case-card {
+    top: auto;
+    right: 0;
+    bottom: 22.3%;
+    left: 0;
+    width: 100%;
+    height: 0;
+    min-height: 0;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    transform: none;
+    pointer-events: none;
+  }
+
+  .scene-case-card::before,
+  .scene-case-card::after,
+  .scene-case-card > .panel-kicker,
+  .scene-case-card > strong,
+  .scene-case-card > small,
+  .scene-case-card > .scene-case-tags {
+    display: none;
+  }
+
+  .scene-case-card > p {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: auto;
+    max-width: none;
+    height: 76px;
+    max-height: none;
+    margin: 0;
+    padding: 30px 12px 10px;
+    overflow: hidden;
+    color: #ead8b5;
+    font-family: var(--console-mono);
+    font-size: 12px;
+    font-style: normal;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
+
+  .scene-case-card > p::before {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    color: #a8916a;
+    content: "WHAT YOU SEE";
+    font-size: 9px;
+    letter-spacing: 0.18em;
+  }
+
+  .scene-checklist {
+    top: auto;
+    right: 0;
+    bottom: 9.2%;
+    left: 0;
+    width: 100%;
+    height: 7.6%;
+    min-height: 64px;
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 0;
+    border-top: 1px solid #2f251d;
+    border-radius: 0;
+    background: #100d0b;
+    box-shadow: none;
+    transform: none;
+    scrollbar-width: none;
+  }
+
+  .scene-checklist::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scene-checklist::before,
+  .scene-checklist::after,
+  .checklist-header,
+  .checklist-instruction,
+  .checklist-footer {
+    display: none;
+  }
+
+  .checklist-strip {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+    width: max-content;
+    height: 100%;
+    padding: 9px 8px;
+  }
+
+  .checklist-person {
+    display: flex;
+    flex: 0 0 auto;
+    width: 108px;
+    height: 46px;
+    min-height: 46px;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 9px;
+    border: 1px solid #c8a25f;
+    background: linear-gradient(#3a2e22, #1e1712);
+    color: #ead8b5;
+    font-family: var(--console-display);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-align: left;
+  }
+
+  .checklist-person img {
+    width: 24px;
+    height: 30px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #4a3a2c;
+  }
+
+  .checklist-person strong {
+    display: none;
+  }
+
+  .checklist-list {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 6px;
+    height: 46px;
+    min-height: 46px;
+  }
+
+  .checklist-row {
+    display: flex;
+    flex: 0 0 auto;
+    width: 78px;
+    height: 46px;
+    min-height: 46px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 10px;
+    border: 1px solid #2f251d;
+    border-left: 1px solid #2f251d;
+    background: transparent;
+  }
+
+  .checklist-row:hover:not(:disabled),
+  .checklist-row.is-current {
+    border-color: #8e1f1c;
+    background: rgba(142, 31, 28, 0.12);
+    transform: none;
+  }
+
+  .checklist-index {
+    color: #8a7458;
+    font-size: 7px;
+  }
+
+  .checklist-label {
+    overflow: hidden;
+    color: #ead8b5;
+    font-family: var(--console-display);
+    font-size: 0;
+    letter-spacing: 0.08em;
+    text-overflow: ellipsis;
+  }
+
+  .checklist-label::after {
+    font-size: 14px;
+  }
+
+  .checklist-row:nth-child(1) .checklist-label::after { content: "FILE"; }
+  .checklist-row:nth-child(2) .checklist-label::after { content: "FACE"; }
+  .checklist-row:nth-child(3) .checklist-label::after { content: "PAPERS"; }
+  .checklist-row:nth-child(4) .checklist-label::after { content: "GATE"; }
+  .checklist-row:nth-child(5) .checklist-label::after { content: "X-RAY"; }
+  .checklist-row:nth-child(6) .checklist-label::after { content: "ASK"; }
+
+  .checklist-mark {
+    color: #6e5f47;
+    font-size: 6px;
+  }
+
+  .scene-actions {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 9.2%;
+    min-height: 78px;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 7px;
+    padding: 9px 10px;
+    align-items: start;
+    border: 0;
+    border-top: 2px solid #3a2c22;
+    background: linear-gradient(#241a16, #0c0807);
+    box-shadow: none;
+  }
+
+  .scene-actions-heading,
+  .scene-actions-label,
+  .scene-actions-state {
+    display: none;
+  }
+
+  .scene-decision {
+    display: grid;
+    min-width: 0;
+    min-height: 60px;
+    height: 60px;
+    grid-template-columns: 31px minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    align-items: center;
+    gap: 0 5px;
+    padding: 5px 7px;
+    border: 1px solid #4a3a2c;
+    background: linear-gradient(#241c16, #100c0a);
+    font-size: 8px;
+    text-align: left;
+  }
+
+  .scene-decision.admit {
+    border: 2px solid #8e1f1c;
+    background: linear-gradient(#7d1f19, #480e0b);
+  }
+
+  .scene-decision.call {
+    display: none;
+  }
+
+  .scene-decision.hold .decision-sprite {
+    display: none;
+  }
+
+  .scene-decision.hold {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .scene-decision .decision-sprite {
+    grid-row: 1 / -1;
+    width: 26px;
+    height: 30px;
+  }
+
+  .scene-decision span {
+    align-self: end;
+    max-width: 100%;
+    overflow: hidden;
+    font-family: var(--console-display);
+    font-size: 15px;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
+
+  .scene-decision small {
+    align-self: start;
+    color: #a8916a;
+    font-family: var(--console-mono);
+    font-size: 6px;
+    letter-spacing: 0.08em;
+  }
+
+  .scene-decision.deny {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .scene-decision.deny .decision-sprite {
+    display: none;
+  }
+
+  .toast {
+    display: none !important;
+  }
+}

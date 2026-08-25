@@ -40,12 +40,12 @@
 
         <div class="header-metrics" aria-label="Current shift status">
           <div class="metric metric-tolerance">
-            <span class="metric-label" title="Shift tolerance">SHIFT TOL.</span>
+            <span class="metric-label" title="Shift tolerance">SHIFT TOLERANCE</span>
             <strong id="toleranceValue">100%</strong>
             <div class="meter"><span id="toleranceMeter"></span></div>
           </div>
           <div class="metric metric-career">
-            <span class="metric-label" title="Career standing">CAREER</span>
+            <span class="metric-label" title="Career standing">CAREER STANDING</span>
             <strong id="careerValue">100%</strong>
             <div class="meter"><span id="careerMeter"></span></div>
           </div>
@@ -128,30 +128,50 @@
             </button>
           </div>
 
+          <section class="scene-observation" aria-label="Current visitor observation">
+            <div class="observation-copy">
+              <span class="panel-kicker">AT THE WINDOW</span>
+              <p id="sceneObservationText">Visitor at the window. Awaiting the first inspection.</p>
+              <small id="sceneObservationKeys">KEYS 1–6 OPEN A SOURCE · M / F / R TO MARK</small>
+            </div>
+            <div class="finding-controls" aria-label="Mark current finding">
+              <button class="finding-button" data-action="mark-finding" data-finding="match">MATCH <small>M</small></button>
+              <button class="finding-button is-flag" data-action="mark-finding" data-finding="flag">FLAG <small>F</small></button>
+              <button class="finding-button" data-action="mark-finding" data-finding="review">REVIEW <small>R</small></button>
+            </div>
+          </section>
+
           <div class="scene-actions" id="sceneActions" aria-label="Authorization decisions">
-            <span class="scene-actions-label">FINAL AUTHORITY</span>
+            <div class="scene-actions-heading">
+              <span class="scene-actions-label">ACTION</span>
+              <span class="scene-actions-state" id="sceneAuthorityState">CARD NOT FILED</span>
+            </div>
             <button class="scene-decision admit" data-action="resolve" data-decision="admit" disabled>
               <img class="decision-sprite" src="assets/generated/red-stamp.png" alt="" aria-hidden="true" />
-              <span>STAMP / ADMIT</span>
+              <span>STAMP</span>
+              <small>ADMIT ENTRY</small>
             </button>
             <button class="scene-decision hold" data-action="secondary" disabled>
               <img class="decision-sprite" src="assets/generated/xray-threat.png" alt="" aria-hidden="true" />
-              <span>HOLD AT LINE</span>
+              <span>SECOND INSPECT</span>
+              <small>HOLD</small>
             </button>
             <button class="scene-decision call" data-action="liaison" disabled>
               <img class="decision-sprite" src="assets/generated/official-visitor.png" alt="" aria-hidden="true" />
               <span>CALL WINDOW</span>
+              <small>LIAISON</small>
             </button>
             <button class="scene-decision deny" data-action="resolve" data-decision="deny" disabled>
               <img class="decision-sprite" src="assets/generated/anomaly-visitor.png" alt="" aria-hidden="true" />
               <span>REFUSE ENTRY</span>
+              <small>TURN BACK</small>
             </button>
           </div>
 
           <section class="scene-checklist" id="sceneChecklist" aria-label="Visitor verification checklist">
             <div class="checklist-header">
               <div>
-                <span class="panel-kicker">WORKING CARD</span>
+                <span class="panel-kicker">VERIFICATION CARD</span>
                 <strong>VERIFY BEFORE ENTRY</strong>
               </div>
               <span class="checklist-state" id="checklistState">OPEN</span>
@@ -159,7 +179,13 @@
             <p class="checklist-instruction" id="checklistInstruction">
               Inspect each source, mark what you found, then submit the card.
             </p>
-            <div class="checklist-list" id="checklistList">
+            <div class="checklist-strip" id="checklistStrip">
+              <button class="checklist-person" data-action="inspect" data-tool="id">
+                <img id="checklistPersonSprite" src="assets/generated/inspector-cutout.png" alt="" aria-hidden="true" />
+                <span>PERSON</span>
+                <strong>LIVE</strong>
+              </button>
+              <div class="checklist-list" id="checklistList">
               <button class="checklist-row" data-action="inspect" data-tool="appointment">
                 <span class="checklist-index">01</span>
                 <span class="checklist-label">ROUTE / FILE</span>
@@ -190,6 +216,7 @@
                 <span class="checklist-label">STATEMENT</span>
                 <strong class="checklist-mark" data-checkmark="question">OPEN</strong>
               </button>
+              </div>
             </div>
             <div class="checklist-footer">
               <span id="checklistProgress">0 / 6 MARKED</span>
@@ -225,6 +252,7 @@
                 <div class="portrait-body"></div>
               </div>
               <div class="visitor-nameplate" aria-hidden="true">
+                <img id="sceneNameplatePortrait" src="assets/generated/inspector-cutout.png" alt="" />
                 <span id="visitorNamePlate">VISITOR AT WINDOW</span>
                 <small id="visitorRolePlate">CASE ACTIVE</small>
               </div>
@@ -397,7 +425,7 @@
     <div class="overlay-card">
         <img id="overlayInspector" class="overlay-inspector" src="assets/generated/inspector-cutout.png" alt="Veskarian security inspector holding a red stamp" />
         <div class="overlay-emblem" aria-hidden="true"><span>V</span></div>
-        <span class="panel-kicker" id="overlayKicker">VESKAR EMBASSY / SECURITY CONTROL</span>
+        <span class="panel-kicker" id="overlayKicker">UNION OF VESKAR / EXTERNAL MISSIONS DIRECTORATE</span>
         <h1 id="overlayTitle">RED STAMP</h1>
         <p id="overlayBody">
           The public entrance opens at 08:30. Verify identity, inspect what is

@@ -2492,6 +2492,7 @@ function renderCase() {
     $("#visitorRolePlate").textContent = "CHECKPOINT STANDBY";
     $("#visitorPortrait").dataset.look = "civilian";
     $("#visitorImage").src = "assets/generated/inspector-cutout.png";
+    $("#sceneNameplatePortrait").src = "assets/generated/inspector-cutout.png";
     $("#visitorImage").alt = "Veskarian security inspector at the checkpoint";
     $("#toolIdSprite").src = "assets/generated/inspector-cutout.png";
     $("#toolQuestionSprite").src = "assets/generated/inspector-cutout.png";
@@ -2513,9 +2514,12 @@ function renderCase() {
     $("#sceneCaseNumber").textContent = "CASE —";
     $("#sceneCaseVariant").textContent = "STANDARD";
     $("#scenePurpose").textContent = "The next visitor is on the way. Open the file when the checkpoint resumes.";
+    $("#sceneObservationText").textContent = "Visitor at the window. Awaiting the first inspection.";
+    $("#sceneObservationKeys").textContent = "KEYS 1–6 OPEN A SOURCE · M / F / R TO MARK";
     $("#sceneCasePortrait").src = "assets/generated/inspector-cutout.png";
     $("#sceneVisitorSprite").src = "assets/generated/inspector-cutout.png";
     $("#sceneQuestionSprite").src = "assets/generated/inspector-cutout.png";
+    $("#checklistPersonSprite").src = "assets/generated/inspector-cutout.png";
     return;
   }
 
@@ -2539,7 +2543,7 @@ function renderCase() {
   $("#questionAnswer").textContent = `“${c.question.answer}” / ${c.question.consistency}`;
 
   $("#visitorNamePlate").textContent = c.name.toUpperCase();
-  $("#visitorRolePlate").textContent = c.role.toUpperCase();
+  $("#visitorRolePlate").textContent = `“${c.question.answer}”`;
   $("#visitorPortrait").dataset.look = c.look;
   if ($("#visitorImage").dataset.blinking !== "true") {
     $("#visitorImage").src = visitorSceneAsset(c);
@@ -2549,6 +2553,8 @@ function renderCase() {
   $("#idShortcutSprite").src = faceAsset(c);
   $("#questionShortcutSprite").src = visitorSceneAsset(c);
   $("#visitorImage").alt = `${c.name}, ${c.role}`;
+  $("#sceneNameplatePortrait").src = faceAsset(c);
+  $("#sceneNameplatePortrait").alt = `${c.name}, ${c.role}`;
   $("#arrivalBadge").textContent = c.modeLabel;
   $("#arrivalBadge").className = `arrival-badge ${modeClass(c.mode)} ${c.kind === "spy" || c.kind === "anomaly" ? "alert" : ""}`;
   $("#caseProgress").textContent = `VISITOR ${String(state.caseIndex + 1).padStart(2, "0")} / ${String(currentShift().cases.length).padStart(2, "0")}`;
@@ -2564,10 +2570,13 @@ function renderCase() {
   $("#sceneCaseNumber").textContent = `CASE ${c.caseNumber}`;
   $("#sceneCaseVariant").textContent = "DECLARED / VERIFY";
   $("#scenePurpose").textContent = claimedPurpose(c);
+  $("#sceneObservationText").textContent = `Visitor at the window. ${claimedPurpose(c)}`;
+  $("#sceneObservationKeys").textContent = `KEYS 1–6 OPEN A SOURCE · ${state.checklistSubmitted ? "FINDINGS FILED" : "M / F / R TO MARK"}`;
   $("#sceneCasePortrait").src = visitorSceneAsset(c);
   $("#sceneCasePortrait").alt = `${c.name}, ${c.role}`;
   $("#sceneVisitorSprite").src = visitorSceneAsset(c);
   $("#sceneQuestionSprite").src = visitorSceneAsset(c);
+  $("#checklistPersonSprite").src = visitorSceneAsset(c);
   scheduleVisitorBlink();
 }
 
@@ -2601,7 +2610,8 @@ function renderChecklist() {
   });
 
   $("#checklistProgress").textContent = `${marked} / ${PRIMARY_TOOLS.length} MARKED`;
-  $("#checklistState").textContent = !active ? "STANDBY" : state.checklistSubmitted ? "SUBMITTED" : marked === PRIMARY_TOOLS.length ? "READY" : "OPEN";
+  $("#checklistState").textContent = `${marked} / ${PRIMARY_TOOLS.length} MARKED`;
+  $("#sceneAuthorityState").textContent = state.checklistSubmitted ? "CARD READY" : "CARD NOT FILED";
   $("#checklistInstruction").textContent = !active
     ? "The visitor queue is loading."
     : state.checklistSubmitted
@@ -2871,7 +2881,7 @@ function renderDecision() {
   });
   $$("[data-action='secondary']").forEach((secondary) => {
     secondary.disabled = !active || state.secondaryUsed;
-    secondary.querySelector("span").textContent = state.secondaryUsed ? "SECONDARY COMPLETE" : "SECONDARY INSPECTION";
+    secondary.querySelector("span").textContent = state.secondaryUsed ? "SECOND INSPECTED" : "SECOND INSPECT";
   });
   $$("[data-action='liaison']").forEach((liaison) => {
     liaison.disabled = !active || state.liaisonCalled;

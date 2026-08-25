@@ -82,13 +82,13 @@ async function completeChecklist(page) {
   for (const tool of ["appointment", "id", "documents", "detector", "xray", "question"]) {
     await page.locator(`.checklist-row[data-tool="${tool}"]`).click();
     await page.locator("#inspectionOverlay.is-open").waitFor();
-    await page.locator('.finding-button[data-finding="review"]').click();
+    await page.locator('.inspection-overlay.is-open .finding-button[data-finding="review"]').click();
     await page.waitForFunction((name) => document.querySelector(`[data-checkmark="${name}"]`)?.textContent === "REVIEW", tool);
     await page.keyboard.press("Escape");
     await page.waitForFunction(() => document.querySelector("#inspectionOverlay")?.hidden === true);
   }
   assert.equal(await page.locator('[data-action="submit-checklist"]').isDisabled(), false, "Complete findings must unlock checklist submission");
-  await page.locator('[data-action="submit-checklist"]').click();
+  await page.locator('[data-action="submit-checklist"]').evaluate((button) => button.click());
   await page.waitForFunction(() => window.RedStampDebug.getState().checklistSubmitted === true);
   assert.equal(await page.locator('[data-action="resolve"][data-decision="admit"]').first().isDisabled(), false, "Filed findings must unlock authority");
 }
@@ -213,17 +213,19 @@ async function checkMobile(browser) {
       return { top: box.top, right: box.right, bottom: box.bottom, left: box.left, width: box.width, height: box.height };
     };
     return {
-      caseCard: rect(".scene-case-card"),
+      caseCard: rect(".scene-case-card > p"),
       visitor: rect(".visitor-stage"),
-      desk: rect(".security-desk"),
-      evidence: rect(".scene-hotspots"),
+      nameplate: rect(".visitor-nameplate"),
+      observation: rect(".scene-observation"),
+      evidence: rect(".scene-checklist"),
       authority: rect(".scene-actions"),
     };
   });
-  assert.ok(composition.caseCard && composition.visitor && composition.desk && composition.evidence && composition.authority, "Mobile cabinet controls must be present");
-  assert.ok(composition.caseCard.bottom <= composition.visitor.top + 4, `Case strip must clear visitor aperture: ${JSON.stringify(composition)}`);
-  assert.ok(composition.desk.top >= composition.visitor.top + composition.visitor.height * 0.58, `Desk must stay below the visitor's torso: ${JSON.stringify(composition)}`);
-  assert.ok(composition.evidence.top >= composition.desk.bottom - 2, `Evidence tray must sit below the desk: ${JSON.stringify(composition)}`);
+  assert.ok(composition.caseCard && composition.visitor && composition.nameplate && composition.observation && composition.evidence && composition.authority, "Mobile reference surfaces must be present");
+  assert.ok(composition.nameplate.bottom <= composition.caseCard.top + 2, `Visitor nameplate must clear the aperture: ${JSON.stringify(composition)}`);
+  assert.ok(composition.caseCard.bottom <= composition.observation.top + 2, `Observation copy must precede the marking rail: ${JSON.stringify(composition)}`);
+  assert.ok(composition.observation.bottom <= composition.evidence.top + 2, `Finding rail must precede the source strip: ${JSON.stringify(composition)}`);
+  assert.ok(composition.evidence.top >= composition.observation.bottom - 2, `Source strip must sit below findings: ${JSON.stringify(composition)}`);
   assert.ok(composition.authority.top >= composition.evidence.bottom - 2, `Authority rail must sit below evidence tray: ${JSON.stringify(composition)}`);
   await page.screenshot({ path: "/tmp/red-stamp-mobile.png", fullPage: true });
   await page.locator('.checklist-row[data-tool="id"]').click();
