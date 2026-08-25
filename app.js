@@ -3008,7 +3008,7 @@ function openOverlay({ kicker, title, body, stats, buttonText, action }) {
 }
 
 function closeOverlay() {
-  $("#overlay").classList.remove("is-open");
+  $("#overlay").classList.remove("is-open", "welcome-screen");
 }
 
 function resetCampaign(started = true) {
@@ -3421,4 +3421,4 @@ if (new URLSearchParams(window.location.search).has("debug")) {
   };
 }
 
-startGame();
+render();

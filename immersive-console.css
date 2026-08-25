@@ -3495,3 +3495,226 @@ h3,
   min-height: 0;
   overflow: hidden;
 }
+
+/* The opening screen follows the supplied Issue #1 mockup: it is a title
+ * card over the embassy, with the inspector as the first visual anchor. The
+ * active checkpoint remains rendered underneath so the first visitor is
+ * already queued when the shift begins. */
+.welcome-screen {
+  padding: 0;
+  background:
+    linear-gradient(90deg, rgba(3, 3, 3, 0.94) 0%, rgba(3, 3, 3, 0.8) 40%, rgba(3, 3, 3, 0.24) 72%, rgba(3, 3, 3, 0.7) 100%),
+    linear-gradient(180deg, rgba(3, 3, 3, 0.16), rgba(3, 3, 3, 0.58)),
+    url("assets/generated/embassy-background.png") center / cover no-repeat;
+  backdrop-filter: none;
+}
+
+.welcome-screen .overlay-card {
+  width: min(1200px, 100%);
+  height: min(800px, 100%);
+  min-height: 0;
+  padding: 9.5% 52% 84px 6.2%;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+  transform: none;
+}
+
+.welcome-screen .overlay-card::before {
+  top: auto;
+  right: 6.2%;
+  bottom: 58px;
+  left: 6.2%;
+  width: auto;
+  height: 1px;
+  border: 0;
+  border-radius: 0;
+  background: rgba(207, 175, 132, 0.25);
+  box-shadow: none;
+}
+
+.welcome-screen .overlay-card::after {
+  top: auto;
+  right: 6.2%;
+  bottom: 28px;
+  left: 6.2%;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: rgba(186, 155, 112, 0.66);
+  content: "FORM RS-26 / SECURITY CONTROL       VESKARIAN EMBASSY · PUBLIC ENTRY       NO ENTRY WITHOUT THE RED STAMP";
+  font-family: var(--console-mono);
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  white-space: pre;
+}
+
+.welcome-screen .overlay-inspector {
+  right: -2%;
+  bottom: 1%;
+  left: auto;
+  width: 56%;
+  height: 94%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: saturate(0.78) brightness(0.88) drop-shadow(0 20px 22px rgba(0, 0, 0, 0.84));
+}
+
+.welcome-screen .overlay-emblem {
+  width: 39px;
+  height: 39px;
+  margin: 0 0 13px;
+  border-width: 1px;
+  box-shadow: inset 0 0 0 4px rgba(86, 24, 24, 0.55), inset 0 0 0 5px #dfba85;
+}
+
+.welcome-screen .overlay-emblem span {
+  font-size: 15px;
+}
+
+.welcome-screen .panel-kicker {
+  display: block;
+  max-width: 340px;
+  color: #b99a6e;
+  font-family: var(--console-mono);
+  font-size: 8px;
+  letter-spacing: 0.25em;
+  line-height: 1.5;
+}
+
+.welcome-screen .overlay-card h1 {
+  max-width: 440px;
+  margin: 30px 0 22px;
+  color: #f0ddb0;
+  font-family: "Arial Black", "Arial Narrow", Arial, sans-serif;
+  font-size: clamp(64px, 9.2vw, 116px);
+  font-weight: 900;
+  letter-spacing: 0.035em;
+  line-height: 0.84;
+  text-indent: 0;
+}
+
+.welcome-screen .overlay-card h1::after {
+  display: block;
+  width: 140px;
+  height: 1px;
+  margin-top: 25px;
+  background: var(--console-red-hot);
+  content: "";
+}
+
+.welcome-screen .overlay-card p {
+  max-width: 455px;
+  margin: 0 0 30px;
+  color: #d8c8ac;
+  font-family: var(--console-mono);
+  font-size: 13px;
+  line-height: 1.58;
+}
+
+.welcome-screen .briefing-strip {
+  display: none;
+}
+
+.welcome-screen .primary-button {
+  position: relative;
+  z-index: 2;
+  width: 216px;
+  min-height: 62px;
+  margin: 0;
+  border-color: #c94336;
+  background:
+    linear-gradient(90deg, rgba(255, 226, 178, 0.08), transparent 30% 70%, rgba(255, 226, 178, 0.08)),
+    linear-gradient(145deg, #a92e28, #671b1c);
+  color: #f5dfb4;
+  font-family: var(--console-display);
+  font-size: 19px;
+  letter-spacing: 0.14em;
+  box-shadow: inset 0 -4px 0 rgba(46, 9, 12, 0.48), 0 5px 12px rgba(0, 0, 0, 0.5);
+}
+
+.welcome-screen .primary-button span {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .welcome-screen {
+    align-items: stretch;
+    background:
+      linear-gradient(180deg, rgba(5, 3, 3, 0.2) 0 22%, rgba(5, 3, 3, 0.04) 42%, rgba(5, 3, 3, 0.88) 78% 100%),
+      url("assets/generated/embassy-background.png") center / cover no-repeat;
+  }
+
+  .welcome-screen .overlay-card {
+    width: 100%;
+    height: 100svh;
+    min-height: 0;
+    padding: 44px 24px 112px;
+    border: 0;
+    background: linear-gradient(180deg, rgba(5, 3, 3, 0.14), rgba(5, 3, 3, 0.16) 42%, rgba(5, 3, 3, 0.62));
+  }
+
+  .welcome-screen .overlay-card::before,
+  .welcome-screen .overlay-card::after {
+    display: none;
+  }
+
+  .welcome-screen .overlay-inspector {
+    right: -4%;
+    bottom: 10%;
+    width: 108%;
+    height: 52%;
+  }
+
+  .welcome-screen .overlay-emblem {
+    width: 34px;
+    height: 34px;
+    margin-bottom: 10px;
+  }
+
+  .welcome-screen .overlay-emblem span {
+    font-size: 13px;
+  }
+
+  .welcome-screen .panel-kicker {
+    max-width: 250px;
+    font-size: 7px;
+    letter-spacing: 0.2em;
+  }
+
+  .welcome-screen .overlay-card h1 {
+    max-width: 260px;
+    margin: 27px 0 18px;
+    font-size: clamp(61px, 16vw, 78px);
+    line-height: 0.82;
+  }
+
+  .welcome-screen .overlay-card h1::after {
+    width: 110px;
+    margin-top: 20px;
+  }
+
+  .welcome-screen .overlay-card p {
+    position: relative;
+    z-index: 2;
+    max-width: 340px;
+    margin: 0;
+    color: #e0cfb2;
+    font-size: 13px;
+    line-height: 1.52;
+  }
+
+  .welcome-screen .primary-button {
+    position: absolute;
+    right: 24px;
+    bottom: 28px;
+    left: 24px;
+    width: auto;
+    min-height: 68px;
+    font-size: 18px;
+  }
+}

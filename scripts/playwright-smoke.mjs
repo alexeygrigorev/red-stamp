@@ -56,8 +56,12 @@ async function assertNoStretching(page) {
 
 async function startRun(page, seed) {
   await page.goto(`${baseUrl}/?seed=${seed}&debug=1`, { waitUntil: "networkidle" });
+  await page.locator("#overlay.is-open").waitFor();
+  assert.equal(await page.locator("#overlay").evaluate((element) => element.classList.contains("welcome-screen")), true, "The opening screen should be the welcome briefing");
+  assert.match(await page.locator("#overlay .primary-button").innerText(), /BEGIN SHIFT/);
+  await page.locator('#overlay [data-action="start"]').click();
   await page.waitForFunction(() => window.RedStampDebug?.getState().started === true);
-  assert.equal(await page.locator("#overlay").evaluate((element) => element.classList.contains("is-open")), false, "The first visitor should be present without an idle start screen");
+  assert.equal(await page.locator("#overlay").evaluate((element) => element.classList.contains("is-open")), false, "The welcome screen should close after beginning the shift");
   await page.locator("#caseTitle").waitFor({ state: "attached" });
   assert.notEqual((await page.locator("#caseTitle").textContent()).trim(), "No active visitor");
   const activeCase = (await readCampaign(page))[0].cases[0];
