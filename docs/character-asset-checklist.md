@@ -96,6 +96,8 @@ Use this order for every new named visitor:
    concealed evidence in the case data.
 9. **Validation:** check natural aspect ratios, no stretching, matching
    identity across all assets, and desktop/mobile screenshots before merging.
+   Run `npm run audit:visitor-backgrounds` and review its full-background and
+   head-crop contact sheets before accepting a new or regenerated scene asset.
 
 ### Detector prompt contract
 
@@ -127,7 +129,7 @@ After generating the files:
 6. Run the gates:
 
    ```bash
-   npm run test:images
+   npm run test:assets
    npm run test:e2e
    ```
 

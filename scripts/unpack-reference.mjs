@@ -79,6 +79,30 @@ function addReferenceHooks(template, paths) {
     output = output.replaceAll(expression, `<span data-ref-slot="${name}">${expression}</span>`);
   }
 
+  // Keep the visible checkpoint header connected to the live game state. The
+  // source mockup has static copy here, but the bridge owns the values after
+  // unpacking and updates them from RedStampDebug on every sync.
+  output = output.replaceAll(
+    "SHIFT 01 · MORNING INTAKE",
+    'SHIFT <span data-ref-slot="shift-number">01</span> · <span data-ref-slot="shift-title">MORNING INTAKE</span>',
+  );
+  output = output.replaceAll(
+    ">PROTOCOL ACTIVE<",
+    '><span data-ref-slot="protocol-status">PROTOCOL ACTIVE</span><',
+  );
+  output = output.replaceAll(
+    ">08:30<",
+    '><span data-ref-slot="checkpoint-time">08:30</span><',
+  );
+  output = output.replaceAll(
+    "at 08:30.",
+    'at <span data-ref-slot="checkpoint-time">08:30</span>.',
+  );
+  output = output.replace(
+    '<div style="font-size:8px;font-weight:600;letter-spacing:.24em;color:#8a7458">SECURITY CONTROL · 08:30</div>',
+    '<div style="font-size:7px;font-weight:600;letter-spacing:.15em;color:#8a7458"><span data-ref-slot="protocol-status">PROTOCOL ACTIVE</span> · <span data-ref-slot="checkpoint-time">08:30</span></div>\n      <div style="font-size:7px;font-weight:600;letter-spacing:.15em;color:#6e5f47">SHIFT <span data-ref-slot="shift-number">01</span> · <span data-ref-slot="shift-title">MORNING INTAKE</span></div>',
+  );
+
   const visitorImages = [
     ["f1d0ed4d-8409-4b5b-a090-4284a308328b", "visitor-scene"],
     ["8c60a95b-8b62-45a1-ad4a-c411cffdef84", "visitor-scene"],

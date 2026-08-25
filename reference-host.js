@@ -66,18 +66,28 @@
     return debug()?.getAudioState?.() || null;
   }
 
+  let campaignLengthCache = null;
+  function campaignLength() {
+    if (campaignLengthCache === null) {
+      const campaign = debug()?.getCampaign?.();
+      campaignLengthCache = Array.isArray(campaign) ? campaign.length : 0;
+    }
+    return campaignLengthCache;
+  }
+
   window.RedStampHost = {
     dispatch,
     snapshot,
     unlockAudio,
     enableAudio,
     audioState,
+    campaignLength,
   };
 
   function sourcePath() {
     const hash = window.location.hash.toLowerCase();
     const variant = hash === "#a" ? "-a" : hash === "#b" ? "-b" : "";
-    return `reference/${media.matches ? "mobile" : "desktop"}${variant}.html?ui=2`;
+    return `reference/${media.matches ? "mobile" : "desktop"}${variant}.html?ui=3`;
   }
 
   function mountReference() {

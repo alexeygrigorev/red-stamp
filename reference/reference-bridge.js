@@ -285,6 +285,41 @@
     for (const element of slots(name)) element.textContent = value == null ? "" : String(value);
   }
 
+  function checkpointTime(state) {
+    // Keep the visible checkpoint clock aligned with the clock already
+    // rendered by app.js: the first visitor opens at 08:30 and each case
+    // advances the desk clock by seven minutes.
+    const caseIndex = Math.max(0, Number(state?.caseIndex) || 0);
+    const totalMinutes = 30 + caseIndex * 7;
+    const hours = 8 + Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  }
+
+  function checkpointStatus(state) {
+    if (state?.started) return state.resolved ? "CASE RESOLVED" : "PROTOCOL ACTIVE";
+    if (state?.resolved) {
+      if (Number(state?.career) <= 0) return "CLEARANCE TERMINATED";
+      const campaignLength = Number(host()?.campaignLength?.() || 0);
+      if (campaignLength && Number(state?.day) >= campaignLength) return "GAME OVER";
+      return "SHIFT COMPLETE";
+    }
+    return "PROTOCOL STANDBY";
+  }
+
+  function updateCheckpointStatus(state, shift) {
+    const day = Math.max(1, Number(shift?.day ?? state?.day) || 1);
+    const title = String(shift?.title || "CHECKPOINT").toUpperCase();
+    const status = checkpointStatus(state);
+    setSlot("shift-number", String(day).padStart(2, "0"));
+    setSlot("shift-title", title);
+    setSlot("checkpoint-time", checkpointTime(state));
+    setSlot("protocol-status", status);
+    for (const element of slots("protocol-status")) {
+      element.dataset.referenceStatus = status.toLowerCase().replaceAll(" ", "-");
+    }
+  }
+
   function updateActionHeader(tool) {
     const source = slots("source-label")[0];
     const row = source?.parentElement?.parentElement;
@@ -662,7 +697,7 @@
 
   function sync(next = snapshot()) {
     if (!next?.state) return;
-    const { state, caseData, assets } = next;
+    const { state, shift, caseData, assets } = next;
     if (state.started && document.querySelector("[data-ref-action=begin]")) {
       // A completed shift reloads the reference document while the engine is
       // stopped. Restarting the campaign starts the engine in place, so bring
@@ -670,6 +705,7 @@
       document.querySelector("[data-ref-action=begin]").click();
     }
     updateWelcomeAudio(state);
+    updateCheckpointStatus(state, shift);
     syncCurrentPeopleZoom();
     ensureShortcutsControl(state);
     if (!state.started) {

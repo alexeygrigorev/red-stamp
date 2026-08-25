@@ -2,7 +2,9 @@
   "scripts": {
     "unpack:reference": "node scripts/unpack-reference.mjs",
     "test:images": "node scripts/check-image-aspect-ratios.mjs",
-    "test:e2e": "node scripts/reference-smoke.mjs"
+    "test:e2e": "node scripts/reference-smoke.mjs",
+    "test:assets": "npm run test:images && npm run audit:visitor-backgrounds",
+    "audit:visitor-backgrounds": "node scripts/audit-visitor-backgrounds.mjs"
   },
   "devDependencies": {
     "playwright": "^1.62.1"
