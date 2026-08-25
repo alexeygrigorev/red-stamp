@@ -54,9 +54,14 @@
     return true;
   }
 
+  function unlockAudio() {
+    return debug()?.actions?.unlockAudio?.() || false;
+  }
+
   window.RedStampHost = {
     dispatch,
     snapshot,
+    unlockAudio,
   };
 
   function sourcePath() {

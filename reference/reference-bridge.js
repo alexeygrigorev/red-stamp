@@ -60,6 +60,10 @@
     return result;
   }
 
+  function forwardWelcomeGesture() {
+    host()?.unlockAudio?.();
+  }
+
   function ensureStampMotionStyle() {
     if (document.querySelector("#reference-stamp-motion-style")) return;
     const style = document.createElement("style");
@@ -388,6 +392,13 @@
     if (action.startsWith("paper-")) return dispatch("inspect", "documents");
     if (action === "show-scan" || action === "open-bag") return dispatch("inspect", "xray");
   });
+
+  // Welcome music lives in the parent game engine, while the visible welcome
+  // button lives in this iframe. Forward the first gesture across that seam
+  // so the browser can unlock the title theme before BEGIN SHIFT changes the
+  // music state to the checkpoint loop.
+  document.addEventListener("pointerdown", forwardWelcomeGesture, { once: true, capture: true });
+  document.addEventListener("keydown", forwardWelcomeGesture, { once: true, capture: true });
 
   window.addEventListener("keydown", (event) => {
     if (!event.isTrusted) return;

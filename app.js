@@ -3010,6 +3010,7 @@ let currentMusicElement = null;
 let currentMusicKey = null;
 let pendingMusicKey = null;
 let musicRequestSeq = 0;
+let musicRetryHandler = null;
 
 function ensureMusicElements() {
   if (musicTrackA) return;
@@ -3043,11 +3044,18 @@ function fadeAudio(element, from, to, duration, onComplete) {
   }, stepTime);
 }
 
+function clearMusicRetry() {
+  if (!musicRetryHandler) return;
+  document.removeEventListener("pointerdown", musicRetryHandler);
+  musicRetryHandler = null;
+}
+
 function playMusic(key, { volume = 0.32, fade = 1400, force = false } = {}) {
   if (!force && pendingMusicKey === key) return;
   const file = MUSIC_FILES[key];
   if (!file) return;
   try {
+    if (musicRetryHandler && pendingMusicKey !== key) clearMusicRetry();
     ensureMusicElements();
     // Claim the key and the target element synchronously, before play()'s
     // promise settles. Two playMusic() calls can land in the same tick (e.g.
@@ -3077,25 +3085,41 @@ function playMusic(key, { volume = 0.32, fade = 1400, force = false } = {}) {
           return;
         }
         currentMusicKey = key;
+        clearMusicRetry();
         fadeAudio(incoming, 0, volume, fade);
         if (outgoing && outgoing !== incoming) fadeAudio(outgoing, outgoing.volume, 0, fade, () => outgoing.pause());
       })
       .catch(() => {
         if (requestId !== musicRequestSeq) return;
-        document.addEventListener("pointerdown", () => playMusic(key, { volume, fade, force: true }), { once: true });
+        clearMusicRetry();
+        musicRetryHandler = () => {
+          musicRetryHandler = null;
+          if (key === "title" && state.started) return;
+          playMusic(key, { volume, fade, force: true });
+        };
+        document.addEventListener("pointerdown", musicRetryHandler, { once: true });
       });
   } catch {
     // Autoplay can be blocked by the browser until the first user gesture.
   }
 }
 
-function updateMusicForState() {
-  if (!state.started) {
-    playMusic("title", { volume: 0.28 });
-    return;
-  }
+function musicState() {
+  if (!state.started) return { key: "title", volume: 0.28 };
   const danger = state.career <= 35 || state.dailyTolerance <= 20;
-  playMusic(danger ? "tension" : "checkpoint", { volume: danger ? 0.4 : 0.3 });
+  return { key: danger ? "tension" : "checkpoint", volume: danger ? 0.4 : 0.3 };
+}
+
+function updateMusicForState() {
+  const { key, volume } = musicState();
+  playMusic(key, { volume });
+}
+
+function unlockAudio() {
+  if (audioMuted) return false;
+  const { key, volume } = musicState();
+  playMusic(key, { volume, force: true });
+  return true;
 }
 
 function setAudioMuted(muted) {
@@ -3586,6 +3610,14 @@ window.RedStampDebug = {
       xray: xrayAsset(c),
     } : null;
   },
+  getAudioState: () => ({
+    muted: audioMuted,
+    currentKey: currentMusicKey,
+    pendingKey: pendingMusicKey,
+    playing: Boolean(currentMusicElement && !currentMusicElement.paused),
+    volume: currentMusicElement?.volume ?? 0,
+    source: currentMusicElement?.currentSrc || currentMusicElement?.src || "",
+  }),
   actions: {
     start: () => startGame(),
     restart: () => {
@@ -3600,6 +3632,7 @@ window.RedStampDebug = {
     secondary: () => useSecondary(),
     liaison: () => callLiaison(),
     resolve: (decision) => resolveCase(decision),
+    unlockAudio: () => unlockAudio(),
     returnToWindow: () => {
       state.selectedTool = null;
       closeInspectionOverlay();

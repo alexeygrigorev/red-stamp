@@ -56,6 +56,11 @@ async function startRun(page, baseUrl, seed) {
     "Reference heading font must come from the unpacked font bundle",
   );
 
+  // The welcome page is the iframe surface. A neutral first gesture must
+  // unlock its title theme before BEGIN SHIFT changes the music to checkpoint.
+  await frame.locator("body").click({ position: { x: 16, y: 16 } });
+  await page.waitForFunction(() => window.RedStampDebug?.getAudioState?.().currentKey === "title");
+
   await frame.locator('[data-ref-action="begin"]').click();
   await page.waitForFunction(() => window.RedStampDebug?.getState().started === true);
   await page.waitForTimeout(350);
