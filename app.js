@@ -3006,8 +3006,10 @@ function playGameSound(kind = "click") {
 
 let musicTrackA = null;
 let musicTrackB = null;
-let activeMusicTrack = null;
+let currentMusicElement = null;
 let currentMusicKey = null;
+let pendingMusicKey = null;
+let musicRequestSeq = 0;
 
 function ensureMusicElements() {
   if (musicTrackA) return;
@@ -3041,15 +3043,26 @@ function fadeAudio(element, from, to, duration, onComplete) {
   }, stepTime);
 }
 
-function playMusic(key, { volume = 0.32, fade = 1400 } = {}) {
-  if (currentMusicKey === key) return;
+function playMusic(key, { volume = 0.32, fade = 1400, force = false } = {}) {
+  if (!force && pendingMusicKey === key) return;
   const file = MUSIC_FILES[key];
   if (!file) return;
   try {
     ensureMusicElements();
-    const incoming = activeMusicTrack === musicTrackA ? musicTrackB : musicTrackA;
-    const outgoing = activeMusicTrack;
+    // Claim the key and the target element synchronously, before play()'s
+    // promise settles. Two playMusic() calls can land in the same tick (e.g.
+    // a blocked title-theme retry racing the checkpoint-loop kickoff on the
+    // very click that starts the shift); if both read `currentMusicElement`
+    // only after awaiting, they pick the same element and each play() call
+    // aborts the other's pending one. Claiming here makes them alternate
+    // instead of collide.
+    pendingMusicKey = key;
+    const requestId = ++musicRequestSeq;
+    const outgoing = currentMusicElement;
+    const incoming = outgoing === musicTrackA ? musicTrackB : musicTrackA;
+    currentMusicElement = incoming;
     incoming.muted = audioMuted;
+    incoming.pause();
     incoming.src = `${AUDIO_BASE}/${file}`;
     incoming.currentTime = 0;
     incoming.volume = 0;
@@ -3057,13 +3070,19 @@ function playMusic(key, { volume = 0.32, fade = 1400 } = {}) {
     if (!attempt?.then) return;
     attempt
       .then(() => {
+        // A later playMusic() call superseded this one before it resolved;
+        // drop it instead of fading in a track nobody asked for anymore.
+        if (requestId !== musicRequestSeq) {
+          incoming.pause();
+          return;
+        }
         currentMusicKey = key;
-        activeMusicTrack = incoming;
         fadeAudio(incoming, 0, volume, fade);
-        if (outgoing) fadeAudio(outgoing, outgoing.volume, 0, fade, () => outgoing.pause());
+        if (outgoing && outgoing !== incoming) fadeAudio(outgoing, outgoing.volume, 0, fade, () => outgoing.pause());
       })
       .catch(() => {
-        document.addEventListener("pointerdown", () => playMusic(key, { volume, fade }), { once: true });
+        if (requestId !== musicRequestSeq) return;
+        document.addEventListener("pointerdown", () => playMusic(key, { volume, fade, force: true }), { once: true });
       });
   } catch {
     // Autoplay can be blocked by the browser until the first user gesture.
