@@ -77,7 +77,7 @@
   function sourcePath() {
     const hash = window.location.hash.toLowerCase();
     const variant = hash === "#a" ? "-a" : hash === "#b" ? "-b" : "";
-    return `reference/${media.matches ? "mobile" : "desktop"}${variant}.html`;
+    return `reference/${media.matches ? "mobile" : "desktop"}${variant}.html?ui=2`;
   }
 
   function mountReference() {

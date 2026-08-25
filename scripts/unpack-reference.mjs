@@ -298,8 +298,7 @@ async function unpackPage(page) {
   if (!head) throw new Error(`Missing head in ${page.source}`);
   const headEnd = head.index + head[0].length;
   template = `${template.slice(0, headEnd)}${resourceScript}${template.slice(headEnd)}`;
-  template = template.replace("</head>", '<link rel="stylesheet" href="variant-switcher.css">\n</head>');
-  template = template.replace("</body>", '<script src="reference-bridge.js"></script>\n<script src="variant-switcher.js"></script>\n</body>');
+  template = template.replace("</body>", '<script src="reference-bridge.js"></script>\n</body>');
   template = template.replace(/[ \t]+$/gm, "");
 
   await writeFile(join(outputRoot, page.output), template);
