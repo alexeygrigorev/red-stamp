@@ -761,7 +761,7 @@ async function auditShiftEnd(page, frame, viewport, campaignLength, context) {
   const finalShift = Number(state?.day) >= campaignLength || Number(state?.career) <= 0;
   await check("shift-end screen must identify its terminal state", async () => {
     const text = await panel.innerText();
-    const expected = finalShift ? /GAME OVER/i : /SHIFT COMPLETE/i;
+    const expected = finalShift ? /CLEARANCE WITHDRAWN|CAMPAIGN COMPLETE/i : /SHIFT CLOSED/i;
     if (!expected.test(text)) throw new Error(text.slice(0, 300));
   }, context);
   await assertFrameLayout(page, frame, viewport, "shift-end", context);
