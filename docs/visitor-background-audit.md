@@ -112,7 +112,7 @@ findings from the generated sheets:
 | Milan Vek | Pass | Pass | Pass | scene low (33), portrait low (33) | Identity and silhouette hold; dark trousers/coat need a quick contrast check on dim displays. |
 | Nadiya Ost | Pass | Pass | Pass | portrait low (5), face low (187) | Identity holds; enlarged face crop shows the most noticeable warm hair/shoulder fringe after Radan’s asset mismatch. |
 | Olya Merin | Pass | Pass | Pass | scene low (6), portrait low (4), face low (3) | Readable red jacket and face; inspect the thin orange hair rim, otherwise coherent. |
-| Radan Kest | Pass | Pass | **Fail human review** | none | Dedicated `radan-face.png` is a different render/identity (bald, different facial hair, circular marks) from the cropped-hair bearded scene and portrait. Redraw the complete Radan family before registration. |
+| Radan Kest | Pass | Pass | Pass after redraw | none | Dedicated `radan-face.png` was redrawn from the existing Radan identity/style reference; the short-haired, bearded face now matches the scene and portrait, and the alpha audit passes. |
 | Sorin Dask | Pass | Pass | Pass | scene low (25), portrait low (25) | Good identity match; red shirt and orange rim remain visible without a clear matte halo. |
 | Viktor Dalen | Pass | Pass | Pass | scene low (98), portrait low (98) | Readable and coherent; highest scene/portrait bright-edge count, so inspect the warm hair/shoulder rim at 1×. |
 
