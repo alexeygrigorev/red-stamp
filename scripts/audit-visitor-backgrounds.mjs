@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import assert from "node:assert/strict";
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { constants as fsConstants } from "node:fs";
 import net from "node:net";
@@ -16,6 +15,7 @@ const outputRoot = process.env.VISITOR_BACKGROUND_AUDIT_DIR
 const viewport = { width: 1440, height: 900 };
 const seed = 424242;
 const alphaThreshold = 16;
+const renderedAssetSelector = '[data-ref-view="threshold"] > [data-ref-slot="visitor-scene"]';
 
 function sleep(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -67,11 +67,17 @@ function parseObjectBlock(source, declaration) {
 function parseCharacterArt(source) {
   const block = parseObjectBlock(source, "CHARACTER_ART");
   const art = new Map();
-  const entries = /"([^"]+)":\s*\{[\s\S]*?\bscene:\s*"([^"]+)"[\s\S]*?\bface:\s*"([^"]+)"/g;
+  const entries = /"([^"]+)":\s*\{([\s\S]*?)\n\s*\},?/g;
   for (const match of block.matchAll(entries)) {
-    art.set(match[1], { scene: match[2], face: match[3] });
+    const assets = {};
+    for (const field of match[2].matchAll(/\b(scene|portrait|face):\s*"([^"]+)"/g)) {
+      assets[field[1]] = field[2];
+    }
+    art.set(match[1], assets);
   }
-  if (!art.size) throw new Error("CHARACTER_ART contains no scene assets");
+  if (!art.size || ![...art.values()].some((assets) => assets.scene)) {
+    throw new Error("CHARACTER_ART contains no scene assets");
+  }
   return art;
 }
 
@@ -169,14 +175,51 @@ async function inspectAlpha(frame, assetUrl) {
     let maxX = -1;
     let maxY = -1;
     let alphaPixels = 0;
+    let semiTransparentPixels = 0;
+    let edgeSemiTransparentPixels = 0;
+    let brightFringePixels = 0;
+    let maxCompositeLuma = 0;
+    const darkBackdrop = { r: 9, g: 8, b: 7 };
+    const luma = (r, g, b) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    const pixelAlpha = (x, y) => pixels[(y * canvas.width + x) * 4 + 3];
     for (let y = 0; y < canvas.height; y += 1) {
       for (let x = 0; x < canvas.width; x += 1) {
-        if (pixels[(y * canvas.width + x) * 4 + 3] < alphaThreshold) continue;
+        const pixel = (y * canvas.width + x) * 4;
+        const alpha = pixels[pixel + 3];
+        if (alpha > 0 && alpha < 255) semiTransparentPixels += 1;
+        if (alpha < alphaThreshold) continue;
         alphaPixels += 1;
         minX = Math.min(minX, x);
         minY = Math.min(minY, y);
         maxX = Math.max(maxX, x);
         maxY = Math.max(maxY, y);
+        if (alpha >= 250) continue;
+
+        let touchesTransparent = false;
+        for (let offsetY = -1; offsetY <= 1 && !touchesTransparent; offsetY += 1) {
+          for (let offsetX = -1; offsetX <= 1; offsetX += 1) {
+            if (offsetX === 0 && offsetY === 0) continue;
+            const neighborX = x + offsetX;
+            const neighborY = y + offsetY;
+            if (neighborX < 0 || neighborX >= canvas.width || neighborY < 0 || neighborY >= canvas.height) {
+              touchesTransparent = true;
+              break;
+            }
+            if (pixelAlpha(neighborX, neighborY) < alphaThreshold) {
+              touchesTransparent = true;
+              break;
+            }
+          }
+        }
+        if (!touchesTransparent) continue;
+        edgeSemiTransparentPixels += 1;
+        const coverage = alpha / 255;
+        const compositeRed = pixels[pixel] * coverage + darkBackdrop.r * (1 - coverage);
+        const compositeGreen = pixels[pixel + 1] * coverage + darkBackdrop.g * (1 - coverage);
+        const compositeBlue = pixels[pixel + 2] * coverage + darkBackdrop.b * (1 - coverage);
+        const compositeLuma = luma(compositeRed, compositeGreen, compositeBlue);
+        maxCompositeLuma = Math.max(maxCompositeLuma, compositeLuma);
+        if (compositeLuma >= 80) brightFringePixels += 1;
       }
     }
     if (maxX < 0 || maxY < 0) {
@@ -185,6 +228,16 @@ async function inspectAlpha(frame, assetUrl) {
         naturalHeight: image.naturalHeight,
         alphaPixels: 0,
         coverage: 0,
+        matteRisk: {
+          backdrop: "#090807",
+          semiTransparentPixels,
+          edgeSemiTransparentPixels,
+          brightFringePixels,
+          brightFringeCoverage: 0,
+          brightFringeRatio: 0,
+          maxCompositeLuma,
+          level: "none",
+        },
         bounds: null,
         upperBounds: null,
       };
@@ -208,6 +261,20 @@ async function inspectAlpha(frame, assetUrl) {
       naturalHeight: image.naturalHeight,
       alphaPixels,
       coverage: alphaPixels / (image.naturalWidth * image.naturalHeight),
+      matteRisk: {
+        backdrop: "#090807",
+        semiTransparentPixels,
+        edgeSemiTransparentPixels,
+        brightFringePixels,
+        brightFringeCoverage: brightFringePixels / (image.naturalWidth * image.naturalHeight),
+        brightFringeRatio: brightFringePixels / Math.max(1, edgeSemiTransparentPixels),
+        maxCompositeLuma,
+        level: brightFringePixels >= 2000 || brightFringePixels / Math.max(1, edgeSemiTransparentPixels) >= 0.2
+          ? "high"
+          : brightFringePixels >= 250 || brightFringePixels / Math.max(1, edgeSemiTransparentPixels) >= 0.06
+            ? "medium"
+            : brightFringePixels > 0 ? "low" : "none",
+      },
       bounds: {
         minX,
         minY,
@@ -285,6 +352,82 @@ async function makeContactSheet(page, entries, outputPath, title, columns) {
   await page.screenshot({ path: outputPath, fullPage: true, animations: "disabled", scale: "css" });
 }
 
+const auditedAssetKinds = [
+  {
+    key: "scene",
+    label: "SCENE CUTOUT",
+    compositeSuffix: "background",
+    cropSuffix: "head",
+  },
+  {
+    key: "portrait",
+    label: "FULL-BODY PORTRAIT",
+    compositeSuffix: "portrait-background",
+    cropSuffix: "portrait-head",
+  },
+  {
+    key: "face",
+    label: "FACE / SHOULDERS",
+    compositeSuffix: "face-background",
+    cropSuffix: "face-crop",
+  },
+];
+
+function assetPathFor(visitor, kind) {
+  return kind.key === "scene" ? visitor.asset : visitor[kind.key];
+}
+
+function addAssetIssue(record, assetRecord, kind, message) {
+  assetRecord.issues.push(message);
+  record.issues.push(kind.key === "scene" ? message : `${kind.label}: ${message}`);
+}
+
+function manifestRecord(record) {
+  const {
+    sceneBuffer,
+    headBuffer,
+    portraitBuffer,
+    portraitHeadBuffer,
+    faceBuffer,
+    faceCropBuffer,
+    ...publicRecord
+  } = record;
+  return publicRecord;
+}
+
+async function setAuditSnapshot(page, visitorCaseData, scene, face) {
+  await page.evaluate(({ scene, visitorCaseData, visitorFace }) => {
+    const host = window.RedStampHost;
+    if (!host.__visitorBackgroundAuditBaseSnapshot) {
+      host.__visitorBackgroundAuditBaseSnapshot = host.snapshot;
+    }
+    const baseSnapshot = host.__visitorBackgroundAuditBaseSnapshot;
+    host.snapshot = () => {
+      const snapshot = baseSnapshot();
+      if (!snapshot) return snapshot;
+      return {
+        ...snapshot,
+        caseData: visitorCaseData || snapshot.caseData,
+        assets: {
+          ...snapshot.assets,
+          scene,
+          ...(visitorFace ? { face: visitorFace } : {}),
+        },
+      };
+    };
+  }, { scene, visitorCaseData, visitorFace: face });
+}
+
+async function waitForReferenceAsset(page, assetUrl) {
+  await page.waitForFunction(({ selector, assetUrl: expectedUrl }) => {
+    const image = document.querySelector("#reference-frame")?.contentWindow?.document.querySelector(selector);
+    return Boolean(image?.complete && image.currentSrc === expectedUrl && image.naturalWidth > 0);
+  }, {
+    selector: renderedAssetSelector,
+    assetUrl,
+  });
+}
+
 function sceneMapping(source, campaign) {
   const characterArt = parseCharacterArt(source);
   const fallbackScenes = parseFallbackScenes(source);
@@ -296,19 +439,24 @@ function sceneMapping(source, campaign) {
   }
 
   const unique = new Map();
-  const add = (id, name, asset, face, caseData) => {
-    if (!asset) return;
-    const existing = unique.get(asset);
+  const add = (id, name, assets, caseData) => {
+    const scene = typeof assets === "string" ? assets : assets?.scene;
+    if (!scene) return;
+    const existing = unique.get(scene);
     if (existing) {
       if (name && !existing.names.includes(name)) existing.names.push(name);
       if (id && !existing.ids.includes(id)) existing.ids.push(id);
-      if (!existing.face && face) existing.face = face;
+      if (typeof assets !== "string" && assets) existing.registered = true;
+      if (!existing.portrait && assets?.portrait) existing.portrait = assets.portrait;
+      if (!existing.face && assets?.face) existing.face = assets.face;
       if (!existing.caseData && caseData) existing.caseData = caseData;
       return;
     }
-    unique.set(asset, {
-      asset,
-      face: face || null,
+    unique.set(scene, {
+      asset: scene,
+      portrait: typeof assets === "string" ? null : assets.portrait || null,
+      face: typeof assets === "string" ? null : assets.face || null,
+      registered: typeof assets !== "string",
       caseData: caseData || null,
       ids: id ? [id] : [],
       names: name ? [name] : [],
@@ -317,13 +465,17 @@ function sceneMapping(source, campaign) {
 
   for (const [id, art] of characterArt) {
     const caseData = casesById.get(id);
-    add(id, caseData?.name || id, art.scene, art.face, caseData);
+    add(id, caseData?.name || id, art, caseData);
   }
   for (const [id, caseData] of casesById) {
     const art = characterArt.get(id);
     const asset = art?.scene || fallbackScenes.get(caseData.look) || fallbackScenes.get("civilian");
     if (!asset) throw new Error(`Missing visitor scene mapping for ${id}`);
-    add(id, caseData.name || id, asset, art?.face || null, caseData);
+    add(id, caseData.name || id, {
+      scene: asset,
+      portrait: art?.portrait || null,
+      face: art?.face || null,
+    }, caseData);
   }
   if (!unique.size) throw new Error("No visitor scene assets were found in the app mapping");
   return [...unique.values()].sort((left, right) => left.asset.localeCompare(right.asset));
@@ -391,162 +543,259 @@ async function main() {
         sceneFile: path.relative(root, absoluteAssetPath(visitor.asset)),
         status: "pending",
         issues: [],
+        reviewFlags: [],
+        assets: {},
       };
       records.push(record);
-      const scenePath = path.join(outputRoot, `${record.slug}-background.png`);
-      const headPath = path.join(outputRoot, `${record.slug}-head.png`);
-      try {
-        const absolute = absoluteAssetPath(visitor.asset);
-        await access(absolute, fsConstants.R_OK);
-        const assetUrl = referenceAssetUrl(frame, visitor.asset);
-        const alpha = await inspectAlpha(frame, assetUrl);
-        record.alpha = alpha;
-        if (!alpha.bounds || !alpha.upperBounds || alpha.alphaPixels < 1000) {
-          record.issues.push("Scene asset has no usable alpha silhouette");
-        } else {
-          if (alpha.bounds.width / alpha.naturalWidth < 0.18) record.issues.push("Silhouette is implausibly narrow");
-          if (alpha.bounds.height / alpha.naturalHeight < 0.55) record.issues.push("Silhouette is implausibly short");
-          if (alpha.bounds.minY > alpha.naturalHeight * 0.12) record.issues.push("Silhouette has an excessive transparent top margin");
+
+      for (const kind of auditedAssetKinds) {
+        const assetPath = assetPathFor(visitor, kind);
+        const assetRecord = {
+          asset: assetPath,
+          sourceFile: assetPath ? path.relative(root, absoluteAssetPath(assetPath)) : null,
+          compositeFile: assetPath ? `tmp/visitor-background-audit/${record.slug}-${kind.compositeSuffix}.png` : null,
+          cropFile: assetPath ? `tmp/visitor-background-audit/${record.slug}-${kind.cropSuffix}.png` : null,
+          status: "pending",
+          issues: [],
+          reviewFlags: [],
+        };
+        record.assets[kind.key] = assetRecord;
+
+        if (!assetPath) {
+          if (visitor.registered) addAssetIssue(record, assetRecord, kind, `CHARACTER_ART has no registered ${kind.label.toLowerCase()} asset`);
+          else assetRecord.status = "skipped";
+          continue;
         }
 
-        await page.evaluate(({ scene, visitorCaseData, visitorFace }) => {
-          const host = window.RedStampHost;
-          if (!host.__visitorBackgroundAuditBaseSnapshot) {
-            host.__visitorBackgroundAuditBaseSnapshot = host.snapshot;
-          }
-          const baseSnapshot = host.__visitorBackgroundAuditBaseSnapshot;
-          host.snapshot = () => {
-            const snapshot = baseSnapshot();
-            if (!snapshot) return snapshot;
-            return {
-              ...snapshot,
-              caseData: visitorCaseData || snapshot.caseData,
-              assets: {
-                ...snapshot.assets,
-                scene,
-                ...(visitorFace ? { face: visitorFace } : {}),
-              },
-            };
-          };
-        }, {
-          scene: visitor.asset,
-          visitorCaseData: visitor.caseData,
-          visitorFace: visitor.face,
-        });
-        await frame.evaluate(() => window.ReferenceBridge?.sync());
-        const visitorImage = stage.locator(':scope > [data-ref-slot="visitor-scene"]').first();
-        await visitorImage.waitFor({ state: "visible" });
-        await page.waitForFunction(({ selector, assetUrl }) => {
-          const image = document.querySelector("#reference-frame")?.contentWindow?.document.querySelector(selector);
-          return Boolean(image?.complete && image.currentSrc === assetUrl && image.naturalWidth > 0);
-        }, { selector: '[data-ref-view="threshold"] > [data-ref-slot="visitor-scene"]', assetUrl });
+        try {
+          const absolute = absoluteAssetPath(assetPath);
+          await access(absolute, fsConstants.R_OK);
+          const assetUrl = referenceAssetUrl(frame, assetPath);
+          const alpha = await inspectAlpha(frame, assetUrl);
+          assetRecord.alpha = alpha;
+          assetRecord.renderedSelector = renderedAssetSelector;
+          assetRecord.renderedAssetPath = assetPath;
+          if (kind.key === "scene") record.alpha = alpha;
 
-        const stageBox = await stage.boundingBox();
-        const imageBox = await visitorImage.boundingBox();
-        const backgroundNatural = await background.evaluate((image) => ({
-          complete: image.complete,
-          naturalWidth: image.naturalWidth,
-          naturalHeight: image.naturalHeight,
-        }));
-        const imageNatural = await visitorImage.evaluate((image) => ({
-          complete: image.complete,
-          naturalWidth: image.naturalWidth,
-          naturalHeight: image.naturalHeight,
-        }));
-        if (!stageBox || !imageBox) {
-          record.issues.push("Reference stage or visitor image has no rendered bounds");
-        } else if (alpha.bounds && alpha.upperBounds) {
-          const sceneContent = {
-            x: imageBox.x + alpha.bounds.minX * imageBox.width / alpha.naturalWidth,
-            y: imageBox.y + alpha.bounds.minY * imageBox.height / alpha.naturalHeight,
-            width: alpha.bounds.width * imageBox.width / alpha.naturalWidth,
-            height: alpha.bounds.height * imageBox.height / alpha.naturalHeight,
-          };
-          const headContent = {
-            x: imageBox.x + alpha.upperBounds.minX * imageBox.width / alpha.naturalWidth,
-            y: imageBox.y + alpha.upperBounds.minY * imageBox.height / alpha.naturalHeight,
-            width: alpha.upperBounds.width * imageBox.width / alpha.naturalWidth,
-            height: alpha.upperBounds.height * imageBox.height / alpha.naturalHeight,
-          };
-          const sceneVisibility = rectVisibility(sceneContent, stageBox);
-          const headVisibility = rectVisibility(headContent, stageBox);
-          record.rendered = {
-            stage: stageBox,
-            image: imageBox,
-            sceneContent,
-            headContent,
-            sceneVisibility,
-            headVisibility,
-            backgroundNatural,
-            imageNatural,
-          };
-          if (!backgroundNatural.complete || backgroundNatural.naturalWidth === 0) record.issues.push("Checkpoint background did not render");
-          if (!imageNatural.complete || imageNatural.naturalWidth !== alpha.naturalWidth) record.issues.push("Rendered scene image dimensions do not match the source asset");
-          if (imageBox.width < stageBox.width * 0.08 || imageBox.height < stageBox.height * 0.5) record.issues.push("Rendered visitor is too small for the checkpoint frame");
-          if (sceneVisibility.fraction < 0.7) record.issues.push(`Rendered silhouette is clipped (${Math.round(sceneVisibility.fraction * 100)}% visible)`);
-          if (headVisibility.fraction < 0.75) record.issues.push(`Rendered head is clipped (${Math.round(headVisibility.fraction * 100)}% visible)`);
-          if (headContent.width < 24 || headContent.height < 24) record.issues.push("Rendered head bounds are too small to review");
-
-          const crop = makeHeadCrop(stageBox, imageBox, alpha);
-          const sceneBuffer = await stage.screenshot({ animations: "disabled", scale: "css" });
-          await writeFile(scenePath, sceneBuffer);
-          const cropRelative = {
-            x: Math.max(0, crop.x - stageBox.x),
-            y: Math.max(0, crop.y - stageBox.y),
-            width: Math.min(crop.width, stageBox.x + stageBox.width - crop.x),
-            height: Math.min(crop.height, stageBox.y + stageBox.height - crop.y),
-          };
-          if (cropRelative.width < 40 || cropRelative.height < 40) {
-            record.issues.push("Head crop is too small after clipping to the reference frame");
+          if (!alpha.bounds || !alpha.upperBounds || alpha.alphaPixels < 1000) {
+            addAssetIssue(record, assetRecord, kind, "Asset has no usable alpha silhouette");
           } else {
-            const head = await makeUpscaledCrop(cropPage, sceneBuffer, cropRelative, headPath);
-            record.headCrop = {
-              source: cropRelative,
-              output: { width: head.width, height: head.height },
-            };
+            if (kind.key !== "face" && alpha.bounds.width / alpha.naturalWidth < 0.18) {
+              addAssetIssue(record, assetRecord, kind, "Silhouette is implausibly narrow");
+            }
+            if (kind.key !== "face" && alpha.bounds.height / alpha.naturalHeight < 0.55) {
+              addAssetIssue(record, assetRecord, kind, "Silhouette is implausibly short");
+            }
+            if (alpha.bounds.minY > alpha.naturalHeight * 0.12) {
+              addAssetIssue(record, assetRecord, kind, "Silhouette has an excessive transparent top margin");
+            }
           }
-          record.sceneBuffer = sceneBuffer;
-          record.headBuffer = record.headCrop ? await readFile(headPath) : null;
+
+          if (alpha.matteRisk.level !== "none") {
+            const flag = `Matte telemetry ${alpha.matteRisk.level}: ${alpha.matteRisk.brightFringePixels} bright semi-transparent edge pixels`;
+            assetRecord.reviewFlags.push(flag);
+            record.reviewFlags.push(`${kind.label}: ${flag}`);
+          }
+
+          await setAuditSnapshot(page, visitor.caseData, assetPath, visitor.face);
+          await frame.evaluate(() => window.ReferenceBridge?.sync());
+          const visitorImage = stage.locator(':scope > [data-ref-slot="visitor-scene"]').first();
+          await visitorImage.waitFor({ state: "visible" });
+          await waitForReferenceAsset(page, assetUrl);
+
+          const stageBox = await stage.boundingBox();
+          const imageBox = await visitorImage.boundingBox();
+          const backgroundNatural = await background.evaluate((image) => ({
+            complete: image.complete,
+            naturalWidth: image.naturalWidth,
+            naturalHeight: image.naturalHeight,
+          }));
+          const imageNatural = await visitorImage.evaluate((image) => ({
+            complete: image.complete,
+            currentSrc: image.currentSrc,
+            naturalWidth: image.naturalWidth,
+            naturalHeight: image.naturalHeight,
+          }));
+          if (!stageBox || !imageBox) {
+            addAssetIssue(record, assetRecord, kind, "Reference stage or visitor image has no rendered bounds");
+          } else if (alpha.bounds && alpha.upperBounds) {
+            const sceneContent = {
+              x: imageBox.x + alpha.bounds.minX * imageBox.width / alpha.naturalWidth,
+              y: imageBox.y + alpha.bounds.minY * imageBox.height / alpha.naturalHeight,
+              width: alpha.bounds.width * imageBox.width / alpha.naturalWidth,
+              height: alpha.bounds.height * imageBox.height / alpha.naturalHeight,
+            };
+            const headContent = {
+              x: imageBox.x + alpha.upperBounds.minX * imageBox.width / alpha.naturalWidth,
+              y: imageBox.y + alpha.upperBounds.minY * imageBox.height / alpha.naturalHeight,
+              width: alpha.upperBounds.width * imageBox.width / alpha.naturalWidth,
+              height: alpha.upperBounds.height * imageBox.height / alpha.naturalHeight,
+            };
+            const sceneVisibility = rectVisibility(sceneContent, stageBox);
+            const headVisibility = rectVisibility(headContent, stageBox);
+            const rendered = {
+              stage: stageBox,
+              image: imageBox,
+              sceneContent,
+              headContent,
+              sceneVisibility,
+              headVisibility,
+              backgroundNatural,
+              imageNatural,
+            };
+            assetRecord.rendered = rendered;
+            if (kind.key === "scene") record.rendered = rendered;
+            if (!backgroundNatural.complete || backgroundNatural.naturalWidth === 0) {
+              addAssetIssue(record, assetRecord, kind, "Checkpoint background did not render");
+            }
+            if (!imageNatural.complete || imageNatural.naturalWidth !== alpha.naturalWidth) {
+              addAssetIssue(record, assetRecord, kind, "Rendered image dimensions do not match the source asset");
+            }
+            if (imageNatural.currentSrc !== assetUrl) {
+              addAssetIssue(record, assetRecord, kind, "Rendered selector did not mount the requested asset");
+            }
+            if (imageBox.width < stageBox.width * 0.08 || imageBox.height < stageBox.height * 0.5) {
+              addAssetIssue(record, assetRecord, kind, "Rendered asset is too small for the checkpoint frame");
+            }
+            if (sceneVisibility.fraction < 0.7) {
+              addAssetIssue(record, assetRecord, kind, `Rendered silhouette is clipped (${Math.round(sceneVisibility.fraction * 100)}% visible)`);
+            }
+            if (headVisibility.fraction < 0.75) {
+              addAssetIssue(record, assetRecord, kind, `Rendered head/face is clipped (${Math.round(headVisibility.fraction * 100)}% visible)`);
+            }
+            if (headContent.width < 24 || headContent.height < 24) {
+              addAssetIssue(record, assetRecord, kind, "Rendered head/face bounds are too small to review");
+            }
+
+            const crop = makeHeadCrop(stageBox, imageBox, alpha);
+            const compositeBuffer = await stage.screenshot({ animations: "disabled", scale: "css" });
+            const compositePath = path.join(outputRoot, `${record.slug}-${kind.compositeSuffix}.png`);
+            const cropPath = path.join(outputRoot, `${record.slug}-${kind.cropSuffix}.png`);
+            await writeFile(compositePath, compositeBuffer);
+            const cropRelative = {
+              x: Math.max(0, crop.x - stageBox.x),
+              y: Math.max(0, crop.y - stageBox.y),
+              width: Math.min(crop.width, stageBox.x + stageBox.width - crop.x),
+              height: Math.min(crop.height, stageBox.y + stageBox.height - crop.y),
+            };
+            if (cropRelative.width < 40 || cropRelative.height < 40) {
+              addAssetIssue(record, assetRecord, kind, "Head/face crop is too small after clipping to the reference frame");
+            } else {
+              const cropOutput = await makeUpscaledCrop(cropPage, compositeBuffer, cropRelative, cropPath);
+              assetRecord.crop = {
+                source: cropRelative,
+                output: { width: cropOutput.width, height: cropOutput.height },
+              };
+            }
+            assetRecord.composite = {
+              width: Math.round(stageBox.width),
+              height: Math.round(stageBox.height),
+            };
+            if (kind.key === "scene") {
+              record.headCrop = assetRecord.crop || null;
+              record.sceneBuffer = compositeBuffer;
+              record.headBuffer = assetRecord.crop ? await readFile(cropPath) : null;
+            } else if (kind.key === "portrait") {
+              record.portraitBuffer = compositeBuffer;
+              record.portraitHeadBuffer = assetRecord.crop ? await readFile(cropPath) : null;
+            } else if (kind.key === "face") {
+              record.faceBuffer = compositeBuffer;
+              record.faceCropBuffer = assetRecord.crop ? await readFile(cropPath) : null;
+            }
+          }
+          assetRecord.status = assetRecord.issues.length ? "invalid" : "passed";
+        } catch (error) {
+          assetRecord.status = "invalid";
+          addAssetIssue(record, assetRecord, kind, error instanceof Error ? error.message : String(error));
         }
-        record.status = record.issues.length ? "invalid" : "passed";
-      } catch (error) {
-        record.status = "invalid";
-        record.issues.push(error instanceof Error ? error.message : String(error));
       }
-      if (record.issues.length) issues.push(`${record.names.join(" / ")} (${record.asset}): ${record.issues.join("; ")}`);
+      record.status = record.issues.length ? "invalid" : "passed";
+      if (record.issues.length) {
+        issues.push(`${record.names.join(" / ")} (${record.asset}): ${record.issues.join("; ")}`);
+      }
     }
 
     await cropPage.close();
-    await makeContactSheet(
-      page,
-      records.filter((record) => record.sceneBuffer).map((record) => ({
-        label: record.names.join(" / "),
-        asset: record.asset,
-        buffer: record.sceneBuffer,
-      })),
-      path.join(outputRoot, "background-contact-sheet.png"),
-      "VISITOR / CHECKPOINT BACKGROUND AUDIT",
-      3,
-    );
-    await makeContactSheet(
-      page,
-      records.filter((record) => record.headBuffer).map((record) => ({
-        label: record.names.join(" / "),
-        asset: record.asset,
-        buffer: record.headBuffer,
-      })),
-      path.join(outputRoot, "head-contact-sheet.png"),
-      "VISITOR / HEAD CROP AUDIT",
-      4,
-    );
+    const contactSheets = [
+      {
+        bufferKey: "sceneBuffer",
+        file: "background-contact-sheet.png",
+        title: "VISITOR / CHECKPOINT BACKGROUND AUDIT",
+        columns: 3,
+        assetKey: "scene",
+      },
+      {
+        bufferKey: "headBuffer",
+        file: "head-contact-sheet.png",
+        title: "VISITOR / HEAD CROP AUDIT",
+        columns: 4,
+        assetKey: "scene",
+      },
+      {
+        bufferKey: "portraitBuffer",
+        file: "portrait-background-contact-sheet.png",
+        title: "VISITOR / FULL-BODY PORTRAIT AUDIT",
+        columns: 3,
+        assetKey: "portrait",
+      },
+      {
+        bufferKey: "portraitHeadBuffer",
+        file: "portrait-head-contact-sheet.png",
+        title: "VISITOR / FULL-BODY PORTRAIT HEAD CROP AUDIT",
+        columns: 4,
+        assetKey: "portrait",
+      },
+      {
+        bufferKey: "faceBuffer",
+        file: "face-background-contact-sheet.png",
+        title: "VISITOR / FACE-SHOULDERS BACKGROUND AUDIT",
+        columns: 3,
+        assetKey: "face",
+      },
+      {
+        bufferKey: "faceCropBuffer",
+        file: "face-crop-contact-sheet.png",
+        title: "VISITOR / ENLARGED FACE CROP AUDIT",
+        columns: 4,
+        assetKey: "face",
+      },
+    ];
+    for (const sheet of contactSheets) {
+      await makeContactSheet(
+        page,
+        records.filter((record) => record[sheet.bufferKey]).map((record) => ({
+          label: record.names.join(" / "),
+          asset: record.assets[sheet.assetKey]?.asset || record.asset,
+          buffer: record[sheet.bufferKey],
+        })),
+        path.join(outputRoot, sheet.file),
+        sheet.title,
+        sheet.columns,
+      );
+    }
     await writeFile(path.join(outputRoot, "manifest.json"), JSON.stringify({
       generatedAt: new Date().toISOString(),
       viewport,
       seed,
       background: "reference/assets/checkpoint-background-v3.png",
-      visitors: records.map(({ sceneBuffer, headBuffer, ...record }) => record),
+      assetKinds: auditedAssetKinds.map(({ key, label, compositeSuffix, cropSuffix }) => ({
+        key,
+        label,
+        compositeSuffix,
+        cropSuffix,
+      })),
+      visitors: records.map(manifestRecord),
       issues,
     }, null, 2));
+    console.log(`Audited ${records.length} characters × ${auditedAssetKinds.length} registered asset kinds.`);
+    for (const record of records) {
+      const summary = auditedAssetKinds.map((kind) => {
+        const asset = record.assets[kind.key];
+        const matte = asset?.alpha?.matteRisk?.level || "n/a";
+        return `${kind.key}=${asset?.status || "missing"},matte=${matte}`;
+      }).join("; ");
+      console.log(`- ${record.names.join(" / ")}: ${summary}`);
+    }
     await page.close();
   } finally {
     if (browser) await browser.close();
@@ -559,9 +808,8 @@ async function main() {
     process.exitCode = 1;
     return;
   }
-  console.log(`Visitor background audit passed for ${records.length} distinct scene assets.`);
-  console.log(`Review: ${path.relative(root, path.join(outputRoot, "background-contact-sheet.png"))}`);
-  console.log(`Head crops: ${path.relative(root, path.join(outputRoot, "head-contact-sheet.png"))}`);
+  console.log(`Visitor background audit passed for ${records.length} distinct registered characters.`);
+  console.log(`Review sheets: ${path.relative(root, outputRoot)}`);
 }
 
 main().catch((error) => {
