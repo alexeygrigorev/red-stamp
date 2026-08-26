@@ -65,6 +65,12 @@
   };
 
   let stampMotionTimer = null;
+  // The outcome modal used to appear on the very next 180ms sync tick,
+  // rendering on top of/behind the flying stamp-slip animation. Hold it
+  // back until the ~980ms admit animation finishes so the two never
+  // overlap; the polling sync loop below picks the modal up as soon as
+  // this flips back to false.
+  let stampMotionActive = false;
   let welcomeAudioLoading = false;
   let welcomeAudioStartedAt = 0;
   let sceneTransitionTimer = null;
@@ -278,8 +284,15 @@
       document.body.append(motion);
     }
 
-    motion.style.setProperty("--stamp-x", `${Math.round(rect.left + rect.width * 0.72)}px`);
-    motion.style.setProperty("--stamp-y", `${Math.round(rect.top + rect.height * 0.5)}px`);
+    // The stamp card is up to 300px wide; anchoring it flush to the admit
+    // button (which sits at the right edge of the action rail) pushed it
+    // off-canvas. Clamp so the whole card stays inside the viewport.
+    const marginX = Math.min(170, window.innerWidth / 2 - 20);
+    const marginY = Math.min(90, window.innerHeight / 2 - 20);
+    const x = Math.min(Math.max(rect.left + rect.width * 0.72, marginX), window.innerWidth - marginX);
+    const y = Math.min(Math.max(rect.top + rect.height * 0.5, marginY), window.innerHeight - marginY);
+    motion.style.setProperty("--stamp-x", `${Math.round(x)}px`);
+    motion.style.setProperty("--stamp-y", `${Math.round(y)}px`);
     const stampArt = motion.querySelector("[data-stamp-art]");
     if (stampArt) {
       stampArt.src = window.matchMedia?.("(max-width: 700px)").matches
@@ -293,11 +306,13 @@
     void motion.offsetWidth;
     action.classList.add("reference-stamp-action");
     motion.classList.add("reference-stamp-motion-active");
+    stampMotionActive = true;
     if (stampMotionTimer) window.clearTimeout(stampMotionTimer);
     stampMotionTimer = window.setTimeout(() => {
       action.classList.remove("reference-stamp-action");
       motion.remove();
       stampMotionTimer = null;
+      stampMotionActive = false;
     }, 980);
   }
 
@@ -759,7 +774,15 @@
     }
 
     panel.dataset.endReason = terminated ? "terminated" : finalShift ? "final" : "complete";
-    panel.querySelector("[data-shift-end-masthead]").textContent = gameOver ? "GAME OVER" : "SHIFT COMPLETE";
+    // Masthead and title used to both say "SHIFT COMPLETE" (or the
+    // arcade-flavored "GAME OVER", which breaks the in-world bureaucratic
+    // fiction). Give each of the three end states its own non-redundant
+    // masthead line instead.
+    panel.querySelector("[data-shift-end-masthead]").textContent = terminated
+      ? "CLEARANCE WITHDRAWN"
+      : finalShift
+        ? "CAMPAIGN COMPLETE"
+        : "SHIFT CLOSED";
     panel.querySelector("[data-shift-end-kicker]").textContent = terminated
       ? `SHIFT ${day} / CLEARANCE WITHDRAWN`
       : finalShift
@@ -767,7 +790,9 @@
         : `SHIFT ${day} / REPORT FILED`;
     panel.querySelector("[data-shift-end-title]").textContent = terminated
       ? "CLEARANCE TERMINATED"
-      : "SHIFT COMPLETE";
+      : finalShift
+        ? "POST SECURED"
+        : "SHIFT COMPLETE";
     panel.querySelector("[data-shift-end-status]").textContent = terminated
       ? "STATUS / CAREER STANDING 0%"
       : `STATUS / REPORT FILED · ${summary.total} ${summary.total === 1 ? "CASE" : "CASES"} CLOSED`;
@@ -799,6 +824,10 @@
       panel?.remove();
       return;
     }
+    // Let the admit-stamp animation play out before the verdict modal
+    // covers the screen; the 180ms sync loop retries automatically once
+    // stampMotionActive clears.
+    if (!panel && stampMotionActive) return;
 
     const last = state.shiftLog?.[state.shiftLog.length - 1];
     if (!panel) {
@@ -821,9 +850,21 @@
         #reference-outcome p{margin:16px 0 24px;font-size:14px;line-height:1.55;color:#dacca4}
         #reference-outcome button{border:2px solid #8e1f1c;background:linear-gradient(#7d1f19,#480e0b);padding:12px 20px;font-family:'Staatliches',sans-serif;font-size:24px;letter-spacing:.12em;color:#f4dfc9;cursor:pointer;box-shadow:inset 0 2px 0 rgba(255,190,170,.28),0 4px 0 #290a08}
         #reference-outcome button span{font-family:'IBM Plex Mono',monospace;font-size:16px}
+        #reference-outcome[data-outcome-grade="good"] [data-outcome-card]{border-color:#5f7a4e}
+        #reference-outcome[data-outcome-grade="good"] [data-outcome-kicker]{color:#8ea86e}
+        #reference-outcome[data-outcome-grade="good"] [data-outcome-title]{color:#d7e4c2}
+        #reference-outcome[data-outcome-grade="bad"] [data-outcome-card]{border-color:#8e1f1c}
+        #reference-outcome[data-outcome-grade="bad"] [data-outcome-kicker]{color:#e0705c}
+        #reference-outcome[data-outcome-grade="bad"] [data-outcome-title]{color:#f0b8a4}
       `;
       document.head.append(style);
     }
+    panel.dataset.outcomeGrade = last?.grade || "mixed";
+    panel.querySelector("[data-outcome-kicker]").textContent = last?.grade === "good"
+      ? "CASE CLOSED / CLEARED"
+      : last?.grade === "bad"
+        ? "CASE CLOSED / INCIDENT"
+        : "CASE CLOSED / RED STAMP";
     panel.querySelector("[data-outcome-title]").textContent = last?.title || "CASE CLOSED";
     panel.querySelector("[data-outcome-copy]").textContent = `${String(last?.decision || state.finalDecision || "decision").toUpperCase()} recorded. The next visitor is waiting outside the checkpoint.`;
   }
