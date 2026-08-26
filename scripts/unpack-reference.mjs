@@ -118,8 +118,12 @@ function addReferenceHooks(template, paths) {
 
   for (const [condition, name] of [
     ["showThreshold", "threshold"],
+    ["showFile", "file"],
+    ["showPapers", "papers"],
     ["showFace", "identity"],
     ["showGate", "detector"],
+    ["showXray", "xray"],
+    ["showAsk", "ask"],
   ]) {
     const viewPattern = new RegExp(`(<sc-if value="\\{\\{ ${condition} \\}\\}"[^>]*>\\s*<div)( style=)`, "g");
     output = output.replace(viewPattern, `$1 data-ref-view="${name}"$2`);
@@ -229,6 +233,18 @@ function addReferenceHooks(template, paths) {
   output = output.replace(
     '<div sc-camel-on-click="{{ row.open }}"',
     '<div data-ref-source="{{ row.n }}" sc-camel-on-click="{{ row.open }}"',
+  );
+  output = output.replaceAll(
+    '<div sc-camel-on-click="{{ it.open }}"',
+    '<div data-ref-generated="detector-item" sc-camel-on-click="{{ it.open }}"',
+  );
+  output = output.replaceAll(
+    '<div sc-camel-on-click="{{ b.open }}"',
+    '<div data-ref-generated="bag-item" sc-camel-on-click="{{ b.open }}"',
+  );
+  output = output.replaceAll(
+    '<div sc-camel-on-click="{{ q.ask }}"',
+    '<div data-ref-generated="question-choice" sc-camel-on-click="{{ q.ask }}"',
   );
 
   const actionMarkers = [

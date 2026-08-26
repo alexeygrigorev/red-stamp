@@ -40,6 +40,30 @@
     review: "#c8a25f",
   };
 
+  const ACTION_LABEL = {
+    begin: "Begin shift",
+    "mark-match": "Mark current finding as match",
+    "mark-flag": "Flag the current finding",
+    "mark-review": "Hold the current finding for review",
+    "back-window": "Return to the visitor window",
+    "paper-0": "Open identity page",
+    "paper-1": "Open clearance slip",
+    "paper-2": "Open correspondence order",
+    "close-paper": "Return to document sheets",
+    "show-scan": "Show density scan",
+    "open-bag": "Open the bag contents",
+    "close-bag-item": "Return to bag contents",
+    "close-item": "Return to detector tray",
+    "xray-hint": "Explain the unknown mass finding",
+    submit: "Submit findings",
+    liaison: "Call the liaison",
+    secondary: "Open secondary inspection",
+    admit: "Apply red stamp and admit entry",
+    deny: "Deny entry",
+    restart: "Start a new campaign",
+    advance: "Open the next shift",
+  };
+
   let stampMotionTimer = null;
   let welcomeAudioLoading = false;
   let welcomeAudioStartedAt = 0;
@@ -285,6 +309,114 @@
     for (const element of slots(name)) element.textContent = value == null ? "" : String(value);
   }
 
+  function ensureWorkflowStyle() {
+    if (document.querySelector("#reference-workflow-style")) return;
+    const style = document.createElement("style");
+    style.id = "reference-workflow-style";
+    style.textContent = `
+      [data-ref-action="mark-match"],
+      [data-ref-action="mark-flag"],
+      [data-ref-action="mark-review"],
+      [data-ref-source],
+      [data-ref-generated]{outline-offset:2px}
+      [data-ref-action="mark-match"]:focus-visible,
+      [data-ref-action="mark-flag"]:focus-visible,
+      [data-ref-action="mark-review"]:focus-visible,
+      [data-ref-source]:focus-visible,
+      [data-ref-generated]:focus-visible{outline:2px solid #e1b86d}
+      #reference-workflow-actions{display:flex;flex:0 0 100%;justify-content:flex-end;gap:10px;width:100%;margin-top:2px}
+      #reference-workflow-actions [data-reference-workflow-status]{flex:1 1 0;align-self:center;color:#8a7458;font:600 10px/1.25 'IBM Plex Mono',monospace;letter-spacing:.14em}
+      #reference-workflow-actions [data-reference-workflow-status]:not(:empty){color:#d0bd91}
+      #reference-workflow-actions button{appearance:none;flex:1 1 0;min-width:0;padding:9px 12px;border:1px solid #4a3a2c;background:linear-gradient(#241c16,#100c0a);box-shadow:inset 0 1px 0 #5c4938,0 2px 0 #0a0806;color:#d2c3a0;cursor:pointer;font:600 11px/1.2 'IBM Plex Mono',monospace;letter-spacing:.14em;text-align:center}
+      #reference-workflow-actions button:hover{border-color:#8a7458;background:linear-gradient(#30241b,#17110d)}
+      #reference-workflow-actions button:focus-visible{outline:2px solid #e1b86d;outline-offset:2px}
+      #reference-workflow-actions button[data-ref-action="submit"]{border-color:#8e1f1c;background:linear-gradient(#5f1815,#2c0b09);color:#f0d7c4}
+      #reference-workflow-actions button[data-ref-action="submit"][aria-pressed="true"]{border-color:#6f8c58;background:linear-gradient(#304329,#182519);color:#d5e3c5}
+      #reference-workflow-actions button[data-ref-action="liaison"][aria-pressed="true"]{border-color:#6e7f7c;color:#a8ddd2}
+      @media (max-width:700px){#reference-workflow-actions{gap:7px;margin-top:1px}#reference-workflow-actions [data-reference-workflow-status]{font-size:8px;letter-spacing:.08em}#reference-workflow-actions button{padding:8px 6px;font-size:10px;letter-spacing:.1em}}
+    `;
+    document.head.append(style);
+  }
+
+  function ensureWorkflowControls(state) {
+    const markReview = document.querySelector('[data-ref-action="mark-review"]');
+    const group = markReview?.parentElement;
+    if (!group) return;
+    ensureWorkflowStyle();
+    group.style.flexWrap = "wrap";
+
+    let actions = group.querySelector("#reference-workflow-actions");
+    if (!actions) {
+      actions = document.createElement("div");
+      actions.id = "reference-workflow-actions";
+      actions.innerHTML = `
+        <span data-reference-workflow-status data-ref-slot="card-state" aria-live="polite"></span>
+        <button data-ref-action="liaison" type="button">CALL LIAISON</button>
+        <button data-ref-action="submit" type="button">SUBMIT FINDINGS</button>`;
+      group.append(actions);
+    }
+
+    const liaison = actions.querySelector('[data-ref-action="liaison"]');
+    const submit = actions.querySelector('[data-ref-action="submit"]');
+    if (liaison) {
+      liaison.textContent = state?.liaisonCalled ? "LIAISON CONTACTED" : "CALL LIAISON";
+      liaison.setAttribute("aria-pressed", String(Boolean(state?.liaisonCalled)));
+      liaison.setAttribute("aria-label", state?.liaisonCalled ? "Liaison contacted" : "Call the liaison");
+    }
+    if (submit) {
+      submit.textContent = state?.checklistSubmitted ? "FINDINGS FILED" : "SUBMIT FINDINGS";
+      submit.setAttribute("aria-pressed", String(Boolean(state?.checklistSubmitted)));
+      submit.setAttribute("aria-label", state?.checklistSubmitted ? "Findings filed" : "Submit findings");
+    }
+    const status = actions.querySelector("[data-reference-workflow-status]");
+    if (status) status.textContent = state?.checklistSubmitted ? "CARD READY TO FILE" : "CARD NOT FILED";
+    actions.hidden = !state?.started;
+  }
+
+  function ensureInteractiveSemantics(state) {
+    ensureWorkflowStyle();
+    const surfaces = document.querySelectorAll("[data-ref-action], [data-ref-source], [data-ref-generated]");
+    for (const element of surfaces) {
+      const action = element.dataset.refAction;
+      const sameActionOwner = action && element.parentElement?.closest(`[data-ref-action="${action}"]`);
+      if (sameActionOwner) {
+        element.removeAttribute("role");
+        element.removeAttribute("tabindex");
+        element.setAttribute("aria-hidden", "true");
+        continue;
+      }
+
+      const native = /^(A|BUTTON|INPUT|SELECT|TEXTAREA|SUMMARY)$/.test(element.tagName);
+      if (!native) {
+        element.setAttribute("role", "button");
+        element.tabIndex = 0;
+      }
+
+      if (!element.getAttribute("aria-label")) {
+        const generated = element.dataset.refGenerated;
+        const text = element.innerText?.trim().replace(/\s+/g, " ");
+        const label = action
+          ? ACTION_LABEL[action]
+          : element.dataset.refSource
+            ? `Open inspection source ${element.dataset.refSource}`
+            : generated === "detector-item"
+              ? `Inspect ${text || "detector item"}`
+              : generated === "bag-item"
+                ? `Inspect ${text || "bag item"}`
+                : generated === "question-choice"
+                  ? `Ask: ${text || "question"}`
+                  : text || "Open inspection detail";
+        if (label) element.setAttribute("aria-label", label);
+      }
+
+      if (action?.startsWith("mark-")) {
+        const tool = state?.selectedTool;
+        const mark = action.slice(5);
+        element.setAttribute("aria-pressed", String(state?.checklistMarks?.[tool] === mark));
+      }
+    }
+  }
+
   function checkpointTime(state) {
     // Keep the visible checkpoint clock aligned with the clock already
     // rendered by app.js: the first visitor opens at 08:30 and each case
@@ -340,11 +472,11 @@
       #reference-shortcuts-toggle svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5}
       #reference-shortcuts-popover{position:absolute;right:0;bottom:calc(100% + 10px);width:min(282px,calc(100vw - 24px));padding:12px 13px 13px;border:1px solid #6b5a3f;background:linear-gradient(145deg,rgba(35,27,21,.98),rgba(12,9,8,.99));box-shadow:0 16px 34px rgba(0,0,0,.78),inset 0 1px 0 rgba(226,190,133,.1);color:#cdbd9a;text-align:left}
       #reference-shortcuts-popover::after{position:absolute;right:10px;bottom:-6px;width:10px;height:10px;border-right:1px solid #6b5a3f;border-bottom:1px solid #6b5a3f;background:#0f0b09;content:"";transform:rotate(45deg)}
-      #reference-shortcuts-popover [data-shortcuts-title]{margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid #3a2c22;font-size:10px;font-weight:600;letter-spacing:.22em;color:#c8a25f}
-      #reference-shortcuts-popover [data-shortcuts-grid]{display:grid;grid-template-columns:auto 1fr;gap:7px 11px;align-items:center;font-size:11px;line-height:1.3}
+      #reference-shortcuts-popover [data-shortcuts-title]{margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid #3a2c22;font-size:11px;font-weight:600;letter-spacing:.22em;color:#c8a25f}
+      #reference-shortcuts-popover [data-shortcuts-grid]{display:grid;grid-template-columns:auto 1fr;gap:7px 11px;align-items:center;font-size:12px;line-height:1.3}
       #reference-shortcuts-popover kbd{min-width:34px;padding:3px 6px;border:1px solid #5b4937;background:#17110e;box-shadow:inset 0 -1px 0 #080605;color:#e4d3aa;font:600 10px/1.2 'IBM Plex Mono',monospace;letter-spacing:.08em;text-align:center}
       #reference-shortcuts-popover [data-shortcut-description]{color:#b7a889}
-      @media (max-width:700px){#reference-shortcuts-toggle{width:32px;height:36px}#reference-shortcuts-popover{right:0;bottom:calc(100% + 8px);width:min(264px,calc(100vw - 20px));padding:11px 12px 12px}#reference-shortcuts-popover [data-shortcuts-grid]{font-size:10px}}
+      @media (max-width:700px){#reference-shortcuts-toggle{width:32px;height:36px}#reference-shortcuts-popover{right:0;bottom:calc(100% + 8px);width:min(264px,calc(100vw - 20px));padding:11px 12px 12px}#reference-shortcuts-popover [data-shortcuts-grid]{font-size:11px}}
     `;
     document.head.append(style);
   }
@@ -508,7 +640,7 @@
     if (!log || !caseData?.question) return;
     log.replaceChildren();
     const entries = [
-      ["EXAMINER", caseData.question.prompt, "flex-end", "#8a7458", "#3a2c22", "rgba(200,162,95,.06)", "#cdbe9c", "15px"],
+      ["EXAMINER", caseData.question.prompt, "flex-end", "#a08a63", "#3a2c22", "rgba(200,162,95,.06)", "#cdbe9c", "15px"],
       [caseData.name?.toUpperCase() || "VISITOR", caseData.question.answer, "flex-start", "#b0705c", "#6d2b26", "rgba(142,31,28,.12)", "#e3d2a9", "18px"],
     ];
     for (const [speaker, text, align, who, border, background, ink, size] of entries) {
@@ -516,7 +648,7 @@
       line.style.cssText = `display:flex;flex-direction:column;gap:4px;align-items:${align}`;
       const label = document.createElement("span");
       label.textContent = speaker;
-      label.style.cssText = `font-size:9px;font-weight:600;letter-spacing:.26em;color:${who}`;
+      label.style.cssText = `font-size:10px;font-weight:600;letter-spacing:.26em;color:${who}`;
       const bubble = document.createElement("div");
       bubble.textContent = text;
       bubble.style.cssText = `max-width:82%;padding:11px 14px;border:1px solid ${border};background:${background};font-size:${size};line-height:1.45;color:${ink};font-style:${align === "flex-start" ? "italic" : "normal"};text-wrap:pretty`;
@@ -540,7 +672,7 @@
       const columns = [...row.children].filter((element) => element.tagName === "SPAN");
       if (columns.length >= 4) {
         columns[2].textContent = status;
-        columns[2].style.color = mark ? MARK_INK[mark] : "#6e5f47";
+        columns[2].style.color = mark ? MARK_INK[mark] : "#9a8560";
       }
 
       if (mark === "flag") {
@@ -590,6 +722,9 @@
     const terminated = Number(state?.career) <= 0;
     const summary = shiftEndSummary(state);
     const day = String(Math.max(1, Number(state?.day) || 1)).padStart(2, "0");
+    const campaignLength = Number(host()?.campaignLength?.() || 0);
+    const finalShift = Boolean(campaignLength && Number(state?.day) >= campaignLength);
+    const gameOver = terminated || finalShift;
 
     if (!panel) {
       panel = document.createElement("section");
@@ -602,7 +737,7 @@
         <div data-shift-end-card>
           <div data-shift-end-rule aria-hidden="true"><span></span><b>RS-26</b><span></span></div>
           <div data-shift-end-kicker></div>
-          <div data-shift-end-masthead>GAME OVER</div>
+          <div data-shift-end-masthead></div>
           <h1 id="reference-shift-end-title" data-shift-end-title></h1>
           <div data-shift-end-status></div>
           <p id="reference-shift-end-reason" data-shift-end-reason></p>
@@ -612,7 +747,7 @@
             <div><dt>SECURITY BREACHES</dt><dd data-shift-end-breaches></dd></div>
           </dl>
           <button data-ref-action="restart" type="button">
-            <span>START NEW CAMPAIGN</span><b aria-hidden="true">&#8594;</b>
+            <span></span><b aria-hidden="true">&#8594;</b>
           </button>
           <div data-shift-end-footer>
             <span>UNION OF VESKAR / EXTERNAL MISSIONS</span>
@@ -623,10 +758,13 @@
       window.requestAnimationFrame(() => panel.querySelector("button")?.focus());
     }
 
-    panel.dataset.endReason = terminated ? "terminated" : "complete";
+    panel.dataset.endReason = terminated ? "terminated" : finalShift ? "final" : "complete";
+    panel.querySelector("[data-shift-end-masthead]").textContent = gameOver ? "GAME OVER" : "SHIFT COMPLETE";
     panel.querySelector("[data-shift-end-kicker]").textContent = terminated
       ? `SHIFT ${day} / CLEARANCE WITHDRAWN`
-      : `SHIFT ${day} / FINAL REPORT FILED`;
+      : finalShift
+        ? `SHIFT ${day} / FINAL REPORT FILED`
+        : `SHIFT ${day} / REPORT FILED`;
     panel.querySelector("[data-shift-end-title]").textContent = terminated
       ? "CLEARANCE TERMINATED"
       : "SHIFT COMPLETE";
@@ -635,13 +773,21 @@
       : `STATUS / REPORT FILED · ${summary.total} ${summary.total === 1 ? "CASE" : "CASES"} CLOSED`;
     panel.querySelector("[data-shift-end-reason]").textContent = terminated
       ? "Your career standing reached zero. Your clearance is suspended, the red stamp has been removed from your desk, and this campaign is over."
-      : "The final visitor has been resolved. The public entrance is closed, your decisions have been forwarded to the Directorate, and this shift is complete.";
+      : finalShift
+        ? "The final visitor has been resolved. The public entrance is closed, your decisions have been forwarded to the Directorate, and this campaign is complete."
+        : "The final visitor has been resolved. The public entrance is closed, your decisions have been forwarded to the Directorate, and the next shift is ready to open.";
     panel.querySelector("[data-shift-end-stat-one-label]").textContent = terminated ? "INCIDENTS THIS SHIFT" : "CLEAN CASES";
     panel.querySelector("[data-shift-end-stat-one]").textContent = terminated
       ? `${summary.incidents}/${summary.total}`
       : `${summary.clean}/${summary.total}`;
     panel.querySelector("[data-shift-end-career]").textContent = `${summary.career}%`;
     panel.querySelector("[data-shift-end-breaches]").textContent = String(summary.breaches);
+    const next = panel.querySelector("button[data-ref-action]");
+    if (next) {
+      next.dataset.refAction = gameOver ? "restart" : "advance";
+      next.querySelector("span").textContent = gameOver ? "START NEW CAMPAIGN" : "OPEN NEXT SHIFT";
+      next.setAttribute("aria-label", gameOver ? "Start a new campaign" : "Open the next shift");
+    }
     return true;
   }
 
@@ -670,7 +816,7 @@
       style.textContent = `
         #reference-outcome{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:rgba(4,3,2,.82);font-family:'IBM Plex Mono',monospace;color:#c0b49b}
         #reference-outcome [data-outcome-card]{width:min(620px,calc(100vw - 36px));padding:28px 30px 30px;border:1px solid #6b5a3f;background:linear-gradient(#241a16,#0c0807);box-shadow:0 28px 80px rgba(0,0,0,.9)}
-        #reference-outcome [data-outcome-kicker]{font-size:10px;font-weight:600;letter-spacing:.28em;color:#d8523c}
+        #reference-outcome [data-outcome-kicker]{font-size:11px;font-weight:600;letter-spacing:.28em;color:#d8523c}
         #reference-outcome [data-outcome-title]{margin-top:10px;font-family:'Staatliches',sans-serif;font-size:52px;line-height:.95;letter-spacing:.08em;color:#e9d9b1}
         #reference-outcome p{margin:16px 0 24px;font-size:14px;line-height:1.55;color:#dacca4}
         #reference-outcome button{border:2px solid #8e1f1c;background:linear-gradient(#7d1f19,#480e0b);padding:12px 20px;font-family:'Staatliches',sans-serif;font-size:24px;letter-spacing:.12em;color:#f4dfc9;cursor:pointer;box-shadow:inset 0 2px 0 rgba(255,190,170,.28),0 4px 0 #290a08}
@@ -708,6 +854,7 @@
     updateCheckpointStatus(state, shift);
     syncCurrentPeopleZoom();
     ensureShortcutsControl(state);
+    ensureInteractiveSemantics(state);
     if (!state.started) {
       updateOutcome(state);
       return;
@@ -734,6 +881,8 @@
     updateMetrics(state);
     updateCurrentCase(caseData, state);
     updateRows(state);
+    ensureWorkflowControls(state);
+    ensureInteractiveSemantics(state);
     setVisitorImage("visitor-scene", assets?.scene);
     setVisitorImage("visitor-face", assets?.face);
     setVisitorImage("xray-scan", assets?.xray);
@@ -794,11 +943,81 @@
     if (action === "back-window") return dispatch("back");
     if (action === "admit") return dispatch("admit");
     if (action === "secondary") return dispatch("secondary");
+    if (action === "liaison") return dispatch("liaison");
+    if (action === "submit") return dispatch("submit");
     if (action === "deny") return dispatch("deny");
     if (action === "advance") return dispatch("advance");
     if (action === "restart") return dispatch("restart");
     if (action.startsWith("paper-")) return dispatch("inspect", "documents");
     if (action === "show-scan" || action === "open-bag") return dispatch("inspect", "xray");
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!event.isTrusted || !["Enter", " "].includes(event.key)) return;
+    const surface = event.target.closest?.("[data-ref-action], [data-ref-source], [data-ref-generated]");
+    if (!surface || surface.tabIndex < 0) return;
+    event.preventDefault();
+
+    if (surface.dataset.refGenerated) {
+      // The unpacked component owns these item/question callbacks. Calling
+      // click() preserves that runtime while giving the generated surface a
+      // real keyboard activation path.
+      surface.click();
+      return;
+    }
+
+    if (surface.dataset.refSource) {
+      const tool = SOURCE_TO_TOOL[surface.dataset.refSource];
+      if (tool) {
+        surface.click();
+        dispatch("inspect", tool);
+      }
+      return;
+    }
+
+    const action = surface.dataset.refAction;
+    if (action === "enable-audio") return enableWelcomeAudio();
+    if (action === "xray-hint") return toggleXrayHint();
+    if (action === "begin") {
+      playSceneTransition();
+      surface.click();
+      return dispatch("begin");
+    }
+    if (action === "mark-match") {
+      surface.click();
+      return dispatch("mark", "match");
+    }
+    if (action === "mark-flag") {
+      surface.click();
+      return dispatch("mark", "flag");
+    }
+    if (action === "mark-review") {
+      surface.click();
+      return dispatch("mark", "review");
+    }
+    if (action === "back-window") {
+      surface.click();
+      return dispatch("back");
+    }
+    if (action === "admit") return dispatch("admit");
+    if (action === "secondary") return dispatch("secondary");
+    if (action === "liaison") return dispatch("liaison");
+    if (action === "submit") return dispatch("submit");
+    if (action === "deny") return dispatch("deny");
+    if (action === "advance") return dispatch("advance");
+    if (action === "restart") return dispatch("restart");
+    if (action.startsWith("paper-")) {
+      surface.click();
+      return dispatch("inspect", "documents");
+    }
+    if (["close-paper", "close-item", "close-bag-item"].includes(action)) {
+      surface.click();
+      return;
+    }
+    if (action === "show-scan" || action === "open-bag") {
+      surface.click();
+      return dispatch("inspect", "xray");
+    }
   });
 
   // Welcome music lives in the parent game engine, while the visible welcome

@@ -245,14 +245,14 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
       </sc-if>
 
       <sc-if value="{{ showFile }}">
-        <div style="position:absolute;inset:0;background:radial-gradient(70% 70% at 50% 40%,#1b1512,#080605);display:grid;place-items:center;padding:118px 34px 30px">
+        <div data-ref-view="file" style="position:absolute;inset:0;background:radial-gradient(70% 70% at 50% 40%,#1b1512,#080605);display:grid;place-items:center;padding:118px 34px 30px">
           <div style="position:relative;height:100%;width:auto;min-height:0;max-height:100%;max-width:100%;aspect-ratio:1/1.28;box-shadow:0 30px 70px rgba(0,0,0,.9);border:1px solid #4a3a2c">
             <img src="assets/b91c0e4c-8a03-4c66-b9ea-6879ea6ca70c.webp" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
             <div style="position:absolute;left:0;right:0;bottom:0;background:linear-gradient(rgba(6,4,3,0),rgba(6,4,3,.94));padding:44px 24px 18px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
-              <div><div style="font-size:10px;font-weight:600;letter-spacing:.24em;color:#a8916a">BEARER</div><div style="font-size:16px;color:#e3d2a9"><span data-ref-slot="file-bearer">Anton Ryl</span></div></div>
-              <div><div style="font-size:10px;font-weight:600;letter-spacing:.24em;color:#a8916a">LETTER FILE</div><div style="font-size:16px;color:#e3d2a9"><span data-ref-slot="file-number">COR-0000-R</span></div></div>
-              <div><div style="font-size:10px;font-weight:600;letter-spacing:.24em;color:#a8916a">DESTINATION</div><div style="font-size:16px;color:#e3d2a9"><span data-ref-slot="file-destination">Special Corr. / 05</span></div></div>
-              <div><div style="font-size:10px;font-weight:600;letter-spacing:.24em;color:#a8916a">APPOINTMENT</div><div style="font-size:16px;color:#e0705c"><span data-ref-slot="file-appointment">NONE — restricted</span></div></div>
+              <div><div style="font-size:11px;font-weight:600;letter-spacing:.24em;color:#a8916a">BEARER</div><div style="font-size:16px;color:#e3d2a9"><span data-ref-slot="file-bearer">Anton Ryl</span></div></div>
+              <div><div style="font-size:11px;font-weight:600;letter-spacing:.24em;color:#a8916a">LETTER FILE</div><div style="font-size:16px;color:#e3d2a9"><span data-ref-slot="file-number">COR-0000-R</span></div></div>
+              <div><div style="font-size:11px;font-weight:600;letter-spacing:.24em;color:#a8916a">DESTINATION</div><div style="font-size:16px;color:#e3d2a9"><span data-ref-slot="file-destination">Special Corr. / 05</span></div></div>
+              <div><div style="font-size:11px;font-weight:600;letter-spacing:.24em;color:#a8916a">APPOINTMENT</div><div style="font-size:16px;color:#e0705c"><span data-ref-slot="file-appointment">NONE — restricted</span></div></div>
             </div>
             <div style="position:absolute;top:16px;right:16px;border:2px solid #8e1f1c;color:#e0705c;background:rgba(20,8,7,.72);padding:6px 12px;transform:rotate(-4deg);font-family:'Staatliches',sans-serif;font-size:22px;letter-spacing:.14em">UNMARKED</div>
           </div>
@@ -260,12 +260,12 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
       </sc-if>
 
       <sc-if value="{{ showPapers }}">
-        <div style="position:absolute;inset:0;background:radial-gradient(70% 70% at 50% 40%,#1a1613,#070505);padding:118px 34px 30px;display:grid;grid-template-rows:1fr auto;gap:14px">
+        <div data-ref-view="papers" style="position:absolute;inset:0;background:radial-gradient(70% 70% at 50% 40%,#1a1613,#070505);padding:118px 34px 30px;display:grid;grid-template-rows:1fr auto;gap:14px">
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;min-height:0">
             <div data-ref-action="paper-0" sc-camel-on-click="{{ openPaper0 }}" style="min-height:0;display:flex;flex-direction:column;gap:8px;cursor:pointer">
               <div style="display:flex;justify-content:space-between;align-items:baseline">
-                <span style="font-size:11px;font-weight:600;letter-spacing:.22em;color:#dacca4">IDENTITY PAGE</span>
-                <span style="font-size:10px;letter-spacing:.18em;color:#a8c48a">IN ORDER</span>
+                <span style="font-size:12px;font-weight:600;letter-spacing:.22em;color:#dacca4">IDENTITY PAGE</span>
+                <span style="font-size:11px;letter-spacing:.18em;color:#a8c48a">IN ORDER</span>
               </div>
               <div style="position:relative;flex:1;min-height:0;overflow:hidden;border:1px solid #3a2c22;background:#0b0908;box-shadow:0 18px 40px rgba(0,0,0,.7)" style-hover="border-color:#c8a25f">
                 <img src="assets/51403dfe-c385-48e5-934c-3cd1340e2420.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 0%">
@@ -275,8 +275,8 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
             </div>
             <div data-ref-action="paper-1" sc-camel-on-click="{{ openPaper1 }}" style="min-height:0;display:flex;flex-direction:column;gap:8px;cursor:pointer">
               <div style="display:flex;justify-content:space-between;align-items:baseline">
-                <span style="font-size:11px;font-weight:600;letter-spacing:.22em;color:#dacca4">CLEARANCE SLIP</span>
-                <span style="font-size:10px;letter-spacing:.18em;color:#e0c07c">QUESTION IT</span>
+                <span style="font-size:12px;font-weight:600;letter-spacing:.22em;color:#dacca4">CLEARANCE SLIP</span>
+                <span style="font-size:11px;letter-spacing:.18em;color:#e0c07c">QUESTION IT</span>
               </div>
               <div style="position:relative;flex:1;min-height:0;overflow:hidden;border:1px solid #3a2c22;background:#0b0908;box-shadow:0 18px 40px rgba(0,0,0,.7)" style-hover="border-color:#c8a25f">
                 <img src="assets/8fbec34c-372d-47d2-a8ad-aae52ac5ca25.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 0%">
@@ -286,8 +286,8 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
             </div>
             <div data-ref-action="paper-2" sc-camel-on-click="{{ openPaper2 }}" style="min-height:0;display:flex;flex-direction:column;gap:8px;cursor:pointer">
               <div style="display:flex;justify-content:space-between;align-items:baseline">
-                <span style="font-size:11px;font-weight:600;letter-spacing:.22em;color:#dacca4">CORRESPONDENCE ORDER</span>
-                <span style="font-size:10px;letter-spacing:.18em;color:#e0705c">DISCREPANCY</span>
+                <span style="font-size:12px;font-weight:600;letter-spacing:.22em;color:#dacca4">CORRESPONDENCE ORDER</span>
+                <span style="font-size:11px;letter-spacing:.18em;color:#e0705c">DISCREPANCY</span>
               </div>
               <div style="position:relative;flex:1;min-height:0;overflow:hidden;border:1px solid #3a2c22;background:#0b0908;box-shadow:0 18px 40px rgba(0,0,0,.7)" style-hover="border-color:#c8a25f">
                 <img src="assets/4c3cae5c-a073-4954-b3af-89363d7a5c36.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 0%">
@@ -296,7 +296,7 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
               </div>
             </div>
           </div>
-          <div style="font-size:12px;letter-spacing:.08em;color:#8a7458">Every sheet on this route must carry a correspondence stamp. Click a sheet to hold it up to the lamp.</div>
+          <div style="font-size:12px;letter-spacing:.08em;color:#a08a63">Every sheet on this route must carry a correspondence stamp. Click a sheet to hold it up to the lamp.</div>
         </div>
       </sc-if>
 
@@ -316,17 +316,17 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
           </div>
           <div style="display:flex;flex-direction:column;gap:16px">
             <div>
-              <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">SHEET {{ paperIndex }} / 03</div>
+              <div style="font-size:12px;font-weight:600;letter-spacing:.3em;color:#a8916a">SHEET {{ paperIndex }} / 03</div>
               <div style="font-family:'Staatliches',sans-serif;font-size:44px;letter-spacing:.05em;color:#e9d9b1;line-height:1.04">{{ paperName }}</div>
             </div>
             <div style="border-left:3px solid {{ paperAccent }};padding-left:14px">
-              <div style="font-size:10px;font-weight:600;letter-spacing:.26em;color:#a8916a">EXAMINATION</div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:.26em;color:#a8916a">EXAMINATION</div>
               <div style="font-size:16px;color:#dacca4;line-height:1.5;text-wrap:pretty">{{ paperNote }}</div>
             </div>
             <div style="display:grid;grid-template-columns:auto 1fr;row-gap:8px;column-gap:14px;font-size:14px;align-items:center">
-              <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">SEAL</span><span style="color:#cdbe9c">{{ paperSeal }}</span>
-              <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">STAMP</span><span style="color:#cdbe9c">{{ paperStamp }}</span>
-              <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">STATUS</span><span style="color:{{ paperAccent }};font-weight:600;letter-spacing:.14em">{{ paperStatus }}</span>
+              <span style="font-size:11px;letter-spacing:.22em;color:#a08a63">SEAL</span><span style="color:#cdbe9c">{{ paperSeal }}</span>
+              <span style="font-size:11px;letter-spacing:.22em;color:#a08a63">STAMP</span><span style="color:#cdbe9c">{{ paperStamp }}</span>
+              <span style="font-size:11px;letter-spacing:.22em;color:#a08a63">STATUS</span><span style="color:{{ paperAccent }};font-weight:600;letter-spacing:.14em">{{ paperStatus }}</span>
             </div>
             <div data-ref-action="close-paper" sc-camel-on-click="{{ closePaper }}" style="align-self:flex-start;margin-top:4px;border:1px solid #4a3a2c;padding:9px 18px;font-size:12px;letter-spacing:.2em;color:#cdbe9c;cursor:pointer" style-hover="border-color:#c8a25f">← BACK TO SHEETS</div>
           </div>
@@ -337,15 +337,15 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
         <div data-ref-view="identity" style="position:absolute;inset:0;background:radial-gradient(70% 70% at 50% 40%,#171310,#070505);display:grid;grid-template-columns:1fr 1fr;gap:34px;padding:118px 34px 30px;place-items:center">
           <div style="width:100%;max-width:420px">
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
-              <span style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">RECORD PORTRAIT</span>
-              <span style="font-size:10px;letter-spacing:.2em;color:#6e5f47">FILE COPY</span>
+              <span style="font-size:12px;font-weight:600;letter-spacing:.3em;color:#a8916a">RECORD PORTRAIT</span>
+              <span style="font-size:11px;letter-spacing:.2em;color:#9a8560">FILE COPY</span>
             </div>
             <img data-ref-slot="visitor-face" src="assets/daa681a6-5484-42ea-a673-73bc698fb169.webp" alt="" style="width:100%;aspect-ratio:4/5;object-fit:cover;object-position:top;border:1px solid #6b5a3f;filter:grayscale(.4) contrast(1.06);display:block">
           </div>
           <div style="width:100%;max-width:420px">
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
-              <span style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#e0705c"></span>
-              <span style="font-size:10px;letter-spacing:.2em;color:#6e5f47">CAM 02 · LIVE</span>
+              <span style="font-size:12px;font-weight:600;letter-spacing:.3em;color:#e0705c"></span>
+              <span style="font-size:11px;letter-spacing:.2em;color:#9a8560">CAM 02 · LIVE</span>
             </div>
             <div style="position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;border:1px solid #6b5a3f;background:#0b0908">
               <img data-ref-slot="visitor-scene" src="assets/f1d0ed4d-8409-4b5b-a090-4284a308328b.webp" alt="" style="position:absolute;left:50%;top:-24px;transform:translateX(-50%);height:2000px;filter:contrast(1.05)">
@@ -372,22 +372,22 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
                   <div style="position:relative;width:640px;height:426px;overflow:hidden;border:1px solid #6b5a3f;background:#0a0807;box-shadow:0 24px 60px rgba(0,0,0,.9)">
                     <img src="assets/189a960d-3f38-4a6f-9a13-f40142836da5.webp" alt="" style="position:absolute;width:900%;height:900%;left:{{ itemZoomX }};top:{{ itemZoomY }};image-rendering:auto">
                     <div style="position:absolute;inset:0;background:radial-gradient(80% 80% at 50% 50%,rgba(0,0,0,0) 45%,rgba(0,0,0,.5))"></div>
-                    <div style="position:absolute;left:14px;top:12px;font-size:10px;font-weight:600;letter-spacing:.3em;color:#c8a25f">CLOSER LOOK · TRAY LAMP</div>
+                    <div style="position:absolute;left:14px;top:12px;font-size:11px;font-weight:600;letter-spacing:.3em;color:#c8a25f">CLOSER LOOK · TRAY LAMP</div>
                     <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(200,162,95,.5),transparent);animation:sweep 6s linear infinite"></div>
                   </div>
                   <div style="display:flex;flex-direction:column;gap:14px;padding-top:6px">
                     <div>
-                      <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">ITEM {{ itemIndex }} / 06</div>
+                      <div style="font-size:12px;font-weight:600;letter-spacing:.3em;color:#a8916a">ITEM {{ itemIndex }} / 06</div>
                       <div style="font-family:'Staatliches',sans-serif;font-size:52px;letter-spacing:.06em;color:#e9d9b1;line-height:1">{{ itemName }}</div>
                     </div>
                     <div style="border-left:3px solid {{ itemAccent }};padding-left:14px">
-                      <div style="font-size:10px;font-weight:600;letter-spacing:.26em;color:#a8916a">OBSERVATION</div>
+                      <div style="font-size:11px;font-weight:600;letter-spacing:.26em;color:#a8916a">OBSERVATION</div>
                       <div style="font-size:17px;color:#dacca4;line-height:1.5;text-wrap:pretty">{{ itemNote }}</div>
                     </div>
                     <div style="display:grid;grid-template-columns:auto 1fr;row-gap:7px;column-gap:14px;font-size:14px;align-items:center">
-                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">DECLARED</span><span style="color:#cdbe9c">{{ itemDeclared }}</span>
-                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">METAL</span><span style="color:#cdbe9c">{{ itemMetal }}</span>
-                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">STATUS</span><span style="color:{{ itemAccent }};font-weight:600;letter-spacing:.14em">{{ itemStatus }}</span>
+                      <span style="font-size:11px;letter-spacing:.22em;color:#a08a63">DECLARED</span><span style="color:#cdbe9c">{{ itemDeclared }}</span>
+                      <span style="font-size:11px;letter-spacing:.22em;color:#a08a63">METAL</span><span style="color:#cdbe9c">{{ itemMetal }}</span>
+                      <span style="font-size:11px;letter-spacing:.22em;color:#a08a63">STATUS</span><span style="color:{{ itemAccent }};font-weight:600;letter-spacing:.14em">{{ itemStatus }}</span>
                     </div>
                     <div data-ref-action="close-item" sc-camel-on-click="{{ closeItem }}" style="align-self:flex-start;margin-top:6px;border:1px solid #4a3a2c;padding:9px 18px;font-size:12px;letter-spacing:.2em;color:#cdbe9c;cursor:pointer" style-hover="border-color:#c8a25f">← BACK TO TRAY</div>
                   </div>
@@ -398,17 +398,17 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
 
           <div style="border-top:1px solid #3a2c22;background:linear-gradient(#171310,#0b0908);padding:14px 30px 16px;display:flex;flex-direction:column;gap:10px">
             <div style="display:flex;justify-content:space-between;align-items:baseline">
-              <span style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#a8916a">TRAY · SURRENDERED OBJECTS</span>
-              <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">CLICK AN OBJECT TO LOOK CLOSER</span>
+              <span style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">TRAY · SURRENDERED OBJECTS</span>
+              <span style="font-size:11px;letter-spacing:.22em;color:#a08a63">CLICK AN OBJECT TO LOOK CLOSER</span>
             </div>
             <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px">
               <sc-for list="{{ trayItems }}" as="it" hint-placeholder-count="6">
-                <div sc-camel-on-click="{{ it.open }}" style="cursor:pointer;border:1px solid {{ it.border }};background:#0d0b09;padding:5px" style-hover="border-color:#c8a25f">
+                <div data-ref-generated="detector-item" sc-camel-on-click="{{ it.open }}" style="cursor:pointer;border:1px solid {{ it.border }};background:#0d0b09;padding:5px" style-hover="border-color:#c8a25f">
                   <div style="position:relative;width:100%;aspect-ratio:3/2;overflow:hidden;background:#000">
                     <img src="assets/189a960d-3f38-4a6f-9a13-f40142836da5.webp" alt="" style="position:absolute;width:1200%;height:1200%;left:{{ it.left }};top:{{ it.top }}">
                   </div>
                   <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 2px 1px">
-                    <span style="font-size:11px;font-weight:600;letter-spacing:.14em;color:{{ it.ink }}">{{ it.name }}</span>
+                    <span style="font-size:12px;font-weight:600;letter-spacing:.14em;color:{{ it.ink }}">{{ it.name }}</span>
                     <span style="width:7px;height:7px;border-radius:50%;background:{{ it.dot }}"></span>
                   </div>
                 </div>
@@ -419,11 +419,11 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
       </sc-if>
 
       <sc-if value="{{ showXray }}">
-        <div style="position:absolute;inset:0;background:#020404;padding:118px 34px 30px;display:grid;grid-template-rows:auto 1fr;gap:12px">
+        <div data-ref-view="xray" style="position:absolute;inset:0;background:#020404;padding:118px 34px 30px;display:grid;grid-template-rows:auto 1fr;gap:12px">
           <div style="display:flex;align-items:center;gap:12px">
-            <div data-ref-action="show-scan" sc-camel-on-click="{{ showScan }}" style="border:1px solid {{ scanBorder }};background:{{ scanBg }};padding:8px 18px;font-size:11px;font-weight:600;letter-spacing:.22em;color:{{ scanInk }};cursor:pointer" style-hover="border-color:#7fbdb2">DENSITY SCAN</div>
-            <div data-ref-action="open-bag" sc-camel-on-click="{{ openBag }}" style="border:1px solid {{ bagBorder }};background:{{ bagBg }};padding:8px 18px;font-size:11px;font-weight:600;letter-spacing:.22em;color:{{ bagInk }};cursor:pointer" style-hover="border-color:#c8a25f">OPEN THE BAG</div>
-            <span style="margin-left:auto;font-size:10px;letter-spacing:.22em;color:#6e7f7c"><span data-ref-slot="scan-summary">3 MASSES · 1 UNRESOLVED</span> <span data-ref-action="xray-hint" title="Compare the scan silhouette with the declared contents." style="display:inline-grid;place-items:center;width:15px;height:15px;border:1px solid #6e7f7c;border-radius:50%;color:#a8ddd2;cursor:pointer;font-size:10px;letter-spacing:0">?</span></span>
+            <div data-ref-action="show-scan" sc-camel-on-click="{{ showScan }}" style="border:1px solid {{ scanBorder }};background:{{ scanBg }};padding:8px 18px;font-size:12px;font-weight:600;letter-spacing:.22em;color:{{ scanInk }};cursor:pointer" style-hover="border-color:#7fbdb2">DENSITY SCAN</div>
+            <div data-ref-action="open-bag" sc-camel-on-click="{{ openBag }}" style="border:1px solid {{ bagBorder }};background:{{ bagBg }};padding:8px 18px;font-size:12px;font-weight:600;letter-spacing:.22em;color:{{ bagInk }};cursor:pointer" style-hover="border-color:#c8a25f">OPEN THE BAG</div>
+            <span style="margin-left:auto;font-size:11px;letter-spacing:.22em;color:#6e7f7c"><span data-ref-slot="scan-summary">3 MASSES · 1 UNRESOLVED</span> <span data-ref-action="xray-hint" title="Compare the scan silhouette with the declared contents." style="display:inline-grid;place-items:center;width:15px;height:15px;border:1px solid #6e7f7c;border-radius:50%;color:#a8ddd2;cursor:pointer;font-size:11px;letter-spacing:0">?</span></span>
           </div>
 
           <sc-if value="{{ scanMode }}" hint-placeholder-val="{{ true }}">
@@ -431,24 +431,24 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
               <img data-ref-slot="xray-scan" src="assets/4fa20b25-27aa-45f4-b30b-df6493003a21.webp" alt="" style="width:100%;height:100%;object-fit:contain;filter:brightness(1.35) saturate(.45)">
               <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(120,200,190,.05) 0 1px,transparent 1px 4px)"></div>
               <div style="position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,rgba(140,230,215,.55),transparent);animation:sweep 5s linear infinite"></div>
-              <div style="position:absolute;top:14px;left:16px;font-size:11px;font-weight:600;letter-spacing:.3em;color:#7fbdb2">40 keV · SATCHEL</div>
+              <div style="position:absolute;top:14px;left:16px;font-size:12px;font-weight:600;letter-spacing:.3em;color:#7fbdb2">40 keV · SATCHEL</div>
             </div>
           </sc-if>
 
           <sc-if value="{{ bagMode }}">
             <div style="position:relative;min-height:0;background:linear-gradient(#171310,#0a0807);border:1px solid #4a3a2c;padding:20px;display:grid;grid-template-rows:auto 1fr;gap:14px">
               <div style="display:flex;justify-content:space-between;align-items:baseline">
-                <span style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#a8916a">SATCHEL EMPTIED ON THE PLATE</span>
-                <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">CLICK AN OBJECT TO LOOK CLOSER</span>
+                <span style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">SATCHEL EMPTIED ON THE PLATE</span>
+                <span style="font-size:11px;letter-spacing:.22em;color:#a08a63">CLICK AN OBJECT TO LOOK CLOSER</span>
               </div>
               <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;min-height:0">
                 <sc-for list="{{ bagItems }}" as="b" hint-placeholder-count="4">
-                  <div sc-camel-on-click="{{ b.open }}" style="display:flex;flex-direction:column;gap:8px;min-height:0;justify-content:center;cursor:pointer">
+                  <div data-ref-generated="bag-item" sc-camel-on-click="{{ b.open }}" style="display:flex;flex-direction:column;gap:8px;min-height:0;justify-content:center;cursor:pointer">
                     <div style="position:relative;width:100%;aspect-ratio:3/2;overflow:hidden;border:1px solid {{ b.border }};background:#000" style-hover="border-color:#c8a25f">
                       <img src="assets/189a960d-3f38-4a6f-9a13-f40142836da5.webp" alt="" style="position:absolute;width:1000%;height:1000%;left:{{ b.left }};top:{{ b.top }}">
                     </div>
                     <div style="display:flex;justify-content:space-between;align-items:center">
-                      <span style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#dacca4">{{ b.name }}</span>
+                      <span style="font-size:12px;font-weight:600;letter-spacing:.14em;color:#dacca4">{{ b.name }}</span>
                       <span style="width:7px;height:7px;border-radius:50%;background:{{ b.dot }}"></span>
                     </div>
                   </div>
@@ -459,22 +459,22 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
                 <div style="position:absolute;inset:0;background:rgba(4,3,2,.94);padding:24px;display:grid;grid-template-columns:1fr 380px;gap:26px">
                   <div style="position:relative;overflow:hidden;border:1px solid #6b5a3f;background:#0a0807">
                     <img src="assets/189a960d-3f38-4a6f-9a13-f40142836da5.webp" alt="" style="position:absolute;width:900%;height:900%;left:{{ bagZoomX }};top:{{ bagZoomY }}">
-                    <div style="position:absolute;left:14px;top:12px;font-size:10px;font-weight:600;letter-spacing:.3em;color:#c8a25f">CLOSER LOOK · DESK LAMP</div>
+                    <div style="position:absolute;left:14px;top:12px;font-size:11px;font-weight:600;letter-spacing:.3em;color:#c8a25f">CLOSER LOOK · DESK LAMP</div>
                     <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(200,162,95,.5),transparent);animation:sweep 6s linear infinite"></div>
                   </div>
                   <div style="display:flex;flex-direction:column;gap:14px">
                     <div>
-                      <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">IN THE BAG</div>
+                      <div style="font-size:12px;font-weight:600;letter-spacing:.3em;color:#a8916a">IN THE BAG</div>
                       <div style="font-family:'Staatliches',sans-serif;font-size:46px;letter-spacing:.05em;color:#e9d9b1;line-height:1.02">{{ bagName }}</div>
                     </div>
                     <div style="border-left:3px solid {{ bagAccent }};padding-left:14px">
-                      <div style="font-size:10px;font-weight:600;letter-spacing:.26em;color:#a8916a">OBSERVATION</div>
+                      <div style="font-size:11px;font-weight:600;letter-spacing:.26em;color:#a8916a">OBSERVATION</div>
                       <div style="font-size:16px;color:#dacca4;line-height:1.5;text-wrap:pretty">{{ bagNote }}</div>
                     </div>
                     <div style="display:grid;grid-template-columns:auto 1fr;row-gap:8px;column-gap:14px;font-size:14px;align-items:center">
-                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">DECLARED</span><span style="color:#cdbe9c">{{ bagDeclared }}</span>
-                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">ON SCAN</span><span style="color:#cdbe9c">{{ bagOnScan }}</span>
-                      <span style="font-size:10px;letter-spacing:.22em;color:#8a7458">STATUS</span><span style="color:{{ bagAccent }};font-weight:600;letter-spacing:.14em">{{ bagStatus }}</span>
+                      <span style="font-size:11px;letter-spacing:.22em;color:#a08a63">DECLARED</span><span style="color:#cdbe9c">{{ bagDeclared }}</span>
+                      <span style="font-size:11px;letter-spacing:.22em;color:#a08a63">ON SCAN</span><span style="color:#cdbe9c">{{ bagOnScan }}</span>
+                      <span style="font-size:11px;letter-spacing:.22em;color:#a08a63">STATUS</span><span style="color:{{ bagAccent }};font-weight:600;letter-spacing:.14em">{{ bagStatus }}</span>
                     </div>
                     <div data-ref-action="close-bag-item" sc-camel-on-click="{{ closeBagItem }}" style="align-self:flex-start;margin-top:4px;border:1px solid #4a3a2c;padding:9px 18px;font-size:12px;letter-spacing:.2em;color:#cdbe9c;cursor:pointer" style-hover="border-color:#c8a25f">← BACK TO THE PLATE</div>
                   </div>
@@ -486,30 +486,30 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
       </sc-if>
 
       <sc-if value="{{ showAsk }}">
-        <div style="position:absolute;inset:0;overflow:hidden;background:#000">
+        <div data-ref-view="ask" style="position:absolute;inset:0;overflow:hidden;background:#000">
           <img src="assets/checkpoint-background-v3.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.4) blur(2px)">
           <img data-ref-slot="visitor-scene" src="assets/f1d0ed4d-8409-4b5b-a090-4284a308328b.webp" alt="" style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);height:92%;filter:brightness(.75) drop-shadow(0 40px 60px #000)">
           <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,3,2,.92) 0%,rgba(4,3,2,.35) 55%,rgba(4,3,2,.9) 100%)"></div>
           <div style="position:absolute;left:34px;right:300px;top:118px;bottom:30px;display:grid;grid-template-rows:auto 1fr auto;background:rgba(9,7,6,.9);border:1px solid #4a3a2c;box-shadow:0 24px 60px rgba(0,0,0,.85)">
             <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 18px;background:linear-gradient(#241c16,#151110);border-bottom:1px solid #3a2c22">
-              <span style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#c8a25f"><span data-ref-slot="case-log-id">INTERVIEW LOG · COR-0000-R</span></span>
-              <span style="font-size:10px;letter-spacing:.22em;color:#8a7458"><span data-ref-slot="asked-label">{{ askedLabel }}</span></span>
+              <span style="font-size:12px;font-weight:600;letter-spacing:.3em;color:#c8a25f"><span data-ref-slot="case-log-id">INTERVIEW LOG · COR-0000-R</span></span>
+              <span style="font-size:11px;letter-spacing:.22em;color:#a08a63"><span data-ref-slot="asked-label">{{ askedLabel }}</span></span>
             </div>
             <div data-log="1" style="overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px">
               <sc-for list="{{ transcript }}" as="line" hint-placeholder-count="2">
                 <div style="display:flex;flex-direction:column;gap:4px;align-items:{{ line.align }}">
-                  <span style="font-size:9px;font-weight:600;letter-spacing:.26em;color:{{ line.who }}">{{ line.speaker }}</span>
+                  <span style="font-size:10px;font-weight:600;letter-spacing:.26em;color:{{ line.who }}">{{ line.speaker }}</span>
                   <div style="max-width:82%;padding:11px 14px;border:1px solid {{ line.border }};background:{{ line.bg }};font-size:{{ line.size }};line-height:1.45;color:{{ line.ink }};font-style:{{ line.italic }};text-wrap:pretty">{{ line.text }}</div>
                 </div>
               </sc-for>
             </div>
             <div style="border-top:1px solid #3a2c22;background:#100d0b;padding:14px 18px;display:flex;flex-direction:column;gap:8px">
-              <div style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#a8916a">PUT A QUESTION</div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">PUT A QUESTION</div>
               <sc-for list="{{ questions }}" as="q" hint-placeholder-count="3">
-                <div sc-camel-on-click="{{ q.ask }}" style="border:1px solid #4a3a2c;padding:11px 14px;font-size:15px;color:#cdbe9c;cursor:pointer" style-hover="border-color:#c8a25f;background:#1a1512;color:#e9d9b1">{{ q.text }}</div>
+                <div data-ref-generated="question-choice" sc-camel-on-click="{{ q.ask }}" style="border:1px solid #4a3a2c;padding:11px 14px;font-size:15px;color:#cdbe9c;cursor:pointer" style-hover="border-color:#c8a25f;background:#1a1512;color:#e9d9b1">{{ q.text }}</div>
               </sc-for>
               <sc-if value="{{ noQuestions }}">
-                <div style="font-size:13px;color:#8a7458;letter-spacing:.06em">He has nothing further to add. Mark the statement.</div>
+                <div style="font-size:13px;color:#a08a63;letter-spacing:.06em">He has nothing further to add. Mark the statement.</div>
               </sc-if>
             </div>
           </div>
@@ -526,14 +526,14 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
         <img src="assets/6bb2b75d-9644-43b9-be9d-7c94be41dff5.webp" alt="" style="width:54px;height:54px;object-fit:contain">
         <div>
           <div style="font-family:'Staatliches',sans-serif;font-size:42px;line-height:.9;letter-spacing:.14em;color:#e7d7ae;text-shadow:0 2px 10px #000">RED STAMP</div>
-          <div style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#b39a72">VESKAR EMBASSY / SECURITY CONTROL</div>
+          <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#b39a72">VESKAR EMBASSY / SECURITY CONTROL</div>
         </div>
       </div>
 
       <div style="position:absolute;top:46px;right:42px;text-align:right">
-        <div style="font-size:11px;font-weight:600;letter-spacing:.26em;color:#b39a72">SHIFT <span data-ref-slot="shift-number">01</span> · <span data-ref-slot="shift-title">MORNING INTAKE</span></div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:.26em;color:#b39a72">SHIFT <span data-ref-slot="shift-number">01</span> · <span data-ref-slot="shift-title">MORNING INTAKE</span></div>
         <div style="font-family:'Staatliches',sans-serif;font-size:30px;letter-spacing:.2em;color:#d9caa4;line-height:1.1"><span data-ref-slot="checkpoint-time">08:30</span></div>
-        <div aria-live="polite" style="display:flex;justify-content:flex-end;align-items:center;gap:8px;font-size:11px;letter-spacing:.24em;color:#8ea86e"><span style="width:8px;height:8px;border-radius:50%;background:#7fae6a;box-shadow:0 0 10px #7fae6a;animation:lamp 2.4s infinite"></span><span data-ref-slot="protocol-status">PROTOCOL ACTIVE</span></div>
+        <div aria-live="polite" style="display:flex;justify-content:flex-end;align-items:center;gap:8px;font-size:12px;letter-spacing:.24em;color:#8ea86e"><span style="width:8px;height:8px;border-radius:50%;background:#7fae6a;box-shadow:0 0 10px #7fae6a;animation:lamp 2.4s infinite"></span><span data-ref-slot="protocol-status">PROTOCOL ACTIVE</span></div>
       </div>
 
       </div>
@@ -544,23 +544,23 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
           <div style="display:flex;align-items:center;gap:12px">
             <span style="font-family:'Staatliches',sans-serif;font-size:22px;letter-spacing:.1em;color:#c8a25f"><span data-ref-slot="source-label">{{ sourceLabel }}</span></span>
             <span style="flex:1;height:1px;background:#3a2c22"></span>
-            <span style="font-size:10px;font-weight:600;letter-spacing:.24em;color:{{ markInk }}"><span data-ref-slot="mark-label">{{ markLabel }}</span></span>
+            <span style="font-size:11px;font-weight:600;letter-spacing:.24em;color:{{ markInk }}"><span data-ref-slot="mark-label">{{ markLabel }}</span></span>
           </div>
           <div style="font-size:18px;color:#dacca4;line-height:1.4;text-wrap:pretty"><span data-ref-slot="observed">{{ observed }}</span></div>
-          <div style="font-size:11px;letter-spacing:.14em;color:#6e5f47">KEYS 1–6 OPEN A SOURCE · W RETURNS TO THE WINDOW · M / F / R MARKS IT</div>
+          <div style="font-size:12px;letter-spacing:.14em;color:#9a8560">KEYS 1–6 OPEN A SOURCE · W RETURNS TO THE WINDOW · M / F / R MARKS IT</div>
         </div>
         <div style="display:flex;align-items:center;gap:12px">
           <div data-ref-action="mark-match" sc-camel-on-click="{{ markMatch }}" style="border:1px solid {{ matchBorder }};background:{{ matchBg }};padding:14px 26px;text-align:center;cursor:pointer" style-hover="border-color:#8ea86e">
             <div style="font-family:'Staatliches',sans-serif;font-size:22px;letter-spacing:.1em;color:#c8d8b0;line-height:1">MATCH</div>
-            <div style="font-size:9px;letter-spacing:.22em;color:#6e7f5c">M</div>
+            <div style="font-size:10px;letter-spacing:.22em;color:#7c9468">M</div>
           </div>
           <div data-ref-action="mark-flag" sc-camel-on-click="{{ markFlag }}" style="border:1px solid {{ flagBorder }};background:{{ flagBg }};padding:14px 26px;text-align:center;cursor:pointer" style-hover="border-color:#d8523c">
             <div style="font-family:'Staatliches',sans-serif;font-size:22px;letter-spacing:.1em;color:#eda08c;line-height:1">FLAG</div>
-            <div style="font-size:9px;letter-spacing:.22em;color:#a06254">F</div>
+            <div style="font-size:10px;letter-spacing:.22em;color:#b47562">F</div>
           </div>
           <div data-ref-action="mark-review" sc-camel-on-click="{{ markReview }}" style="border:1px solid {{ reviewBorder }};background:{{ reviewBg }};padding:14px 26px;text-align:center;cursor:pointer" style-hover="border-color:#c8a25f">
             <div style="font-family:'Staatliches',sans-serif;font-size:22px;letter-spacing:.1em;color:#e0c894;line-height:1">REVIEW</div>
-            <div style="font-size:9px;letter-spacing:.22em;color:#8a7458">R</div>
+            <div style="font-size:10px;letter-spacing:.22em;color:#a08a63">R</div>
           </div>
         </div>
       </div>
@@ -571,21 +571,21 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
 
     <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #2f251d">
       <div style="padding:18px 24px;border-right:1px solid #2f251d">
-        <div style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#a8916a">SHIFT TOLERANCE</div>
-        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Staatliches',sans-serif;font-size:40px;color:#d9caa4;line-height:1.05"><span data-ref-slot="tolerance-value">100</span></span><span style="font-size:13px;color:#8a7458">%</span></div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">SHIFT TOLERANCE</div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Staatliches',sans-serif;font-size:40px;color:#d9caa4;line-height:1.05"><span data-ref-slot="tolerance-value">100</span></span><span style="font-size:13px;color:#a08a63">%</span></div>
         <div style="height:4px;background:#241c16"><div style="height:4px;width:100%;background:linear-gradient(90deg,#8ea86e,#5f7a4e)"></div></div>
       </div>
       <div style="padding:18px 24px">
-        <div style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#a8916a">CAREER STANDING</div>
-        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Staatliches',sans-serif;font-size:40px;color:#d9caa4;line-height:1.05"><span data-ref-slot="career-value">100</span></span><span style="font-size:13px;color:#8a7458">%</span></div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#a8916a">CAREER STANDING</div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Staatliches',sans-serif;font-size:40px;color:#d9caa4;line-height:1.05"><span data-ref-slot="career-value">100</span></span><span style="font-size:13px;color:#a08a63">%</span></div>
         <div style="height:4px;background:#241c16"><div style="height:4px;width:100%;background:linear-gradient(90deg,#c05a3e,#8e1f1c)"></div></div>
       </div>
     </div>
 
     <div style="padding:18px 24px;border-bottom:1px solid #2f251d;background:rgba(142,31,28,.06);display:flex;flex-direction:column;gap:7px">
       <div style="display:flex;justify-content:space-between;align-items:baseline">
-        <span style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#d8523c"><span data-ref-slot="case-id">CASE COR-0000-R</span></span>
-        <span style="font-size:10px;letter-spacing:.22em;color:#8a7458"><span data-ref-slot="case-meta">SPECIAL CLEARANCE · QUEUE S-04</span></span>
+        <span style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#d8523c"><span data-ref-slot="case-id">CASE COR-0000-R</span></span>
+        <span style="font-size:11px;letter-spacing:.22em;color:#a08a63"><span data-ref-slot="case-meta">SPECIAL CLEARANCE · QUEUE S-04</span></span>
       </div>
       <div style="font-family:'Staatliches',sans-serif;font-size:32px;letter-spacing:.06em;color:#e3d2a9;line-height:1"><span data-ref-slot="case-title">SPECIAL CORRESPONDENCE</span></div>
       <div style="font-size:13px;color:#a89578;line-height:1.5;text-wrap:pretty"><span data-ref-slot="case-purpose">Declared: deliver a sealed letter to the restricted correspondence office. No appointment on file.</span></div>
@@ -594,19 +594,19 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
     <div style="padding:18px 24px;display:flex;flex-direction:column;gap:12px;min-height:0">
       <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #2f251d;padding-bottom:9px">
         <span style="font-family:'Staatliches',sans-serif;font-size:28px;letter-spacing:.1em;color:#d9caa4">VERIFICATION CARD</span>
-        <span style="font-size:11px;font-weight:600;letter-spacing:.22em;color:#d8523c"><span data-ref-slot="marked-label">{{ markedLabel }}</span></span>
+        <span style="font-size:12px;font-weight:600;letter-spacing:.22em;color:#d8523c"><span data-ref-slot="marked-label">{{ markedLabel }}</span></span>
       </div>
       <div data-ref-action="back-window" sc-camel-on-click="{{ backToWindow }}" style="display:flex;align-items:center;gap:12px;border:1px solid {{ personBorder }};background:{{ personBg }};padding:9px 14px;cursor:pointer;box-shadow:inset 0 1px 0 #5c4938,0 3px 0 #0a0806" style-hover="border-color:#c8a25f">
         <img data-ref-slot="visitor-face" src="assets/daa681a6-5484-42ea-a673-73bc698fb169.webp" alt="" style="width:34px;height:34px;object-fit:cover;object-position:top;border:1px solid #4a3a2c">
         <span style="flex:1;font-family:'Staatliches',sans-serif;font-size:24px;letter-spacing:.1em;color:#e9d9b1">VIEW THE PERSON</span>
-        <span style="font-size:10px;font-weight:600;letter-spacing:.2em;color:#8a7458">{{ personHint }}</span>
+        <span style="font-size:11px;font-weight:600;letter-spacing:.2em;color:#a08a63">{{ personHint }}</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px">
         <sc-for list="{{ checks }}" as="row" hint-placeholder-count="6">
           <div data-ref-source="{{ row.n }}" sc-camel-on-click="{{ row.open }}" style="display:grid;grid-template-columns:36px 1fr auto 12px;align-items:center;gap:14px;padding:12px 15px;border:1px solid {{ row.border }};background:{{ row.bg }};cursor:pointer" style-hover="border-color:#8a7458">
-            <span style="font-size:11px;letter-spacing:.2em;color:#7a6748">{{ row.n }}</span>
+            <span style="font-size:12px;letter-spacing:.2em;color:#9a8560">{{ row.n }}</span>
             <span style="font-family:'Staatliches',sans-serif;font-size:26px;letter-spacing:.1em;color:{{ row.ink }}">{{ row.label }}</span>
-            <span style="font-size:11px;font-weight:600;letter-spacing:.2em;color:{{ row.statusInk }}">{{ row.status }}</span>
+            <span style="font-size:12px;font-weight:600;letter-spacing:.2em;color:{{ row.statusInk }}">{{ row.status }}</span>
             <span style="width:9px;height:9px;border-radius:50%;background:{{ row.dot }}"></span>
           </div>
         </sc-for>
@@ -615,22 +615,22 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
 
     <div style="border-top:4px solid #3a2c22;background:linear-gradient(#241a16,#0c0807);padding:16px 24px 20px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <span style="font-size:10px;font-weight:600;letter-spacing:.34em;color:#d8523c">ACTION</span>
-        <span style="font-size:10px;letter-spacing:.22em;color:#8a7458"><span data-ref-slot="card-state">{{ cardState }}</span></span>
+        <span style="font-size:11px;font-weight:600;letter-spacing:.34em;color:#d8523c">ACTION</span>
+        <span style="font-size:11px;letter-spacing:.22em;color:#a08a63"><span data-ref-slot="card-state">{{ cardState }}</span></span>
       </div>
       <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;height:104px">
         <div data-ref-action="admit" style="position:relative;overflow:hidden;border:2px solid #8e1f1c;background:linear-gradient(#7d1f19,#480e0b);display:grid;place-items:center;box-shadow:inset 0 2px 0 rgba(255,190,170,.3),0 5px 0 #290a08;cursor:pointer" style-hover="background:linear-gradient(#9c2620,#5c1512)" style-active="transform:translateY(4px);box-shadow:inset 0 2px 0 rgba(255,190,170,.2),0 1px 0 #290a08">
           <img src="assets/779ea657-4ce2-498c-a617-9f5eaa498dc3.webp" alt="" style="position:absolute;right:-18px;bottom:-22px;height:140%;opacity:.3">
           <div style="position:relative;text-align:center">
             <div data-ref-action="admit" style="font-family:'Staatliches',sans-serif;font-size:42px;letter-spacing:.1em;color:#f4dfc9;line-height:.95">RED<br>STAMP</div>
-            <div style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#e0b8a6">ADMIT ENTRY</div>
+            <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#e0b8a6">ADMIT ENTRY</div>
           </div>
         </div>
         <div data-ref-action="secondary" style="border:1px solid #4a3a2c;background:linear-gradient(#241c16,#100c0a);display:grid;place-items:center;text-align:center;box-shadow:inset 0 1px 0 #5c4938,0 5px 0 #0a0806;cursor:pointer" style-hover="border-color:#8a7458">
-          <div><div data-ref-action="secondary" style="font-family:'Staatliches',sans-serif;font-size:24px;letter-spacing:.08em;color:#d2c3a0;line-height:1">SECONDARY<br>INSPECTION</div><div style="font-size:10px;letter-spacing:.22em;color:#8a7458;margin-top:5px">HOLD</div></div>
+          <div><div data-ref-action="secondary" style="font-family:'Staatliches',sans-serif;font-size:24px;letter-spacing:.08em;color:#d2c3a0;line-height:1">SECONDARY<br>INSPECTION</div><div style="font-size:11px;letter-spacing:.22em;color:#a08a63;margin-top:5px">HOLD</div></div>
         </div>
         <div data-ref-action="deny" style="border:1px solid #4a3a2c;background:linear-gradient(#241c16,#100c0a);display:grid;place-items:center;text-align:center;box-shadow:inset 0 1px 0 #5c4938,0 5px 0 #0a0806;cursor:pointer" style-hover="border-color:#8a7458">
-          <div><div data-ref-action="deny" style="font-family:'Staatliches',sans-serif;font-size:24px;letter-spacing:.08em;color:#d2c3a0;line-height:1">DENY<br>ENTRY</div><div style="font-size:10px;letter-spacing:.22em;color:#8a7458;margin-top:5px">TURN BACK</div></div>
+          <div><div data-ref-action="deny" style="font-family:'Staatliches',sans-serif;font-size:24px;letter-spacing:.08em;color:#d2c3a0;line-height:1">DENY<br>ENTRY</div><div style="font-size:11px;letter-spacing:.22em;color:#a08a63;margin-top:5px">TURN BACK</div></div>
         </div>
       </div>
     </div>
@@ -648,7 +648,7 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
           <img src="assets/6bb2b75d-9644-43b9-be9d-7c94be41dff5.webp" alt="" style="width:76px;height:76px;object-fit:contain">
           <div style="display:flex;flex-direction:column;gap:5px">
             <span style="font-size:12px;font-weight:600;letter-spacing:.4em;color:#b39a72">UNION OF VESKAR</span>
-            <span style="font-size:12px;font-weight:600;letter-spacing:.28em;color:#8a7458">EXTERNAL MISSIONS DIRECTORATE</span>
+            <span style="font-size:12px;font-weight:600;letter-spacing:.28em;color:#a08a63">EXTERNAL MISSIONS DIRECTORATE</span>
           </div>
         </div>
 
@@ -668,7 +668,7 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
         </div>
       </div>
 
-      <div style="position:absolute;left:120px;bottom:44px;right:120px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.26em;color:#6e5f47;border-top:1px solid #2a211a;padding-top:14px">
+      <div style="position:absolute;left:120px;bottom:44px;right:120px;display:flex;justify-content:space-between;font-size:12px;letter-spacing:.26em;color:#9a8560;border-top:1px solid #2a211a;padding-top:14px">
         <span>FORM RS-26 / SECURITY CONTROL</span>
         <span>VESKARIAN EMBASSY · PUBLIC ENTRY</span>
         <span>NO ENTRY WITHOUT THE RED STAMP</span>
@@ -795,7 +795,7 @@ class Component extends DCLogic {
     const marks = this.state.marks;
     const cur = VIEWS.find(v => v.key === active);
     const statusOf = m => (m === 'flag' ? 'FLAGGED' : m === 'match' ? 'CLEARED' : m === 'review' ? 'REVIEW' : 'OPEN');
-    const inkOf = m => (m === 'flag' ? '#e0705c' : m === 'match' ? '#a8c48a' : m === 'review' ? '#e0c07c' : '#6e5f47');
+    const inkOf = m => (m === 'flag' ? '#e0705c' : m === 'match' ? '#a8c48a' : m === 'review' ? '#e0c07c' : '#9a8560');
     const dotOf = m => (m === 'flag' ? '#d8523c' : m === 'match' ? '#7fae6a' : m === 'review' ? '#c8a25f' : '#332b21');
     const markedCount = VIEWS.filter(v => marks[v.key]).length;
     const flagged = VIEWS.filter(v => marks[v.key] === 'flag').length;
@@ -880,7 +880,7 @@ class Component extends DCLogic {
         speaker: l.who,
         text: l.text,
         align: l.who === 'RYL' ? 'flex-start' : 'flex-end',
-        who: l.who === 'RYL' ? '#b0705c' : '#8a7458',
+        who: l.who === 'RYL' ? '#b0705c' : '#a08a63',
         border: l.who === 'RYL' ? '#6d2b26' : '#3a2c22',
         bg: l.who === 'RYL' ? 'rgba(142,31,28,.12)' : 'rgba(200,162,95,.06)',
         ink: l.who === 'RYL' ? '#e3d2a9' : '#cdbe9c',
@@ -893,7 +893,7 @@ class Component extends DCLogic {
 
       sourceLabel: cur ? cur.n + ' · ' + cur.label : '',
       markLabel: cur ? (marks[active] === 'flag' ? 'FLAGGED' : marks[active] === 'match' ? 'CLEARED' : marks[active] === 'review' ? 'HELD FOR REVIEW' : 'NOT YET MARKED') : '',
-      markInk: cur ? inkOf(marks[active]) : '#6e5f47',
+      markInk: cur ? inkOf(marks[active]) : '#9a8560',
       matchBorder: marks[active] === 'match' ? '#8ea86e' : '#4a3a2c',
       matchBg: marks[active] === 'match' ? 'rgba(120,160,100,.16)' : 'linear-gradient(#241c16,#141110)',
       flagBorder: marks[active] === 'flag' ? '#d8523c' : '#6d2b26',
@@ -915,7 +915,7 @@ class Component extends DCLogic {
       scanInk: this.state.bag ? '#6e7f7c' : '#a8ddd2',
       bagBorder: this.state.bag ? '#c8a25f' : '#4a3a2c',
       bagBg: this.state.bag ? 'linear-gradient(#3a2e22,#1e1712)' : 'transparent',
-      bagInk: this.state.bag ? '#e9d9b1' : '#8a7458',
+      bagInk: this.state.bag ? '#e9d9b1' : '#a08a63',
       bagItems: BAG.map((b, i) => ({
         name: b.name,
         left: 'calc(50% - ' + (b.fx * 1000) + '%)',

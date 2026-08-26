@@ -3656,7 +3656,7 @@ window.RedStampDebug = {
     },
     advance: () => {
       const button = $("#overlay .primary-button");
-      if (button && ["next-case", "end-shift"].includes(button.dataset.action)) {
+      if (button && ["next-case", "end-shift", "next-shift"].includes(button.dataset.action)) {
         button.click();
         return;
       }

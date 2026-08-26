@@ -227,16 +227,16 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
     <img src="assets/7a19b16b-1e38-4277-8534-45e71f8f5da0.webp" alt="" style="width:30px;height:30px;object-fit:contain">
     <div>
       <div style="font-family:'Staatliches',sans-serif;font-size:22px;line-height:.9;letter-spacing:.14em;color:#e7d7ae">RED STAMP</div>
-      <div style="font-size:7px;font-weight:600;letter-spacing:.15em;color:#8a7458"><span data-ref-slot="protocol-status">PROTOCOL ACTIVE</span> · <span data-ref-slot="checkpoint-time">08:30</span></div>
-      <div style="font-size:7px;font-weight:600;letter-spacing:.15em;color:#6e5f47">SHIFT <span data-ref-slot="shift-number">01</span> · <span data-ref-slot="shift-title">MORNING INTAKE</span></div>
+      <div style="font-size:8px;font-weight:600;letter-spacing:.15em;color:#a08a63"><span data-ref-slot="protocol-status">PROTOCOL ACTIVE</span> · <span data-ref-slot="checkpoint-time">08:30</span></div>
+      <div style="font-size:8px;font-weight:600;letter-spacing:.15em;color:#9a8560">SHIFT <span data-ref-slot="shift-number">01</span> · <span data-ref-slot="shift-title">MORNING INTAKE</span></div>
     </div>
     <div style="display:flex;gap:8px;text-align:right">
       <div>
-        <div style="font-size:8px;letter-spacing:.2em;color:#8a7458">TOL</div>
+        <div style="font-size:9px;letter-spacing:.2em;color:#a08a63">TOL</div>
         <div style="font-family:'Staatliches',sans-serif;font-size:18px;color:#d9caa4;line-height:1"><span data-ref-slot="tolerance-value">100</span></div>
       </div>
       <div>
-        <div style="font-size:8px;letter-spacing:.2em;color:#8a7458">CAREER</div>
+        <div style="font-size:9px;letter-spacing:.2em;color:#a08a63">CAREER</div>
         <div style="font-family:'Staatliches',sans-serif;font-size:18px;color:#d9caa4;line-height:1"><span data-ref-slot="career-value">100</span></div>
       </div>
     </div>
@@ -259,11 +259,11 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
     </sc-if>
 
     <sc-if value="{{ showFile }}">
-      <div style="position:absolute;inset:0;background:#0b0908;display:grid;place-items:center;padding:10px">
+      <div data-ref-view="file" style="position:absolute;inset:0;background:#0b0908;display:grid;place-items:center;padding:10px">
         <div style="position:relative;height:100%;aspect-ratio:1/1.28;border:1px solid #4a3a2c">
           <img src="assets/f10b1608-620f-4d51-93bc-a85b247b86ae.webp" alt="" style="width:100%;height:100%;object-fit:cover">
           <div style="position:absolute;left:0;right:0;bottom:0;background:linear-gradient(rgba(6,4,3,0),rgba(6,4,3,.95));padding:26px 10px 8px">
-            <div style="font-size:9px;letter-spacing:.2em;color:#a8916a">APPOINTMENT</div>
+            <div style="font-size:10px;letter-spacing:.2em;color:#a8916a">APPOINTMENT</div>
             <div style="font-size:13px;color:#e0705c">NONE — restricted channel</div>
           </div>
         </div>
@@ -273,11 +273,11 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
     <sc-if value="{{ showFace }}">
       <div data-ref-view="identity" style="position:absolute;inset:0;background:#0b0908;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;align-content:center">
         <div>
-          <div style="font-size:9px;font-weight:600;letter-spacing:.2em;color:#a8916a;margin-bottom:6px">RECORD</div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:.2em;color:#a8916a;margin-bottom:6px">RECORD</div>
           <img data-ref-slot="visitor-face" src="assets/2b08665f-e2d7-4aea-9c0b-1252493cb4f4.webp" alt="" style="width:100%;aspect-ratio:4/5;object-fit:cover;object-position:top;border:1px solid #6b5a3f;filter:grayscale(.4);display:block">
         </div>
         <div>
-          <div style="font-size:9px;font-weight:600;letter-spacing:.2em;color:#e0705c;margin-bottom:6px">LIVE</div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:.2em;color:#e0705c;margin-bottom:6px">LIVE</div>
           <div style="position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;border:1px solid #6b5a3f;background:#0b0908">
             <img data-ref-slot="visitor-scene" src="assets/8c60a95b-8b62-45a1-ad4a-c411cffdef84.webp" alt="" style="position:absolute;left:50%;top:-10px;transform:translateX(-50%);height:800px">
             <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(200,162,95,.6),transparent);animation:sweep 6s linear infinite"></div>
@@ -287,30 +287,30 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
     </sc-if>
 
     <sc-if value="{{ showPapers }}">
-      <div style="position:absolute;inset:0;background:#0b0908;padding:12px;display:flex;flex-direction:column;gap:8px">
+      <div data-ref-view="papers" style="position:absolute;inset:0;background:#0b0908;padding:12px;display:flex;flex-direction:column;gap:8px">
         <div data-ref-action="paper-0" sc-camel-on-click="{{ openPaper0 }}" style="display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;border:1px solid #3a2c22;background:#100d0b;padding:7px;cursor:pointer">
           <img src="assets/9671b1c8-b8d4-4d48-bc57-c5fcf4dec4fe.webp" alt="" style="width:52px;height:52px;object-fit:cover;object-position:50% 12%;border:1px solid #3a2c22">
           <div>
-            <div style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#e3d2a9">IDENTITY PAGE</div>
-            <div style="font-size:11px;color:#8a7458;line-height:1.35;text-wrap:pretty">Name and district match the record.</div>
+            <div style="font-size:12px;font-weight:600;letter-spacing:.14em;color:#e3d2a9">IDENTITY PAGE</div>
+            <div style="font-size:12px;color:#a08a63;line-height:1.35;text-wrap:pretty">Name and district match the record.</div>
           </div>
-          <span style="font-size:9px;letter-spacing:.14em;color:#a8c48a">IN ORDER</span>
+          <span style="font-size:10px;letter-spacing:.14em;color:#a8c48a">IN ORDER</span>
         </div>
         <div data-ref-action="paper-1" sc-camel-on-click="{{ openPaper1 }}" style="display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;border:1px solid #3a2c22;background:#100d0b;padding:7px;cursor:pointer">
           <img src="assets/cb395d6c-8c7f-4434-99f4-0ff66c50df6c.webp" alt="" style="width:52px;height:52px;object-fit:cover;object-position:50% 12%;border:1px solid #3a2c22">
           <div>
-            <div style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#e3d2a9">CLEARANCE SLIP</div>
-            <div style="font-size:11px;color:#8a7458;line-height:1.35;text-wrap:pretty">Countersignature does not hold this route.</div>
+            <div style="font-size:12px;font-weight:600;letter-spacing:.14em;color:#e3d2a9">CLEARANCE SLIP</div>
+            <div style="font-size:12px;color:#a08a63;line-height:1.35;text-wrap:pretty">Countersignature does not hold this route.</div>
           </div>
-          <span style="font-size:9px;letter-spacing:.14em;color:#e0c07c">QUESTION IT</span>
+          <span style="font-size:10px;letter-spacing:.14em;color:#e0c07c">QUESTION IT</span>
         </div>
         <div data-ref-action="paper-2" sc-camel-on-click="{{ openPaper2 }}" style="display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;border:1px solid #3a2c22;background:#100d0b;padding:7px;cursor:pointer">
           <img src="assets/b23f5085-dda3-45ac-b884-8738e0b5a8b6.webp" alt="" style="width:52px;height:52px;object-fit:cover;object-position:50% 12%;border:1px solid #3a2c22">
           <div>
-            <div style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#e3d2a9">CORRESPONDENCE ORDER</div>
-            <div style="font-size:11px;color:#8a7458;line-height:1.35;text-wrap:pretty">No correspondence stamp on the order.</div>
+            <div style="font-size:12px;font-weight:600;letter-spacing:.14em;color:#e3d2a9">CORRESPONDENCE ORDER</div>
+            <div style="font-size:12px;color:#a08a63;line-height:1.35;text-wrap:pretty">No correspondence stamp on the order.</div>
           </div>
-          <span style="font-size:9px;letter-spacing:.14em;color:#e0705c">DISCREPANCY</span>
+          <span style="font-size:10px;letter-spacing:.14em;color:#e0705c">DISCREPANCY</span>
         </div>
       </div>
     </sc-if>
@@ -328,7 +328,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
         </sc-if>
         <div style="display:flex;justify-content:space-between;align-items:center">
           <span style="font-family:'Staatliches',sans-serif;font-size:20px;letter-spacing:.08em;color:#e9d9b1">{{ paperName }}</span>
-          <span data-ref-action="close-paper" sc-camel-on-click="{{ closePaper }}" style="border:1px solid #4a3a2c;padding:6px 12px;font-size:10px;letter-spacing:.18em;color:#cdbe9c;cursor:pointer">← SHEETS</span>
+          <span data-ref-action="close-paper" sc-camel-on-click="{{ closePaper }}" style="border:1px solid #4a3a2c;padding:6px 12px;font-size:11px;letter-spacing:.18em;color:#cdbe9c;cursor:pointer">← SHEETS</span>
         </div>
       </div>
     </sc-if>
@@ -350,17 +350,17 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
               <div style="display:flex;flex-direction:column;gap:5px;min-height:0">
                 <div style="display:flex;justify-content:space-between;align-items:baseline">
                   <span style="font-family:'Staatliches',sans-serif;font-size:22px;letter-spacing:.06em;color:#e9d9b1">{{ itemName }}</span>
-                  <span style="font-size:9px;font-weight:600;letter-spacing:.16em;color:{{ itemAccent }}">{{ itemStatus }}</span>
+                  <span style="font-size:10px;font-weight:600;letter-spacing:.16em;color:{{ itemAccent }}">{{ itemStatus }}</span>
                 </div>
-                <div style="font-size:11px;color:#b0a385;line-height:1.4;overflow-y:auto;text-wrap:pretty">{{ itemNote }}</div>
-                <span data-ref-action="close-item" sc-camel-on-click="{{ closeItem }}" style="align-self:flex-start;border:1px solid #4a3a2c;padding:5px 11px;font-size:9px;letter-spacing:.18em;color:#cdbe9c;cursor:pointer">← TRAY</span>
+                <div style="font-size:12px;color:#b0a385;line-height:1.4;overflow-y:auto;text-wrap:pretty">{{ itemNote }}</div>
+                <span data-ref-action="close-item" sc-camel-on-click="{{ closeItem }}" style="align-self:flex-start;border:1px solid #4a3a2c;padding:5px 11px;font-size:10px;letter-spacing:.18em;color:#cdbe9c;cursor:pointer">← TRAY</span>
               </div>
             </div>
           </sc-if>
         </div>
         <div style="border-top:1px solid #3a2c22;background:#0d0b09;padding:6px 8px;display:grid;grid-template-columns:repeat(6,1fr);gap:5px">
           <sc-for list="{{ trayItems }}" as="it" hint-placeholder-count="6">
-            <div sc-camel-on-click="{{ it.open }}" style="cursor:pointer;border:1px solid {{ it.border }};background:#000;position:relative;overflow:hidden;aspect-ratio:3/2">
+            <div data-ref-generated="detector-item" sc-camel-on-click="{{ it.open }}" style="cursor:pointer;border:1px solid {{ it.border }};background:#000;position:relative;overflow:hidden;aspect-ratio:3/2">
               <img src="assets/8824cfc0-f58a-4dcc-b7cb-a0242ff24107.webp" alt="" style="position:absolute;width:1200%;height:1200%;left:{{ it.left }};top:{{ it.top }}">
               <span style="position:absolute;right:2px;bottom:2px;width:5px;height:5px;border-radius:50%;background:{{ it.dot }}"></span>
             </div>
@@ -370,25 +370,67 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
     </sc-if>
 
     <sc-if value="{{ showXray }}">
-      <div style="position:absolute;inset:0;background:#020404;padding:8px">
-        <div style="position:relative;width:100%;height:100%;border:1px solid #2c4442;overflow:hidden">
-          <img data-ref-slot="xray-scan" src="assets/8589a753-9aed-485d-9be0-9ac8c218ee16.webp" alt="" style="width:100%;height:100%;object-fit:contain;filter:brightness(1.35) saturate(.45)">
-          <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(140,230,215,.55),transparent);animation:sweep 5s linear infinite"></div>
-          <div style="position:absolute;bottom:8px;right:8px;border:1px solid #8e1f1c;color:#e0705c;padding:4px 8px;font-size:9px;letter-spacing:.16em;background:rgba(10,6,5,.7)"><span data-ref-slot="scan-summary">3 MASSES · 1 UNRESOLVED</span> <span data-ref-action="xray-hint" title="Compare the scan silhouette with the declared contents." style="display:inline-grid;place-items:center;width:15px;height:15px;border:1px solid #6e7f7c;border-radius:50%;color:#a8ddd2;cursor:pointer;font-size:10px;letter-spacing:0">?</span></div>
+      <div data-ref-view="xray" style="position:absolute;inset:0;background:#020404;padding:8px;display:grid;grid-template-rows:auto 1fr;gap:6px">
+        <div style="display:flex;align-items:center;gap:6px;min-height:26px">
+          <div data-ref-action="show-scan" sc-camel-on-click="{{ showScan }}" style="border:1px solid {{ scanBorder }};background:{{ scanBg }};padding:5px 8px;font-size:10px;font-weight:600;letter-spacing:.12em;color:{{ scanInk }};cursor:pointer">DENSITY SCAN</div>
+          <div data-ref-action="open-bag" sc-camel-on-click="{{ openBag }}" style="border:1px solid {{ bagBorder }};background:{{ bagBg }};padding:5px 8px;font-size:10px;font-weight:600;letter-spacing:.12em;color:{{ bagInk }};cursor:pointer">OPEN THE BAG</div>
+          <span style="margin-left:auto;font-size:9px;letter-spacing:.08em;color:#6e7f7c;text-align:right"><span data-ref-slot="scan-summary">3 MASSES · 1 UNRESOLVED</span> <span data-ref-action="xray-hint" title="Compare the scan silhouette with the declared contents." style="display:inline-grid;place-items:center;width:14px;height:14px;border:1px solid #6e7f7c;border-radius:50%;color:#a8ddd2;cursor:pointer;font-size:11px;letter-spacing:0">?</span></span>
         </div>
+
+        <sc-if value="{{ scanMode }}" hint-placeholder-val="{{ true }}">
+          <div style="position:relative;width:100%;height:100%;min-height:0;border:1px solid #2c4442;overflow:hidden;background:#010303">
+            <img data-ref-slot="xray-scan" src="assets/8589a753-9aed-485d-9be0-9ac8c218ee16.webp" alt="" style="width:100%;height:100%;object-fit:contain;filter:brightness(1.35) saturate(.45)">
+            <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(140,230,215,.55),transparent);animation:sweep 5s linear infinite"></div>
+            <div style="position:absolute;left:8px;top:8px;color:#7fbdb2;font-size:9px;font-weight:600;letter-spacing:.16em">40 keV · SATCHEL</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ bagMode }}">
+          <div style="position:relative;min-height:0;background:linear-gradient(#171310,#0a0807);border:1px solid #4a3a2c;padding:8px;display:grid;grid-template-rows:auto 1fr;gap:7px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span style="font-size:9px;font-weight:600;letter-spacing:.16em;color:#a8916a">SATCHEL ON PLATE</span>
+              <span style="font-size:8px;letter-spacing:.1em;color:#8a7458">TAP AN OBJECT</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;min-height:0">
+              <sc-for list="{{ bagItems }}" as="b" hint-placeholder-count="4">
+                <div data-ref-generated="bag-item" sc-camel-on-click="{{ b.open }}" style="display:flex;flex-direction:column;gap:4px;min-height:0;justify-content:center;cursor:pointer">
+                  <div style="position:relative;width:100%;aspect-ratio:3/2;overflow:hidden;border:1px solid {{ b.border }};background:#000">
+                    <img src="assets/8824cfc0-f58a-4dcc-b7cb-a0242ff24107.webp" alt="" style="position:absolute;width:1000%;height:1000%;left:{{ b.left }};top:{{ b.top }}">
+                  </div>
+                  <span style="font-size:8px;letter-spacing:.08em;color:#dacca4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.name }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ bagItemOpen }}">
+              <div style="position:absolute;inset:6px;background:rgba(4,3,2,.97);padding:8px;display:grid;grid-template-rows:auto 1fr auto;gap:7px;z-index:2">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px">
+                  <span style="font-size:9px;letter-spacing:.16em;color:#a8916a">IN THE BAG</span>
+                  <span style="font-family:'Staatliches',sans-serif;font-size:18px;letter-spacing:.05em;color:#e9d9b1">{{ bagName }}</span>
+                </div>
+                <div style="position:relative;min-height:0;overflow:hidden;border:1px solid #6b5a3f;background:#000">
+                  <img src="assets/8824cfc0-f58a-4dcc-b7cb-a0242ff24107.webp" alt="" style="position:absolute;width:900%;height:900%;left:{{ bagZoomX }};top:{{ bagZoomY }}">
+                </div>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="flex:1;font-size:10px;line-height:1.3;color:#b0a385">{{ bagNote }}</span>
+                  <span data-ref-action="close-bag-item" sc-camel-on-click="{{ closeBagItem }}" style="border:1px solid #4a3a2c;padding:5px 7px;font-size:9px;letter-spacing:.12em;color:#cdbe9c;cursor:pointer">← BAG</span>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
       </div>
     </sc-if>
 
     <sc-if value="{{ showAsk }}">
-      <div style="position:absolute;inset:0;background:#0b0908;display:flex;flex-direction:column">
+      <div data-ref-view="ask" style="position:absolute;inset:0;background:#0b0908;display:flex;flex-direction:column">
         <div style="display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #3a2c22;background:#141110">
-          <span style="font-size:9px;font-weight:600;letter-spacing:.24em;color:#c8a25f">INTERVIEW LOG</span>
-          <span style="font-size:9px;letter-spacing:.18em;color:#8a7458"><span data-ref-slot="asked-label">{{ askedLabel }}</span></span>
+          <span style="font-size:10px;font-weight:600;letter-spacing:.24em;color:#c8a25f">INTERVIEW LOG</span>
+          <span style="font-size:10px;letter-spacing:.18em;color:#a08a63"><span data-ref-slot="asked-label">{{ askedLabel }}</span></span>
         </div>
         <div data-log="1" style="flex:1;min-height:0;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px">
           <sc-for list="{{ transcript }}" as="line" hint-placeholder-count="2">
             <div style="display:flex;flex-direction:column;gap:3px;align-items:{{ line.align }}">
-              <span style="font-size:8px;font-weight:600;letter-spacing:.22em;color:{{ line.who }}">{{ line.speaker }}</span>
+              <span style="font-size:9px;font-weight:600;letter-spacing:.22em;color:{{ line.who }}">{{ line.speaker }}</span>
               <div style="max-width:86%;padding:8px 10px;border:1px solid {{ line.border }};background:{{ line.bg }};font-size:{{ line.size }};line-height:1.4;color:{{ line.ink }};font-style:{{ line.italic }};text-wrap:pretty">{{ line.text }}</div>
             </div>
           </sc-for>
@@ -401,16 +443,16 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
   <div style="padding:12px;display:flex;flex-direction:column;gap:9px;min-height:0;overflow-y:auto">
     <sc-if value="{{ showAsk }}">
       <div style="display:flex;flex-direction:column;gap:7px">
-        <div style="font-size:9px;font-weight:600;letter-spacing:.26em;color:#a8916a">PUT A QUESTION</div>
+        <div style="font-size:10px;font-weight:600;letter-spacing:.26em;color:#a8916a">PUT A QUESTION</div>
         <sc-for list="{{ questions }}" as="q" hint-placeholder-count="3">
-          <div sc-camel-on-click="{{ q.ask }}" style="border:1px solid #4a3a2c;padding:9px 11px;font-size:12px;color:#cdbe9c;cursor:pointer;line-height:1.35" style-hover="border-color:#c8a25f;background:#1a1512">{{ q.text }}</div>
+          <div data-ref-generated="question-choice" sc-camel-on-click="{{ q.ask }}" style="border:1px solid #4a3a2c;padding:9px 11px;font-size:12px;color:#cdbe9c;cursor:pointer;line-height:1.35" style-hover="border-color:#c8a25f;background:#1a1512">{{ q.text }}</div>
         </sc-for>
       </div>
     </sc-if>
     <sc-if value="{{ notAsk }}" hint-placeholder-val="{{ true }}">
       <div style="display:flex;flex-direction:column;gap:9px">
         <div>
-          <div style="font-size:9px;font-weight:600;letter-spacing:.26em;color:#a8916a">WHAT YOU SEE</div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:.26em;color:#a8916a">WHAT YOU SEE</div>
           <div style="font-size:13px;color:#e3d2a9;line-height:1.4;text-wrap:pretty"><span data-ref-slot="observed">{{ observed }}</span></div>
         </div>
       </div>
@@ -418,9 +460,9 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
   </div>
 
   <div style="display:flex;gap:7px;padding:0 12px 10px">
-    <div data-ref-action="mark-match" sc-camel-on-click="{{ markMatch }}" style="flex:1;border:1px solid #4a3a2c;padding:10px 0;text-align:center;font-size:11px;letter-spacing:.16em;color:#c8bb9c;cursor:pointer" style-hover="border-color:#8ea86e">MATCH</div>
-    <div data-ref-action="mark-flag" sc-camel-on-click="{{ markFlag }}" style="flex:1;border:1px solid #8e1f1c;padding:10px 0;text-align:center;font-size:11px;letter-spacing:.16em;color:#e0705c;background:rgba(142,31,28,.12);cursor:pointer">FLAG</div>
-    <div data-ref-action="mark-review" sc-camel-on-click="{{ markReview }}" style="flex:1;border:1px solid #4a3a2c;padding:10px 0;text-align:center;font-size:11px;letter-spacing:.16em;color:#c8bb9c;cursor:pointer" style-hover="border-color:#c8a25f">REVIEW</div>
+    <div data-ref-action="mark-match" sc-camel-on-click="{{ markMatch }}" style="flex:1;border:1px solid #4a3a2c;padding:10px 0;text-align:center;font-size:12px;letter-spacing:.16em;color:#c8bb9c;cursor:pointer" style-hover="border-color:#8ea86e">MATCH</div>
+    <div data-ref-action="mark-flag" sc-camel-on-click="{{ markFlag }}" style="flex:1;border:1px solid #8e1f1c;padding:10px 0;text-align:center;font-size:12px;letter-spacing:.16em;color:#e0705c;background:rgba(142,31,28,.12);cursor:pointer">FLAG</div>
+    <div data-ref-action="mark-review" sc-camel-on-click="{{ markReview }}" style="flex:1;border:1px solid #4a3a2c;padding:10px 0;text-align:center;font-size:12px;letter-spacing:.16em;color:#c8bb9c;cursor:pointer" style-hover="border-color:#c8a25f">REVIEW</div>
   </div>
 
   <div style="border-top:1px solid #2f251d;background:#100d0b;padding:8px 8px 9px;display:flex;gap:6px;overflow-x:auto">
@@ -431,7 +473,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
     <sc-for list="{{ checks }}" as="row" hint-placeholder-count="6">
       <div data-ref-source="{{ row.n }}" sc-camel-on-click="{{ row.open }}" style="flex:0 0 auto;border:1px solid {{ row.border }};background:{{ row.bg }};padding:6px 10px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:56px">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-          <span style="font-size:8px;letter-spacing:.16em;color:#7a6748">{{ row.n }}</span>
+          <span style="font-size:9px;letter-spacing:.16em;color:#9a8560">{{ row.n }}</span>
           <span style="width:6px;height:6px;border-radius:50%;background:{{ row.dot }}"></span>
         </div>
         <span style="font-family:'Staatliches',sans-serif;font-size:16px;letter-spacing:.05em;line-height:1;color:{{ row.ink }}">{{ row.short }}</span>
@@ -444,7 +486,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
       <img src="assets/23c7730c-fd90-4c8a-86bb-695cb8503df6.webp" alt="" style="width:34px;height:40px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7))">
       <div>
         <div data-ref-action="admit" style="font-family:'Staatliches',sans-serif;font-size:20px;letter-spacing:.06em;color:#f4dfc9;line-height:1">RED<br>STAMP</div>
-        <div style="font-size:8px;font-weight:600;letter-spacing:.2em;color:#e0b8a6">ADMIT ENTRY</div>
+        <div style="font-size:9px;font-weight:600;letter-spacing:.2em;color:#e0b8a6">ADMIT ENTRY</div>
       </div>
     </div>
     <div data-ref-action="secondary" style="border:1px solid #4a3a2c;background:linear-gradient(#241c16,#100c0a);display:grid;place-items:center;text-align:center;box-shadow:inset 0 1px 0 #5c4938,0 3px 0 #0a0806;cursor:pointer">
@@ -463,8 +505,8 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
         <div style="display:flex;align-items:center;gap:11px">
           <img src="assets/7a19b16b-1e38-4277-8534-45e71f8f5da0.webp" alt="" style="width:38px;height:38px;object-fit:contain">
           <div>
-            <div style="font-size:9px;font-weight:600;letter-spacing:.3em;color:#b39a72">UNION OF VESKAR</div>
-            <div style="font-size:9px;font-weight:600;letter-spacing:.2em;color:#8a7458">EXTERNAL MISSIONS</div>
+            <div style="font-size:10px;font-weight:600;letter-spacing:.3em;color:#b39a72">UNION OF VESKAR</div>
+            <div style="font-size:10px;font-weight:600;letter-spacing:.2em;color:#a08a63">EXTERNAL MISSIONS</div>
           </div>
         </div>
         <div>
@@ -518,6 +560,13 @@ const ITEMS = [
 ];
 const FY = 0.84;
 
+const BAG = [
+  { name: 'SEALED LETTER', fx: 0.164, declared: 'Yes', onScan: 'Flat, uniform', status: 'CONSISTENT', accent: '#a8c48a', note: 'One envelope, wax seal unbroken. Held to the lamp it reads as two folded sheets, heavier than the declared single letter.' },
+  { name: 'SMALL KEY', fx: 0.342, declared: 'No', onScan: 'Dense, short', status: 'QUESTION IT', accent: '#e0c07c', note: 'A state-issue drawer key on a blank tag. He offered it before you asked, which is its own kind of answer.' },
+  { name: 'WALLET', fx: 0.521, declared: 'Not declared, permitted', onScan: 'Layered, soft', status: 'QUESTION IT', accent: '#e0c07c', note: 'Identity slip and tram tokens. The slip was issued by a district office that closed last winter.' },
+  { name: 'UNRESOLVED MASS', fx: 0.645, declared: 'No', onScan: 'Shadow geometry', status: 'DISCREPANCY', accent: '#e0705c', note: 'A dense rectangle folded into leather. It absorbs the beam like plate, not paper, and the fold was pressed shut recently.' }
+];
+
 const PAPERS = [
   { name: 'IDENTITY PAGE', src: '../assets/generated/doc-identity-page.png', status: 'IN ORDER', accent: '#a8c48a', note: 'Name and district match the record.' },
   { name: 'CLEARANCE SLIP', src: '../assets/generated/doc-clearance-page.png', status: 'QUESTION IT', accent: '#e0c07c', note: 'Countersignature does not hold this route.' },
@@ -533,7 +582,7 @@ const QUESTIONS = [
 ];
 
 class Component extends DCLogic {
-  state = { started: false, active: 'threshold', marks: {}, item: null, paper: null, log: [], asked: [] };
+  state = { started: false, active: 'threshold', marks: {}, item: null, paper: null, log: [], asked: [], bag: false, bagItem: null };
 
   componentDidMount() {
     this.fit = () => {
@@ -571,7 +620,7 @@ class Component extends DCLogic {
     const active = this.state.active;
     const marks = this.state.marks;
     const cur = VIEWS.find(v => v.key === active);
-    const inkOf = m => (m === 'flag' ? '#e0705c' : m === 'match' ? '#a8c48a' : m === 'review' ? '#e0c07c' : '#6e5f47');
+    const inkOf = m => (m === 'flag' ? '#e0705c' : m === 'match' ? '#a8c48a' : m === 'review' ? '#e0c07c' : '#9a8560');
     const dotOf = m => (m === 'flag' ? '#d8523c' : m === 'match' ? '#7fae6a' : m === 'review' ? '#c8a25f' : '#332b21');
     const markedCount = VIEWS.filter(v => marks[v.key]).length;
 
@@ -617,6 +666,34 @@ class Component extends DCLogic {
       itemZoomX: this.state.item === null ? '0%' : 'calc(50% - ' + (ITEMS[this.state.item].fx * 900) + '%)',
       itemZoomY: 'calc(50% - ' + (FY * 900) + '%)',
       closeItem: () => this.setState({ item: null }),
+      scanMode: !this.state.bag,
+      bagMode: this.state.bag,
+      showScan: () => this.setState({ bag: false, bagItem: null }),
+      openBag: () => this.setState({ bag: true, bagItem: null }),
+      scanBorder: this.state.bag ? '#2c4442' : '#7fbdb2',
+      scanBg: this.state.bag ? 'transparent' : 'rgba(127,189,178,.1)',
+      scanInk: this.state.bag ? '#6e7f7c' : '#a8ddd2',
+      bagBorder: this.state.bag ? '#c8a25f' : '#4a3a2c',
+      bagBg: this.state.bag ? 'linear-gradient(#3a2e22,#1e1712)' : 'transparent',
+      bagInk: this.state.bag ? '#e9d9b1' : '#8a7458',
+      bagItems: BAG.map((b, i) => ({
+        name: b.name,
+        left: 'calc(50% - ' + (b.fx * 1000) + '%)',
+        top: 'calc(50% - ' + (FY * 1000) + '%)',
+        border: this.state.bagItem === i ? '#c8a25f' : '#3a2c22',
+        dot: b.accent === '#e0705c' ? '#d8523c' : b.accent === '#e0c07c' ? '#c8a25f' : '#5f7a4e',
+        open: () => this.setState({ bagItem: i })
+      })),
+      bagItemOpen: this.state.bagItem !== null,
+      bagName: this.state.bagItem === null ? '' : BAG[this.state.bagItem].name,
+      bagNote: this.state.bagItem === null ? '' : BAG[this.state.bagItem].note,
+      bagDeclared: this.state.bagItem === null ? '' : BAG[this.state.bagItem].declared,
+      bagOnScan: this.state.bagItem === null ? '' : BAG[this.state.bagItem].onScan,
+      bagStatus: this.state.bagItem === null ? '' : BAG[this.state.bagItem].status,
+      bagAccent: this.state.bagItem === null ? '#4a3a2c' : BAG[this.state.bagItem].accent,
+      bagZoomX: this.state.bagItem === null ? '0%' : 'calc(50% - ' + (BAG[this.state.bagItem].fx * 900) + '%)',
+      bagZoomY: 'calc(50% - ' + (FY * 900) + '%)',
+      closeBagItem: () => this.setState({ bagItem: null }),
       papers: PAPERS.map((p, i) => ({
         name: p.name, src: p.src, status: p.status, accent: p.accent, note: p.note,
         border: this.state.paper === i ? '#c8a25f' : '#3a2c22',
@@ -636,7 +713,7 @@ class Component extends DCLogic {
         speaker: l.who,
         text: l.text,
         align: l.who === 'RYL' ? 'flex-start' : 'flex-end',
-        who: l.who === 'RYL' ? '#b0705c' : '#8a7458',
+        who: l.who === 'RYL' ? '#b0705c' : '#a08a63',
         border: l.who === 'RYL' ? '#6d2b26' : '#3a2c22',
         bg: l.who === 'RYL' ? 'rgba(142,31,28,.12)' : 'rgba(200,162,95,.06)',
         ink: l.who === 'RYL' ? '#e3d2a9' : '#cdbe9c',
