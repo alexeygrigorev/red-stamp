@@ -265,7 +265,7 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
             <div data-ref-action="paper-0" sc-camel-on-click="{{ openPaper0 }}" style="min-height:0;display:flex;flex-direction:column;gap:8px;cursor:pointer">
               <div style="display:flex;justify-content:space-between;align-items:baseline">
                 <span style="font-size:12px;font-weight:600;letter-spacing:.22em;color:#dacca4">IDENTITY PAGE</span>
-                <span style="font-size:11px;letter-spacing:.18em;color:#a8c48a">IN ORDER</span>
+                <span style="font-size:12px;font-weight:700;letter-spacing:.14em;color:#a8c48a">IN ORDER</span>
               </div>
               <div style="position:relative;flex:1;min-height:0;overflow:hidden;border:1px solid #3a2c22;background:#0b0908;box-shadow:0 18px 40px rgba(0,0,0,.7)" style-hover="border-color:#c8a25f">
                 <img src="assets/51403dfe-c385-48e5-934c-3cd1340e2420.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 0%">
@@ -276,7 +276,7 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
             <div data-ref-action="paper-1" sc-camel-on-click="{{ openPaper1 }}" style="min-height:0;display:flex;flex-direction:column;gap:8px;cursor:pointer">
               <div style="display:flex;justify-content:space-between;align-items:baseline">
                 <span style="font-size:12px;font-weight:600;letter-spacing:.22em;color:#dacca4">CLEARANCE SLIP</span>
-                <span style="font-size:11px;letter-spacing:.18em;color:#e0c07c">QUESTION IT</span>
+                <span style="font-size:12px;font-weight:700;letter-spacing:.14em;color:#e0c07c">QUESTION IT</span>
               </div>
               <div style="position:relative;flex:1;min-height:0;overflow:hidden;border:1px solid #3a2c22;background:#0b0908;box-shadow:0 18px 40px rgba(0,0,0,.7)" style-hover="border-color:#c8a25f">
                 <img src="assets/8fbec34c-372d-47d2-a8ad-aae52ac5ca25.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 0%">
@@ -287,7 +287,7 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
             <div data-ref-action="paper-2" sc-camel-on-click="{{ openPaper2 }}" style="min-height:0;display:flex;flex-direction:column;gap:8px;cursor:pointer">
               <div style="display:flex;justify-content:space-between;align-items:baseline">
                 <span style="font-size:12px;font-weight:600;letter-spacing:.22em;color:#dacca4">CORRESPONDENCE ORDER</span>
-                <span style="font-size:11px;letter-spacing:.18em;color:#e0705c">DISCREPANCY</span>
+                <span style="font-size:12px;font-weight:700;letter-spacing:.14em;color:#e0705c">DISCREPANCY</span>
               </div>
               <div style="position:relative;flex:1;min-height:0;overflow:hidden;border:1px solid #3a2c22;background:#0b0908;box-shadow:0 18px 40px rgba(0,0,0,.7)" style-hover="border-color:#c8a25f">
                 <img src="assets/4c3cae5c-a073-4954-b3af-89363d7a5c36.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 0%">
@@ -448,7 +448,7 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
                       <img src="assets/189a960d-3f38-4a6f-9a13-f40142836da5.webp" alt="" style="position:absolute;width:1000%;height:1000%;left:{{ b.left }};top:{{ b.top }}">
                     </div>
                     <div style="display:flex;justify-content:space-between;align-items:center">
-                      <span style="font-size:12px;font-weight:600;letter-spacing:.14em;color:#dacca4">{{ b.name }}</span>
+                      <span style="font-size:12px;font-weight:600;letter-spacing:.14em;color:{{ b.nameInk }}">{{ b.name }}</span>
                       <span style="width:7px;height:7px;border-radius:50%;background:{{ b.dot }}"></span>
                     </div>
                   </div>
@@ -623,7 +623,7 @@ a{color:#c8a25f;text-decoration:none}a:hover{color:#e4c58c}
           <img src="assets/779ea657-4ce2-498c-a617-9f5eaa498dc3.webp" alt="" style="position:absolute;right:-18px;bottom:-22px;height:140%;opacity:.3">
           <div style="position:relative;text-align:center">
             <div data-ref-action="admit" style="font-family:'Staatliches',sans-serif;font-size:42px;letter-spacing:.1em;color:#f4dfc9;line-height:.95">RED<br>STAMP</div>
-            <div style="font-size:11px;font-weight:600;letter-spacing:.3em;color:#e0b8a6">ADMIT ENTRY</div>
+            <div style="font-size:13px;font-weight:700;letter-spacing:.22em;color:#f0dcc8">ADMIT ENTRY</div>
           </div>
         </div>
         <div data-ref-action="secondary" style="border:1px solid #4a3a2c;background:linear-gradient(#241c16,#100c0a);display:grid;place-items:center;text-align:center;box-shadow:inset 0 1px 0 #5c4938,0 5px 0 #0a0806;cursor:pointer" style-hover="border-color:#8a7458">
@@ -838,7 +838,7 @@ class Component extends DCLogic {
         left: 'calc(50% - ' + (it.fx * 1200) + '%)',
         top: 'calc(50% - ' + (FY * 1200) + '%)',
         border: this.state.item === i ? '#c8a25f' : '#3a2c22',
-        ink: this.state.item === i ? '#e9d9b1' : '#b6a988',
+        ink: this.state.item === i ? '#e9d9b1' : it.accent,
         dot: it.accent === '#e0705c' ? '#d8523c' : it.accent === '#e0c07c' ? '#c8a25f' : '#5f7a4e',
         open: () => this.setState({ item: i })
       })),
@@ -921,6 +921,7 @@ class Component extends DCLogic {
         left: 'calc(50% - ' + (b.fx * 1000) + '%)',
         top: 'calc(50% - ' + (FY * 1000) + '%)',
         border: this.state.bagItem === i ? '#c8a25f' : '#3a2c22',
+        nameInk: b.accent,
         dot: b.accent === '#e0705c' ? '#d8523c' : b.accent === '#e0c07c' ? '#c8a25f' : '#5f7a4e',
         open: () => this.setState({ bagItem: i })
       })),

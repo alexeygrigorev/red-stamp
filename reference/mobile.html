@@ -232,7 +232,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
     </div>
     <div style="display:flex;gap:8px;text-align:right">
       <div>
-        <div style="font-size:9px;letter-spacing:.2em;color:#a08a63">TOL</div>
+        <div style="font-size:9px;letter-spacing:.2em;color:#a08a63" title="Shift tolerance">TOL</div>
         <div style="font-family:'Staatliches',sans-serif;font-size:18px;color:#d9caa4;line-height:1"><span data-ref-slot="tolerance-value">100</span></div>
       </div>
       <div>
@@ -294,7 +294,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
             <div style="font-size:12px;font-weight:600;letter-spacing:.14em;color:#e3d2a9">IDENTITY PAGE</div>
             <div style="font-size:12px;color:#a08a63;line-height:1.35;text-wrap:pretty">Name and district match the record.</div>
           </div>
-          <span style="font-size:10px;letter-spacing:.14em;color:#a8c48a">IN ORDER</span>
+          <span style="font-size:11px;font-weight:700;letter-spacing:.1em;color:#a8c48a">IN ORDER</span>
         </div>
         <div data-ref-action="paper-1" sc-camel-on-click="{{ openPaper1 }}" style="display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;border:1px solid #3a2c22;background:#100d0b;padding:7px;cursor:pointer">
           <img src="assets/cb395d6c-8c7f-4434-99f4-0ff66c50df6c.webp" alt="" style="width:52px;height:52px;object-fit:cover;object-position:50% 12%;border:1px solid #3a2c22">
@@ -302,7 +302,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
             <div style="font-size:12px;font-weight:600;letter-spacing:.14em;color:#e3d2a9">CLEARANCE SLIP</div>
             <div style="font-size:12px;color:#a08a63;line-height:1.35;text-wrap:pretty">Countersignature does not hold this route.</div>
           </div>
-          <span style="font-size:10px;letter-spacing:.14em;color:#e0c07c">QUESTION IT</span>
+          <span style="font-size:11px;font-weight:700;letter-spacing:.1em;color:#e0c07c">QUESTION IT</span>
         </div>
         <div data-ref-action="paper-2" sc-camel-on-click="{{ openPaper2 }}" style="display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;border:1px solid #3a2c22;background:#100d0b;padding:7px;cursor:pointer">
           <img src="assets/b23f5085-dda3-45ac-b884-8738e0b5a8b6.webp" alt="" style="width:52px;height:52px;object-fit:cover;object-position:50% 12%;border:1px solid #3a2c22">
@@ -310,7 +310,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
             <div style="font-size:12px;font-weight:600;letter-spacing:.14em;color:#e3d2a9">CORRESPONDENCE ORDER</div>
             <div style="font-size:12px;color:#a08a63;line-height:1.35;text-wrap:pretty">No correspondence stamp on the order.</div>
           </div>
-          <span style="font-size:10px;letter-spacing:.14em;color:#e0705c">DISCREPANCY</span>
+          <span style="font-size:11px;font-weight:700;letter-spacing:.1em;color:#e0705c">DISCREPANCY</span>
         </div>
       </div>
     </sc-if>
@@ -397,7 +397,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
                   <div style="position:relative;width:100%;aspect-ratio:3/2;overflow:hidden;border:1px solid {{ b.border }};background:#000">
                     <img src="assets/8824cfc0-f58a-4dcc-b7cb-a0242ff24107.webp" alt="" style="position:absolute;width:1000%;height:1000%;left:{{ b.left }};top:{{ b.top }}">
                   </div>
-                  <span style="font-size:8px;letter-spacing:.08em;color:#dacca4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.name }}</span>
+                  <span style="font-size:8px;letter-spacing:.08em;color:{{ b.nameInk }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.name }}</span>
                 </div>
               </sc-for>
             </div>
@@ -465,7 +465,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
     <div data-ref-action="mark-review" sc-camel-on-click="{{ markReview }}" style="flex:1;border:1px solid #4a3a2c;padding:10px 0;text-align:center;font-size:12px;letter-spacing:.16em;color:#c8bb9c;cursor:pointer" style-hover="border-color:#c8a25f">REVIEW</div>
   </div>
 
-  <div style="border-top:1px solid #2f251d;background:#100d0b;padding:8px 8px 9px;display:flex;gap:6px;overflow-x:auto">
+  <div style="border-top:1px solid #2f251d;background:#100d0b;padding:8px 8px 9px;display:flex;gap:6px;overflow-x:auto;mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent)">
     <div data-ref-action="back-window" sc-camel-on-click="{{ backToWindow }}" style="flex:0 0 auto;display:flex;align-items:center;gap:7px;border:1px solid {{ personBorder }};background:{{ personBg }};padding:6px 9px;cursor:pointer">
       <img data-ref-slot="visitor-face" src="assets/2b08665f-e2d7-4aea-9c0b-1252493cb4f4.webp" alt="" style="width:30px;height:30px;object-fit:cover;object-position:top;border:1px solid #4a3a2c">
       <span style="font-family:'Staatliches',sans-serif;font-size:16px;letter-spacing:.06em;color:#e9d9b1;line-height:1">PERSON</span>
@@ -486,7 +486,7 @@ div{scrollbar-width:none}div::-webkit-scrollbar{display:none}
       <img src="assets/23c7730c-fd90-4c8a-86bb-695cb8503df6.webp" alt="" style="width:34px;height:40px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7))">
       <div>
         <div data-ref-action="admit" style="font-family:'Staatliches',sans-serif;font-size:20px;letter-spacing:.06em;color:#f4dfc9;line-height:1">RED<br>STAMP</div>
-        <div style="font-size:9px;font-weight:600;letter-spacing:.2em;color:#e0b8a6">ADMIT ENTRY</div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;color:#f0dcc8">ADMIT ENTRY</div>
       </div>
     </div>
     <div data-ref-action="secondary" style="border:1px solid #4a3a2c;background:linear-gradient(#241c16,#100c0a);display:grid;place-items:center;text-align:center;box-shadow:inset 0 1px 0 #5c4938,0 3px 0 #0a0806;cursor:pointer">
@@ -681,6 +681,7 @@ class Component extends DCLogic {
         left: 'calc(50% - ' + (b.fx * 1000) + '%)',
         top: 'calc(50% - ' + (FY * 1000) + '%)',
         border: this.state.bagItem === i ? '#c8a25f' : '#3a2c22',
+        nameInk: b.accent,
         dot: b.accent === '#e0705c' ? '#d8523c' : b.accent === '#e0c07c' ? '#c8a25f' : '#5f7a4e',
         open: () => this.setState({ bagItem: i })
       })),

@@ -602,11 +602,35 @@
     return result;
   }
 
-  function currentObservation(caseData, state) {
+  function ensureObservedStyle() {
+    if (document.querySelector("#reference-observed-style")) return;
+    const style = document.createElement("style");
+    style.id = "reference-observed-style";
+    // The finding text ("CODE NOT FOUND · The hospital is real, but...")
+    // is the single most gameplay-relevant line on the whole stage, but it
+    // used to render as one flat, undifferentiated sentence. Give the
+    // status word its own bold chip so it reads first.
+    style.textContent = `
+      [data-observed-status]{display:inline-block;margin:0 .55em .2em 0;padding:2px 8px;border:1px solid rgba(200,162,95,.4);background:rgba(200,162,95,.12);font-weight:700;letter-spacing:.06em;color:#f0dfb4}
+    `;
+    document.head.append(style);
+  }
+
+  function updateObserved(caseData, state) {
+    ensureObservedStyle();
     const tool = state?.selectedTool;
     const result = resultFor(caseData, tool);
-    if (result) return `${result.status} · ${result.detail}`;
-    return `Visitor at the window. ${caseData?.claimedPurpose || caseData?.purpose || "Awaiting declared purpose."}`;
+    for (const el of slots("observed")) {
+      if (result) {
+        el.replaceChildren();
+        const status = document.createElement("span");
+        status.dataset.observedStatus = "";
+        status.textContent = result.status;
+        el.append(status, document.createTextNode(result.detail));
+      } else {
+        el.textContent = `Visitor at the window. ${caseData?.claimedPurpose || caseData?.purpose || "Awaiting declared purpose."}`;
+      }
+    }
   }
 
   function updateMetrics(state) {
@@ -907,7 +931,7 @@
     setSlot("source-label", tool ? TOOL_LABEL[tool] : "");
     setSlot("mark-label", mark ? MARK_LABEL[mark] : tool ? "NOT YET MARKED" : "");
     updateActionHeader(tool);
-    setSlot("observed", currentObservation(caseData, state));
+    updateObserved(caseData, state);
     setSlot("task", result?.detail || "Open every source, mark what you found, then file the card.");
     setSlot("marked-label", `${Object.keys(state.checklistMarks || {}).length} / 6 MARKED`);
     setSlot("card-state", state.checklistSubmitted ? "CARD READY TO FILE" : "CARD NOT FILED");
