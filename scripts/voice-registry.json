@@ -1,0 +1,30 @@
+{
+  "olya-merin": {
+    "voice_id": "8yBluWEp5VP7ufty3LqR",
+    "label": "Olya Merin"
+  },
+  "milan-vek": {
+    "voice_id": "rBOqGQufmZKjpcXFR8GM",
+    "label": "Milan Vek"
+  },
+  "radan-kest": {
+    "voice_id": "giiez72906EQs7dnYaE4",
+    "label": "Radan Kest"
+  },
+  "director-vel": {
+    "voice_id": "4KjoXo9vfffMoMd8089n",
+    "label": "Director Vel Ordan"
+  },
+  "sorin-dask": {
+    "voice_id": "dUZIXDGLFCPdKyTn6kn5",
+    "label": "Sorin Dask"
+  },
+  "mara-velen": {
+    "voice_id": "vSiKNsFaeF4QvATtAwIr",
+    "label": "Mara Velen"
+  },
+  "anton-ryl": {
+    "voice_id": "ufKbJLjfdg3tXDdu15bO",
+    "label": "Anton Ryl"
+  }
+}

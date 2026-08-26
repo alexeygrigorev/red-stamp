@@ -2907,7 +2907,7 @@ function renderLobbyStats() {
   $("#overlayStats").innerHTML = `<span><b>${String(campaignShifts.length).padStart(2, "0")}</b> SHIFTS</span><span><b>${String(totalCases).padStart(2, "0")}</b> CASES</span><span><b>100%</b> TOLERANCE</span>`;
 }
 
-function render() {
+function render({ musicFade = null } = {}) {
   renderMetrics();
   renderCase();
   renderInspection();
@@ -2925,7 +2925,7 @@ function render() {
   } else {
     $("#clockText").textContent = "08:30";
   }
-  updateMusicForState();
+  updateMusicForState(musicFade);
 }
 
 function showToast(message, tone = "") {
@@ -3004,6 +3004,44 @@ function playGameSound(kind = "click") {
   }
 }
 
+// Case ids with a generated, ElevenLabs voice line for their interrogation
+// answer (assets/audio/voices/<id>/question.mp3). Not every visitor has one
+// yet — see scripts/voice-registry.json and docs/voice-generation.md.
+const VOICED_CASES = new Set(["olya-merin", "mara-velen", "milan-vek", "radan-kest", "director-vel", "sorin-dask", "anton-ryl"]);
+const voiceLineCache = new Map();
+// A cloned, detached Audio() instance (below) is more likely than the
+// long-lived music elements to get suspended when the tab loses focus.
+// Track the in-flight one so visibility resuming it back to the same
+// point is possible (see the visibilitychange listener near playMusic).
+let currentVoiceInstance = null;
+
+function playCharacterVoiceLine(caseId, lineKey = "question") {
+  if (audioMuted || !VOICED_CASES.has(caseId)) return;
+  try {
+    const cacheKey = `${caseId}/${lineKey}`;
+    let base = voiceLineCache.get(cacheKey);
+    if (!base) {
+      base = new Audio(`${AUDIO_BASE}/voices/${caseId}/${lineKey}.mp3`);
+      base.preload = "auto";
+      voiceLineCache.set(cacheKey, base);
+    }
+    const instance = base.cloneNode(true);
+    instance.volume = 0.55;
+    currentVoiceInstance = instance;
+    instance.play().catch(() => {});
+  } catch {
+    // Voice lines are an atmosphere layer; playback failure must not break the game.
+  }
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) return;
+  const instance = currentVoiceInstance;
+  if (instance && instance.paused && !instance.ended) {
+    instance.play().catch(() => {});
+  }
+});
+
 let musicTrackA = null;
 let musicTrackB = null;
 let currentMusicElement = null;
@@ -3012,6 +3050,8 @@ let pendingMusicKey = null;
 let musicRequestSeq = 0;
 let musicRetryHandler = null;
 const musicFadeTimers = new Map();
+const START_SHIFT_MUSIC_FADE_MS = 1800;
+const START_SHIFT_ARRIVAL_DELAY_MS = 1850;
 
 function ensureMusicElements() {
   if (musicTrackA) return;
@@ -3118,9 +3158,9 @@ function musicState() {
   return { key: danger ? "tension" : "checkpoint", volume: danger ? 0.4 : 0.3 };
 }
 
-function updateMusicForState() {
+function updateMusicForState(fadeOverride = null) {
   const { key, volume } = musicState();
-  playMusic(key, { volume, fade: state.started ? 2800 : 1800 });
+  playMusic(key, { volume, fade: fadeOverride ?? (state.started ? 2800 : 1800) });
 }
 
 function unlockAudio() {
@@ -3153,20 +3193,44 @@ function toggleAudio() {
   playGameSound("click");
 }
 
-function signalArrival() {
+let arrivalTimer = null;
+
+function stopCharacterVoiceLine() {
+  if (!currentVoiceInstance) return;
+  currentVoiceInstance.pause();
+  currentVoiceInstance.currentTime = 0;
+  currentVoiceInstance = null;
+}
+
+function signalArrival({ delay = 0 } = {}) {
+  window.clearTimeout(arrivalTimer);
+  arrivalTimer = null;
+  stopCharacterVoiceLine();
+
   const visitor = $("#visitorPortrait");
   const card = $("#sceneCaseCard");
-  [visitor, card].forEach((element) => {
-    if (!element) return;
-    element.classList.remove("visitor-arrival", "case-card-arrival");
-    void element.offsetWidth;
-  });
-  visitor?.classList.add("visitor-arrival");
-  card?.classList.add("case-card-arrival");
-  window.setTimeout(() => {
-    visitor?.classList.remove("visitor-arrival");
-    card?.classList.remove("case-card-arrival");
-  }, 760);
+  const announceArrival = () => {
+    arrivalTimer = null;
+    [visitor, card].forEach((element) => {
+      if (!element) return;
+      element.classList.remove("visitor-arrival", "case-card-arrival");
+      void element.offsetWidth;
+    });
+    visitor?.classList.add("visitor-arrival");
+    card?.classList.add("case-card-arrival");
+    window.setTimeout(() => {
+      visitor?.classList.remove("visitor-arrival");
+      card?.classList.remove("case-card-arrival");
+    }, 760);
+    const c = currentCase();
+    if (c?.id) playCharacterVoiceLine(c.id);
+  };
+
+  if (delay > 0) {
+    arrivalTimer = window.setTimeout(announceArrival, delay);
+    return;
+  }
+  announceArrival();
 }
 
 function openOverlay({ kicker, title, body, stats, buttonText, action }) {
@@ -3197,8 +3261,8 @@ function resetCampaign(started = true) {
 function startGame() {
   resetCampaign(true);
   closeOverlay();
-  render();
-  signalArrival();
+  render({ musicFade: START_SHIFT_MUSIC_FADE_MS });
+  signalArrival({ delay: START_SHIFT_ARRIVAL_DELAY_MS });
   showToast(`Visitor at the window. Run ${String(state.seed).padStart(6, "0")}. Check the arrival mode before applying the stamp.`);
 }
 
