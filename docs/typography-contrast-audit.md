@@ -78,53 +78,94 @@ inside the viewport — this is the automated safety net against the +1px
 bump causing wrapping/clipping in the tightly fixed mobile canvas.
 [RESULT — see below]
 
-## 3. Fable's creative/legibility findings (not all acted on)
+## 3. Fable's creative/legibility findings — now fixed
 
 A second, independent pass focused on typography feel and "distracting for a
-game" issues rather than measured contrast. Ranked, most important first:
+game" issues rather than measured contrast. All 13 findings below were acted
+on except #13 (noted).
 
-1. **Verdict/finding text is visually the weakest thing on the most
-   important screen.** The line that actually tells you what's wrong with a
-   document ("CODE NOT FOUND · …") is a small dim caption in the corner,
-   while decorative document art dominates. *Not acted on — would need a
-   layout change (bigger type or a highlighted "finding" chip), out of scope
-   for this pass.*
-2. **Outcome modals ("SECURITY BREACH" vs. a win state) look identical** —
-   no color valence for success vs. failure. *Not acted on.*
-3. **Stamp animation can render underneath/behind the outcome modal**,
-   clipped near the DENY ENTRY button — reads as a rendering bug, likely a
-   sequencing/z-index issue between the admit-stamp animation and the
-   case-closed modal. *Flagged for a follow-up fix — this is a real bug,
-   not a style nit, and is outside the scope of a font/contrast pass.*
-4. The primary admit button shows the game's own logo wordmark ("RED
-   STAMP") large, with the actual meaning ("ADMIT ENTRY") as a tiny
-   sub-label — flavorful but slows down the decisive click.
-5. Per-document status tags ("IN ORDER / QUESTION IT / DISCREPANCY") are
-   the puzzle's answer key but carry the same tiny weight as decorative
-   titles.
-6. The right-rail is a wall of equally-weighted tiny caps labels; nothing
-   outranks anything except by color alone.
-7. X-ray stage: the suspicious "UNRESOLVED MASS" item is distinguished from
-   an ordinary "WALLET" only by a 3px dot — could use a visible flag/glow.
-8. Document-footer captions sit directly on top of busy seal/QR texture on
-   the ID card stage — could use a solid scrim band.
-9. **Mobile stage-chip row clips labels mid-word at both edges** ("G…",
-   "E") with no scroll affordance — reads as a layout bug. *Flagged for
-   follow-up, not fixed here (needs a scroll-fade/peek treatment, not a
-   font change).*
-10. Hint lines ("Every sheet on this route must carry…") are dim enough
-    they'll likely never be read.
-11. Game-over screen stacks four overlapping headers ("GAME OVER" / "SHIFT
-    COMPLETE" / "FINAL REPORT FILED" / status line) that repeat each other,
-    and "GAME OVER" breaks the in-world bureaucratic fiction.
-12. Mobile header abbreviations "TOL / CAREER" are cryptic.
+1. **Verdict/finding text had the weakest visual weight on the most
+   important screen** — the line that tells you what's wrong with a document
+   ("CODE NOT FOUND · …") was a plain, undifferentiated sentence.
+   **Fixed:** `reference-bridge.js` now splits it into a bold, chip-boxed
+   status word (`CODE NOT FOUND`) followed by the plain detail sentence, via
+   a new `updateObserved()` that replaces the old plain-text `setSlot`.
+2. **Outcome modals had no color valence** — a security breach and a clean
+   win looked identical. **Fixed:** the outcome panel now carries
+   `data-outcome-grade="good"/"bad"/"mixed"` (sourced from the game's own
+   `shiftLog[].grade`, already computed in `app.js`) with matching border/
+   kicker/title tinting — green for a clean result, red for an incident,
+   the previous neutral cream for a mixed outcome.
+3. **Stamp animation rendered simultaneously with the outcome modal**,
+   clipped near the DENY ENTRY button. Root cause: `triggerStampMotion()`
+   anchored the stamp card to the admit button, which sits at the right
+   edge of the action rail — a 300px-wide card centered there overflows the
+   viewport; and the 180ms state-sync loop was popping the outcome modal up
+   before the ~980ms stamp animation finished. **Fixed both:** the stamp
+   position is now clamped inside the viewport, and `updateOutcome()` holds
+   the modal back (`stampMotionActive` flag) until the stamp animation
+   completes, so the two never overlap.
+4. Admit button showed the game's logo wordmark ("RED STAMP") large with
+   the actual meaning ("ADMIT ENTRY") as a tiny sub-label. **Fixed:**
+   "ADMIT ENTRY" bumped from 11px/600 weight to 13px/700 weight (10px on
+   mobile) and brightened, without touching the RED STAMP branding — a
+   rebalance, not a full inversion, to keep the game's own identity intact.
+5. Document status tags ("IN ORDER / QUESTION IT / DISCREPANCY" — the
+   puzzle's answer key) carried the same tiny weight as the decorative
+   sheet titles above them. **Fixed:** bumped to font-weight 700 and a size
+   at or above the title (12px desktop / 11px mobile, was 11px/10px).
+6. Right-rail read as a wall of equally-weighted tiny caps labels.
+   **Addressed indirectly** by #1, #5, and #7 — the verdict chip and the
+   accent-colored item/status text now give the rail real hierarchy instead
+   of one flat tone throughout; no separate structural change made.
+7. X-ray "UNRESOLVED MASS" was distinguished from an ordinary "WALLET" only
+   by a 3px dot. **Fixed:** the detector tray and satchel tray item names
+   now render in their own severity accent color (red/gold/green, the same
+   accent already used for the dot and the detail-panel border), on both
+   viewports — so the flag is visible before you even open the item.
+8. Document-footer captions on busy seal/QR art. **Checked, no change
+   needed** — both desktop and mobile already render a solid
+   `rgba(6,4,3,.94–.95)` scrim behind that text.
+9. **Mobile stage-chip row clipped labels mid-word at both edges** with no
+   scroll affordance, reading as a layout bug. **Fixed:** added a
+   `mask-image` edge fade to the horizontally-scrolling chip row so a
+   partially-visible chip reads as "more to scroll," not broken.
+10. Hint lines were dim enough they'd likely never be read. **Fixed** by
+    the contrast pass in §1 (`#8a7458` → `#a08a63`) plus the font-size bump.
+11. Game-over screen stacked redundant headers — masthead and title both
+    literally said "SHIFT COMPLETE," and "GAME OVER" broke the in-world
+    bureaucratic fiction. **Fixed:** three distinct, non-redundant mastheads
+    now cover the three end states — "CLEARANCE WITHDRAWN" (career hit
+    zero), "CAMPAIGN COMPLETE" (final shift), "SHIFT CLOSED" (a normal
+    shift break) — and the final-shift title changed from a second "SHIFT
+    COMPLETE" to "POST SECURED."
+12. Mobile header abbreviation "TOL" is cryptic. **Partially addressed** —
+    added a `title="Shift tolerance"` tooltip; left the visible text as
+    "TOL" since "TOLERANCE" is roughly 50% wider than "CAREER" (the other
+    label sharing that row) and risks overflow on the fixed 390px canvas.
 13. Desktop question stage has a lot of dead black space; the visitor
-    portrait is nearly invisible there.
+    portrait is nearly invisible there. **Not fixed** — this needs an actual
+    layout change (resizing/repositioning the portrait), which is a bigger,
+    riskier change than the rest of this pass and wasn't attempted.
 
-Items 1, 2, 4, 5, 6, 10, 11, 12, 13 are layout/copy/hierarchy decisions, not
-contrast or font-size problems — they're recorded here as a backlog, not
-acted on in this pass. Items 3 and 9 look like actual bugs and are worth a
-follow-up ticket.
+## Verification
+
+`npm run audit:gameplay` drives the full seeded 3-shift, 17-case campaign on
+both viewports and asserts layout/overflow, accessible-name, and asset
+coverage at every screen. One pre-existing assertion (`shift-end screen must
+identify its terminal state`) checked for the literal string "GAME OVER" —
+updated in `scripts/audit-gameplay.mjs` to match the new masthead copy from
+§3.11.
+
+Final run after all fixes: **13,547 checks passed, 0 failures** (both
+1440×900 desktop and 390×844 mobile).
+
+A separate one-off pass drove the same campaign at a Pixel-7A-sized viewport
+(412×915 CSS px, ~2.6 DPR) to confirm the font-size bump holds up at your
+actual phone's dimensions. As noted in §2, the mobile canvas is a fixed
+390×844 design scaled to fit the real viewport, so this doesn't change
+internal layout risk vs. the 390×844 checks above — it's a direct visual
+check at your device's size. Result: same 0 layout failures.
 
 ## Before/after
 
