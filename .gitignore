@@ -1,3 +1,4 @@
 node_modules/
 .env
 tmp/visitor-background-audit/
+tmp/audit-gameplay/
